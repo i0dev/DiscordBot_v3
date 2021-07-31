@@ -1,0 +1,12 @@
+name: DiscordBot
+version: 3.0.0
+main: com.i0dev.BotPlugin
+authors: [ i01 ]
+description: i0dev DiscordBot v3
+website: https://i0dev.com/
+softdepend: [ litebans ]
+commands:
+  link:
+    description: Main Link Command
+  2fa:
+    description: TwoFactorAuth
