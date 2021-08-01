@@ -109,6 +109,7 @@ public class Create extends SuperDiscordCommand {
                     StringBuilder content = new StringBuilder();
                     content.append("Prize: `").append(response.prize).append("`\n");
                     content.append("Host: `").append(e.getAuthor().getAsTag()).append("`\n");
+                    content.append("Winners: `").append(response.getWinners()).append("`\n");
                     content.append("Time Remaining: ").append(TimeUtil.formatTime(response.length)).append("\n");
                     content.append("\nReact with {emoji} to enter.".replace("{emoji}", Emoji.fromMarkdown(getOption("emoji").getAsString()).getAsMention()));
 
@@ -133,7 +134,6 @@ public class Create extends SuperDiscordCommand {
 
                     //
 
-                    e.getChannel().sendMessage(response.toString()).queue();
                     reply(e.getMessage(), EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("You have successfully created a giveaway").build());
                     userList.remove(response);
                     return;

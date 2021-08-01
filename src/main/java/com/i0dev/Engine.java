@@ -151,6 +151,7 @@ public class Engine {
             StringBuilder content = new StringBuilder();
             content.append("Prize: `").append(giveaway.getPrize()).append("`\n");
             content.append("Host: `").append(host.getAsTag()).append("`\n");
+            content.append("Winners: `").append(giveaway.getWinnerAmount()).append("`\n");
             content.append("Time Remaining: ").append(TimeUtil.formatTime(giveaway.getEndTime() - System.currentTimeMillis())).append("\n");
             content.append("\nReact with {emoji} to enter.".replace("{emoji}", Emoji.fromMarkdown(Create.getOption("emoji", Create.class).getAsString()).getAsMention()));
 
