@@ -95,6 +95,8 @@ public class Bot {
                     .awaitReady();
         } catch (Exception ignored) {
             System.out.println("\n\nCould not load previous settings. If this is the first time you launched the bot, it will generate a folder with config and storage.\n");
+            if (pluginMode)
+                com.i0dev.BotPlugin.get().onDisable();
         }
     }
 
