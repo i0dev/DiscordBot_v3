@@ -37,6 +37,15 @@ public class Utility {
         return folder;
     }
 
+    public static Message getMessage(TextChannel channel, long id) {
+        try {
+            return channel.retrieveMessageById(id).complete();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+
     public static List<Guild> getAllowedGuilds() {
         List<Guild> ret = new ArrayList<>();
         for (Long allowedGuild : GeneralConfig.get().getAllowedGuilds()) {
