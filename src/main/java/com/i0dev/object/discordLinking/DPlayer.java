@@ -256,6 +256,7 @@ public class DPlayer {
         long time = 1000L * 60L * 30L; // 30 minutes
         List<DPlayer> toRemove = new ArrayList<>();
         cachedUsers.stream().filter(dPlayer -> dPlayer.getLastUsedTime() + time < System.currentTimeMillis()).forEach(toRemove::add);
+        LogUtil.debug("Updated the DPlayer Cache and removed " + toRemove.size() + " cached objects, with a remaining total of: " + (cachedUsers.size() - toRemove.size()));
         toRemove.forEach(DPlayer::removeFromCache);
     };
 
