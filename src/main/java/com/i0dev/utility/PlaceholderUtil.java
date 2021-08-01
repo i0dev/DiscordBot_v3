@@ -1,6 +1,7 @@
 package com.i0dev.utility;
 
 import com.i0dev.Bot;
+import com.i0dev.BotPlugin;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.object.discordLinking.DPlayer;
 import lombok.SneakyThrows;
@@ -135,11 +136,14 @@ public class PlaceholderUtil {
                 .replace("{DiscordBotAuthor}", "i0#0001")
                 .replace("{DiscordBotPluginMode}", Bot.pluginMode ? "Yes" : "No")
                 .replace("{prefix}", GeneralConfig.get().getPrefixes().get(0))
-                .replace("{DiscordBotVersion}", "3.0.0");
+                .replace("{version}", "3.0.0");
 
 
         //plugin mode
-
+        if (Bot.isPluginMode()) {
+            message = message
+                    .replace("{onlinePlayers}", BotPlugin.server.getOnlineCount() + "");
+        }
 
         return message;
     }
