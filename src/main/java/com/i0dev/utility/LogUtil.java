@@ -22,7 +22,7 @@ public class LogUtil {
     }
 
     public static void log(String message) {
-        System.out.println("SEVERE: " + message);
+        System.out.println("BOT: " + message);
     }
 
     public static void logDiscord(EmbedMaker embedMaker) {
