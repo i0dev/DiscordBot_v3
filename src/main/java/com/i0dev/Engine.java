@@ -2,6 +2,9 @@ package com.i0dev;
 
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.config.MiscConfig;
+import com.i0dev.modules.giveaway.Create;
+import com.i0dev.modules.giveaway.Giveaway;
+import com.i0dev.modules.giveaway.GiveawayHandler;
 import com.i0dev.modules.points.PointsHandler;
 import com.i0dev.modules.points.PointsManager;
 import com.i0dev.object.LogObject;
@@ -12,8 +15,11 @@ import com.i0dev.utility.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
+import javax.rmi.CORBA.Util;
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,15 +39,15 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskExecuteMemberCountUpdate, 1, 2, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskUpdateDPlayerCache, 1, 1, TimeUnit.HOURS);
         executorService.scheduleAtFixedRate(taskPointsCheckVoiceChannels, 1, 2, TimeUnit.SECONDS);
-        //     executorService.scheduleAtFixedRate(taskExecuteGiveaways, 1, 10, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(taskExecuteGiveaways, 1, 10, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskAppendToFile, 1, 10, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskUpdateActivity, 1, 30, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskVerifyAuthentication, 15, 15 * 60, TimeUnit.SECONDS);
-        //    executorService.scheduleAtFixedRate(taskUpdateGiveawayTimes, 15, 30, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(taskUpdateGiveawayTimes, 15, 30, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskGiveContinuousRoles, 1, 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
 
-        //dplayer used cashe stuff
+        executorService.scheduleAtFixedRate(DPlayer.taskClearCache, 25, 5, TimeUnit.MINUTES);
     }
 
     @Getter
@@ -107,6 +113,10 @@ public class Engine {
         });
     };
 
+    static Runnable taskExecuteGiveaways = () -> {
+        SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> !((Giveaway) o).isEnded()).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
+    };
+
     static Runnable taskPointsCheckVoiceChannels = () -> {
         Map<Member, Long> voiceChannelCache = PointsHandler.getVoiceChannelCache();
         if (voiceChannelCache.isEmpty()) return;
@@ -125,6 +135,34 @@ public class Engine {
             }
         });
         toRemove.forEach(voiceChannelCache::remove);
+    };
+
+    static Runnable taskUpdateGiveawayTimes = () -> {
+        SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> {
+            Giveaway giveaway = ((Giveaway) o);
+            TextChannel channel = Bot.getJda().getTextChannelById(giveaway.getChannelID());
+            return !giveaway.isEnded() && channel != null && Utility.getMessage(channel, giveaway.getMessageID()) != null;
+        }).forEach(o -> {
+            Giveaway giveaway = ((Giveaway) o);
+            TextChannel channel = Bot.getJda().getTextChannelById(giveaway.getChannelID());
+            Message message = Utility.getMessage(channel, giveaway.getMessageID());
+            User host = Bot.getJda().retrieveUserById(giveaway.getHostID()).complete();
+
+            StringBuilder content = new StringBuilder();
+            content.append("Prize: `").append(giveaway.getPrize()).append("`\n");
+            content.append("Host: `").append(host.getAsTag()).append("`\n");
+            content.append("Time Remaining: ").append(TimeUtil.formatTime(giveaway.getEndTime() - System.currentTimeMillis())).append("\n");
+            content.append("\nReact with {emoji} to enter.".replace("{emoji}", Emoji.fromMarkdown(Create.getOption("emoji", Create.class).getAsString()).getAsMention()));
+
+            EmbedMaker embed = EmbedMaker.builder()
+                    .authorName("New Giveaway!")
+                    .content(content.toString())
+                    .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                    .build();
+
+            message.editMessageEmbeds(EmbedMaker.create(embed)).queue();
+
+        });
     };
 
     static Runnable taskUpdateActivity = () -> {
