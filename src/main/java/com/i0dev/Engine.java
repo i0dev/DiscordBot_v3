@@ -61,11 +61,11 @@ public class Engine {
             if (queueObject.getType().equals(Type.ADD_ROLE)) {
                 if (member.getRoles().contains(role)) return;
                 guild.addRoleToMember(user.getId(), role).queue();
-                System.out.println("[LOG] Applied the role {" + role.getName() + "} to the user: {" + member.getEffectiveName() + "}");
+                LogUtil.debug("Applied the role {" + role.getName() + "} to the user: {" + member.getEffectiveName() + "}");
             } else if (queueObject.getType().equals(Type.REMOVE_ROLE)) {
                 if (!member.getRoles().contains(role)) return;
                 guild.removeRoleFromMember(user.getId(), role).queue();
-                System.out.println("[LOG] Removed the role {" + role.getName() + "} to the user: {" + member.getEffectiveName() + "}");
+                LogUtil.debug("removed the role {" + role.getName() + "} from the user: {" + member.getEffectiveName() + "}");
             }
 
         } catch (Exception ignored) {
@@ -74,7 +74,7 @@ public class Engine {
     };
 
     static Runnable taskGiveContinuousRoles = () -> {
-        System.out.println("[DEBUG] Started giving missing roles to users.");
+        LogUtil.debug("Started giving missing roles to users.");
         for (User user : Bot.getJda().getUsers()) {
             for (Long roleID : MiscConfig.get().rolesToConstantlyGive) {
                 Role role = Bot.getJda().getRoleById(roleID);
