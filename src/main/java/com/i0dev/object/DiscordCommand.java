@@ -3,7 +3,7 @@ package com.i0dev.object;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.i0dev.Bot;
-import com.i0dev.config.BasicCommandsConfig;
+import com.i0dev.config.CommandsConfig;
 import com.i0dev.utility.ConfigUtil;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -21,9 +21,9 @@ public class DiscordCommand extends ListenerAdapter {
     @SneakyThrows
     public static BasicCommand getBasicCommand(Class<? extends DiscordCommand> clazz) {
         BasicCommand ret;
-        Field field = BasicCommandsConfig.class.getDeclaredField(getCommandID(clazz));
+        Field field = CommandsConfig.class.getDeclaredField(getCommandID(clazz));
         field.setAccessible(true);
-        ret = (BasicCommand) field.get(BasicCommandsConfig.get());
+        ret = (BasicCommand) field.get(CommandsConfig.get());
         return ret;
     }
 
@@ -80,7 +80,7 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addMessage(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(BasicCommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
     }
 
     @SneakyThrows
@@ -96,7 +96,7 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addOption(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(BasicCommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
     }
 
     @SneakyThrows
@@ -110,6 +110,6 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addOption(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(BasicCommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
     }
 }

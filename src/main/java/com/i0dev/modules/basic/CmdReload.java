@@ -1,8 +1,6 @@
 package com.i0dev.modules.basic;
 
 import com.i0dev.Bot;
-import com.i0dev.config.BasicCommandsConfig;
-import com.i0dev.config.GeneralConfig;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.DiscordCommand;

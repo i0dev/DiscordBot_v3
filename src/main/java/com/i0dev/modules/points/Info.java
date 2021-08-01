@@ -1,7 +1,7 @@
 package com.i0dev.modules.points;
 
 import com.i0dev.Bot;
-import com.i0dev.config.BasicCommandsConfig;
+import com.i0dev.config.CommandsConfig;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
@@ -30,7 +30,7 @@ public class Info extends SuperDiscordCommand {
             boosting.append("The boost amount is `{points}` points.".replace("{points}", PointsManager.getOption("boost", PointsManager.class).getAsDouble() + ""));
 
         StringBuilder rewards = new StringBuilder();
-        rewards.append("If you have your account linked you will be able to use the command `{cmd}` to claim `{points}` points.".replace("{points}", BasicCommandsConfig.get().getCmd_rewards().getOptions().get("points").getAsString() + "").replace("{cmd}", GeneralConfig.get().getPrefixes().get(0) + BasicCommandsConfig.get().getCmd_rewards().getAliases().get(0)));
+        rewards.append("If you have your account linked you will be able to use the command `{cmd}` to claim `{points}` points.".replace("{points}", CommandsConfig.get().getCmd_rewards().getOptions().get("points").getAsString() + "").replace("{cmd}", GeneralConfig.get().getPrefixes().get(0) + CommandsConfig.get().getCmd_rewards().getAliases().get(0)));
 
         // shop
         //  desc.append("To spend your points, you can spend them in the shop in game, with the command `/points shop`, or in discord with the command `.points shop`");

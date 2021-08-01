@@ -1,7 +1,7 @@
 package com.i0dev.object;
 
 import com.i0dev.Bot;
-import com.i0dev.config.BasicCommandsConfig;
+import com.i0dev.config.CommandsConfig;
 import com.i0dev.utility.ConfigUtil;
 import lombok.SneakyThrows;
 
@@ -27,18 +27,18 @@ public class AdvancedDiscordCommand extends DiscordCommand {
     public static AdvancedCommand getAdvancedCommand() {
         Class<? extends DiscordCommand> parent = (Class<? extends DiscordCommand>) Class.forName(Thread.currentThread().getStackTrace()[2].getClassName());
         AdvancedCommand ret;
-        Field field = BasicCommandsConfig.class.getDeclaredField(getCommandID(parent));
+        Field field = CommandsConfig.class.getDeclaredField(getCommandID(parent));
         field.setAccessible(true);
-        ret = (AdvancedCommand) field.get(BasicCommandsConfig.get());
+        ret = (AdvancedCommand) field.get(CommandsConfig.get());
         return ret;
     }
 
     @SneakyThrows
     public static AdvancedCommand getAdvancedCommand(Class<? extends DiscordCommand> clazz) {
         AdvancedCommand ret;
-        Field field = BasicCommandsConfig.class.getDeclaredField(getCommandID(clazz));
+        Field field = CommandsConfig.class.getDeclaredField(getCommandID(clazz));
         field.setAccessible(true);
-        ret = (AdvancedCommand) field.get(BasicCommandsConfig.get());
+        ret = (AdvancedCommand) field.get(CommandsConfig.get());
         return ret;
     }
 
@@ -54,7 +54,7 @@ public class AdvancedDiscordCommand extends DiscordCommand {
         }
         cmd.addSuperCommand(key, value);
         cmd.getSuperCommands().add(value);
-        ConfigUtil.save(BasicCommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
     }
 
 }

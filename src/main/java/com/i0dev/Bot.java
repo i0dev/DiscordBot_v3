@@ -1,6 +1,6 @@
 package com.i0dev;
 
-import com.i0dev.config.BasicCommandsConfig;
+import com.i0dev.config.CommandsConfig;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.config.MiscConfig;
 import com.i0dev.object.AdvancedDiscordCommand;
@@ -53,7 +53,7 @@ public class Bot {
         Utility.createFile(getConfigPath());
         Utility.createFile(getMiscConfigPath());
         Utility.createDirectory(getTicketLogsPath());
-        configMap.put(BasicCommandsConfig.class, getBasicConfigPath());
+        configMap.put(CommandsConfig.class, getBasicConfigPath());
         configMap.put(GeneralConfig.class, getConfigPath());
         configMap.put(MiscConfig.class, getMiscConfigPath());
         ConfigUtil.reloadConfig();

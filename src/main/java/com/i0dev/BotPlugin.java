@@ -5,12 +5,12 @@ import com.i0dev.modules.linking.CommandLink;
 import com.i0dev.modules.misc.InGamePunishmentLogs;
 import com.i0dev.modules.twoFactorAuthentication.Command2fa;
 import com.i0dev.modules.twoFactorAuthentication.TwoFactorAuthentication;
-import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class BotPlugin extends Plugin {
+
     @Override
     public void onEnable() {
         instance = this;

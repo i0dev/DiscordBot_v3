@@ -1,13 +1,8 @@
 package com.i0dev.config;
 
-import com.i0dev.modules.blacklist.Add;
-import com.i0dev.modules.blacklist.BlacklistManager;
-import com.i0dev.modules.blacklist.Clear;
-import com.i0dev.modules.blacklist.Remove;
 import com.i0dev.object.AdvancedCommand;
 import com.i0dev.object.BasicCommand;
 import com.i0dev.object.Permission;
-import com.i0dev.object.SuperCommand;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -15,11 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
-public class BasicCommandsConfig {
+public class CommandsConfig {
 
-    public static BasicCommandsConfig instance = new BasicCommandsConfig();
+    public static CommandsConfig instance = new CommandsConfig();
 
-    public static BasicCommandsConfig get() {
+    public static CommandsConfig get() {
         return instance;
     }
 
