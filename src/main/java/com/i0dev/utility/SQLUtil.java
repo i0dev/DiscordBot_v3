@@ -29,7 +29,8 @@ public class SQLUtil {
             connection = DriverManager.getConnection(url, GeneralConfig.get().getDbUsername(), GeneralConfig.get().getDbPassword());
             System.out.println("Connected to MySQL server database: " + database);
         } else {
-            database = "DiscordBot.db";
+            if (Bot.isPluginMode()) database = com.i0dev.BotPlugin.get().getDataFolder() + "/DiscordBot.db";
+            else database = "DiscordBot/DiscordBot.db";
             String url = "jdbc:sqlite:" + database;
             connection = DriverManager.getConnection(url);
             System.out.println("Connected to SQLite local database: " + database);
