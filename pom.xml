@@ -18,7 +18,7 @@
     </properties>
     <url>www.i0dev.com</url>
     <build>
-        <finalName>DiscordBot_v2</finalName>
+        <finalName>DiscordBot_v3</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

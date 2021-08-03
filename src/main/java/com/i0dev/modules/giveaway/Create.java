@@ -55,9 +55,7 @@ public class Create extends SuperDiscordCommand {
 
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent e) {
         if (!contains(e.getAuthor())) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(e.getAuthor());
         String[] split = e.getMessage().getContentRaw().split(" ");
-        // if cancel
         GiveawayResponse response = get(e.getAuthor());
 
         if (e.getMessage().getContentRaw().equalsIgnoreCase(GeneralConfig.get().getPrefixes().get(0) + "cancel")) {
