@@ -81,9 +81,12 @@ public class TicketCloseHandler extends ListenerAdapter {
         }
 
         ticket.remove();
-        ticketOwner.openPrivateChannel().complete().sendMessageEmbeds(EmbedMaker.create(embedMaker.build())).completeAfter(5, TimeUnit.SECONDS);
-        embedMaker.authorName("Your ticket was closed by {authorTag}");
-        ticketOwner.openPrivateChannel().complete().sendFile(ticketLogsFile).queueAfter(6, TimeUnit.SECONDS);
+        try {
+            ticketOwner.openPrivateChannel().complete().sendMessageEmbeds(EmbedMaker.create(embedMaker.build())).completeAfter(5, TimeUnit.SECONDS);
+            embedMaker.authorName("Your ticket was closed by {authorTag}");
+            ticketOwner.openPrivateChannel().complete().sendFile(ticketLogsFile).queueAfter(6, TimeUnit.SECONDS);
+        } catch (Exception ignored) {
 
+        }
     }
 }
