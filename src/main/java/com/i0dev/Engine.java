@@ -189,6 +189,20 @@ public class Engine {
         }
     };
 
+
+    static Runnable taskFlushDiscordPoints = () -> {
+        List<DiscordPoints> toRemove = new ArrayList<>();
+        DiscordPoints.getCachedPoints().stream().filter(discordPoints -> {
+            DiscordPoints fromSQL = (DiscordPoints) SQLUtil.getObject("discordID", discordPoints.getDiscordID() + "", DiscordPoints.class);
+            if (fromSQL == null) return false;
+            return fromSQL.getPoints() != discordPoints.getPoints();
+        }).forEach(discordPoints -> {
+            toRemove.add(discordPoints);
+            discordPoints.save();
+        });
+        toRemove.forEach(DiscordPoints::removeFromCache);
+    };
+
     @Getter
     static final List<LogObject> toLog = new LinkedList<>();
 

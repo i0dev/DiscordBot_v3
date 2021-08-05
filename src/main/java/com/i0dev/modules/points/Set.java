@@ -21,6 +21,7 @@ public class Set extends SuperDiscordCommand {
         if ((amt = FindUtil.getInteger(e.getOffsetSplit().get(2), e.getMessage())) == null) return;
         DPlayer dPlayer = DPlayer.getDPlayer(user.getIdLong());
         dPlayer.increase(DPlayerFieldType.POINTS, amt);
+        DiscordPoints.getDiscordPoints(user.getIdLong()).save();
 
         e.reply(EmbedMaker.builder().content("You have set {tag}'s points to `{points}`").user(user).embedColor(EmbedColor.SUCCESS).build());
         LogUtil.logDiscord(EmbedMaker.builder().content("{authorTag} set `{tag}'s` points to `{points}`").author(e.getAuthor()).user(user).build());

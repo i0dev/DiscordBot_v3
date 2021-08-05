@@ -1,7 +1,7 @@
 package com.i0dev.modules.points;
 
-import com.i0dev.modules.linking.*;
 import com.i0dev.object.*;
+import com.i0dev.utility.SQLUtil;
 import lombok.SneakyThrows;
 
 public class PointsManager extends AdvancedDiscordCommand {
@@ -15,6 +15,7 @@ public class PointsManager extends AdvancedDiscordCommand {
         addSuperCommand("info", new SuperCommand(s("info"), Permission.none(), Info.class));
         addSuperCommand("leaderboard", new SuperCommand(s("leaderboard"), Permission.none(), Leaderboard.class));
 
+        SQLUtil.makeTable(DiscordPoints.class);
 
         addOption("imageSent", 3.0D);
         addOption("videoSent", 5.0D);

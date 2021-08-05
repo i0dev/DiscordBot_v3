@@ -27,6 +27,8 @@ public class Pay extends SuperDiscordCommand {
 
         dPlayer.increase(DPlayerFieldType.POINTS, amt);
         e.getDPlayer().decrease(DPlayerFieldType.POINTS, amt);
+        DiscordPoints.getDiscordPoints(user.getIdLong()).save();
+        DiscordPoints.getDiscordPoints(e.getAuthorIdLong()).save();
 
         e.reply(EmbedMaker.builder().user(e.getAuthor()).embedColor(EmbedColor.SUCCESS).content("You have paid {tag} `{amt}` points".replace("{amt}", amt + "")).build());
     }
