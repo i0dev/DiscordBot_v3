@@ -29,6 +29,13 @@ public class MiscConfig {
     List<Long> autoMod_channels = new ArrayList<>();
     List<String> autoMod_words = new ArrayList<>(Arrays.asList("discord.gg", "nigger", "nigga", "faggot", "n1gger", "n1gga"));
 
+    long autoMod_PingsPerMessageLimit = 15;
+    boolean autoMod_banOnMaxPings = true;
+    boolean autoMod_deleteOnMaxPings = true;
+
+    long autoMod_SameMessageLockdownNumber = 15;
+    List<Long> autoMod_lockdownRolesToDenySendingMessages = Collections.singletonList(0L);
+
     boolean welcome_enabled = true;
     boolean welcome_pingJoin = true;
     boolean welcome_UserThumbnail = true;
