@@ -1,6 +1,7 @@
 package com.i0dev.modules.linking;
 
 import com.i0dev.object.*;
+import com.i0dev.utility.SQLUtil;
 import lombok.SneakyThrows;
 
 public class LinkManager extends AdvancedDiscordCommand {
@@ -11,6 +12,8 @@ public class LinkManager extends AdvancedDiscordCommand {
         addSuperCommand("generate", new SuperCommand(s("generate"), Permission.none(), Generate.class));
         addSuperCommand("info", new SuperCommand(s("info"), Permission.lite(), Info.class));
         addSuperCommand("remove", new SuperCommand(s("remove"), Permission.strict(), Remove.class));
+
+        SQLUtil.makeTable(LinkData.class);
 
     }
 

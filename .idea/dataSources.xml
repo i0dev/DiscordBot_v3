@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="DiscordBot.db" uuid="915dfe79-2486-411c-aa5e-5a17eefddc3e">
+    <data-source source="LOCAL" name="DiscordBot.db" uuid="df7acd6d-e958-42cc-b2b0-8d72cc6dba15">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/../../../Desktop/DiscordBot.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/../../../Desktop/DiscordBot/DiscordBot.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

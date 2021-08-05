@@ -2,6 +2,7 @@ package com.i0dev.modules.blacklist;
 
 import com.i0dev.config.CommandsConfig;
 import com.i0dev.object.*;
+import com.i0dev.utility.SQLUtil;
 import lombok.SneakyThrows;
 
 public class BlacklistManager extends AdvancedDiscordCommand {
@@ -11,6 +12,9 @@ public class BlacklistManager extends AdvancedDiscordCommand {
         addSuperCommand("remove", new SuperCommand(CommandsConfig.s("remove"), Permission.strict(), Remove.class));
         addSuperCommand("clear", new SuperCommand(CommandsConfig.s("clear"), Permission.admin(), Clear.class));
         addSuperCommand("list", new SuperCommand(CommandsConfig.s("list"), Permission.strict(), List.class));
+
+        SQLUtil.makeTable(Blacklist.class);
+
     }
 
     @SneakyThrows

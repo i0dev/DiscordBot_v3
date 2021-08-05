@@ -25,13 +25,13 @@ public class Leaderboard extends SuperDiscordCommand {
     public static void run(CommandEvent e) {
         StringBuilder msg = new StringBuilder();
 
-        List<Object> list = SQLUtil.getSortedList(DPlayer.class.getSimpleName(), "points", DPlayer.class, getOption("limit").getAsInt(), "discordID");
+        List<Object> list = SQLUtil.getSortedList(DiscordPoints.class.getSimpleName(), "points", DiscordPoints.class, getOption("limit").getAsInt(), "discordID");
         int count = 0;
         for (Object o : list) {
-            DPlayer dPlayer = (DPlayer) o;
-            if (dPlayer.getPoints() == 0) continue;
-            User user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
-            msg.append("**#").append(count + 1).append("**. *").append(user.getAsTag()).append("*: `").append(Utility.numberFormat.format(dPlayer.getPoints())).append(" points`\n");
+            DiscordPoints dPoints = (DiscordPoints) o;
+            if (dPoints.getPoints() == 0) continue;
+            User user = Bot.getJda().retrieveUserById(dPoints.getDiscordID()).complete();
+            msg.append("**#").append(count + 1).append("**. *").append(user.getAsTag()).append("*: `").append(Utility.numberFormat.format(dPoints.getPoints())).append(" points`\n");
             count++;
         }
 

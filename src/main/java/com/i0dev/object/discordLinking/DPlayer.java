@@ -1,15 +1,18 @@
 package com.i0dev.object.discordLinking;
 
+import com.i0dev.modules.blacklist.Blacklist;
+import com.i0dev.modules.linking.LinkData;
+import com.i0dev.modules.points.DiscordPoints;
 import com.i0dev.utility.LogUtil;
 import com.i0dev.utility.SQLUtil;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import net.dv8tion.jda.api.entities.ISnowflake;
-import net.dv8tion.jda.api.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -21,8 +24,6 @@ public class DPlayer {
 
     // Identifiers
     long discordID;
-    String minecraftUUID = "";
-    String minecraftIGN = "";
     long lastUpdatedMillis = System.currentTimeMillis();
     long lastRewardsClaim = 0;
     long lastBoostTime = 0;
@@ -34,7 +35,6 @@ public class DPlayer {
 
     // Values
     long ticketsClosed = 0;
-    double points = 0.0;
     long messages = 0;
     long invites = 0;
     long warnings = 0;
@@ -43,9 +43,7 @@ public class DPlayer {
     long rewardsClaimed = 0;
 
     // Statuses
-    boolean blacklisted = false;
     boolean claimedReclaim = false;
-    boolean linked = false;
 
     public DPlayer(long discordID) {
         this.discordID = discordID;
@@ -76,6 +74,55 @@ public class DPlayer {
         save();
     }
 
+    public String getMinecraftIGN() {
+        return LinkData.getLinkData(discordID).getMinecraftIGN();
+    }
+
+    public String getMinecraftUUID() {
+        return LinkData.getLinkData(discordID).getMinecraftUUID();
+    }
+
+    public boolean isLinked() {
+        return LinkData.getLinkData(discordID).isLinked();
+    }
+
+    public void setLinked(boolean linked) {
+        LinkData obj = LinkData.getLinkData(discordID);
+        obj.setLinked(linked);
+        obj.save();
+    }
+
+    public void setMinecraftIGN(String minecraftIGN) {
+        LinkData obj = LinkData.getLinkData(discordID);
+        obj.setMinecraftIGN(minecraftIGN);
+        obj.save();
+    }
+
+    public void setMinecraftUUID(String minecraftUUID) {
+        LinkData obj = LinkData.getLinkData(discordID);
+        obj.setMinecraftUUID(minecraftUUID);
+        obj.save();
+    }
+
+    public double getPoints() {
+        return DiscordPoints.getDiscordPoints(discordID).getPoints();
+    }
+
+    public void setPoints(double points) {
+        DiscordPoints obj = DiscordPoints.getDiscordPoints(discordID);
+        obj.setPoints(points);
+    }
+
+    public boolean isBlacklisted() {
+        return Blacklist.getBlacklist(discordID).isBlacklisted();
+    }
+
+    public void setBlacklisted(boolean blacklisted) {
+        Blacklist obj = Blacklist.getBlacklist(discordID);
+        obj.setBlacklisted(blacklisted);
+        obj.save();
+    }
+
     public boolean isCached() {
         return cachedUsers.contains(this);
     }
@@ -103,7 +150,8 @@ public class DPlayer {
                 break;
             case POINTS:
                 this.setPoints(this.getPoints() + value);
-                break;
+                this.used();
+                return;
             case BOOSTS:
                 this.setBoosts(this.getBoosts() + value);
                 break;
@@ -141,7 +189,8 @@ public class DPlayer {
                 break;
             case POINTS:
                 this.setPoints(this.getPoints() - value);
-                break;
+                this.used();
+                return;
             case BOOSTS:
                 this.setBoosts(this.getBoosts() - value);
                 break;
@@ -213,7 +262,7 @@ public class DPlayer {
     //
 
     @Getter
-    public static final List<DPlayer> cachedUsers = new ArrayList<>();
+    public transient static final List<DPlayer> cachedUsers = new ArrayList<>();
 
     public static void loadAll() {
         SQLUtil.getAllObjects(DPlayer.class.getSimpleName(), "discordID", DPlayer.class).forEach(o -> {
@@ -252,7 +301,7 @@ public class DPlayer {
         }).findAny().orElse(null));
     }
 
-    public static Runnable taskClearCache = () -> {
+    public transient static Runnable taskClearCache = () -> {
         long time = 1000L * 60L * 30L; // 30 minutes
         List<DPlayer> toRemove = new ArrayList<>();
         cachedUsers.stream().filter(dPlayer -> dPlayer.getLastUsedTime() + time < System.currentTimeMillis()).forEach(toRemove::add);

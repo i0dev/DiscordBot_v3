@@ -1,6 +1,7 @@
 package com.i0dev;
 
 
+import com.google.common.collect.Iterables;
 import com.i0dev.modules.linking.CommandLink;
 import com.i0dev.modules.misc.InGamePunishmentLogs;
 import com.i0dev.modules.twoFactorAuthentication.Command2fa;
@@ -19,7 +20,6 @@ public class BotPlugin extends Plugin {
         server.getPluginManager().registerCommand(this, new CommandLink("link"));
         server.getPluginManager().registerCommand(this, new Command2fa("2fa"));
         server.getPluginManager().registerListener(BotPlugin.get(), new TwoFactorAuthentication());
-
         server.getScheduler().runAsync(get(), () -> {
             try {
                 Thread.sleep(10000);
@@ -50,5 +50,6 @@ public class BotPlugin extends Plugin {
     public static BotPlugin get() {
         return instance;
     }
+
 
 }

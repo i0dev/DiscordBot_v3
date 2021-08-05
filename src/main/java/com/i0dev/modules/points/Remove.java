@@ -21,6 +21,7 @@ public class Remove extends SuperDiscordCommand {
         if ((amt = FindUtil.getInteger(e.getOffsetSplit().get(2), e.getMessage())) == null) return;
         DPlayer dPlayer = DPlayer.getDPlayer(user.getIdLong());
         dPlayer.decrease(DPlayerFieldType.POINTS, amt);
+        DiscordPoints.getDiscordPoints(user.getIdLong()).save();
 
         e.reply(EmbedMaker.builder().content("You have removed {amt} points from {tag}".replace("{amt}", amt + "")).user(user).embedColor(EmbedColor.SUCCESS).build());
         LogUtil.logDiscord(EmbedMaker.builder().content("{authorTag} removed {amt} points from {tag}".replace("{amt}", amt + "")).author(e.getAuthor()).user(user).build());
