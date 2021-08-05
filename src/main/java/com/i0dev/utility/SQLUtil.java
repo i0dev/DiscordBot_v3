@@ -2,16 +2,15 @@ package com.i0dev.utility;
 
 import com.i0dev.Bot;
 import com.i0dev.config.GeneralConfig;
+import com.i0dev.modules.points.DiscordPoints;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.jline.utils.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -123,6 +122,7 @@ public class SQLUtil {
         }
         String query = "CREATE TABLE IF NOT EXISTS " + name + " (" + toQ + ")";
         connection.prepareStatement(query).execute();
+        absenceCheck(clazz);
     }
 
     public static List<String> getColumnLines(Field field) {
@@ -152,11 +152,11 @@ public class SQLUtil {
     @SneakyThrows
     public static void updateTable(Object object, String key, String value) {
         if (!objectExists(object.getClass().getSimpleName(), key, value)) {
-            LogUtil.debug("SQL pair: [" + key + "," + value + "] did not exist. Creating now...");
+            LogUtil.debug("SQL pair: [" + key + ", " + value + "] did not exist. Creating now...");
             insertToTable(object);
             return;
         }
-        LogUtil.debug("Updating SQL pair: [" + key + "," + value + "]");
+        LogUtil.debug("Updating SQL pair: [" + key + ", " + value + "] DB: [" + object.getClass().getSimpleName() + "]");
 
         Class<?> clazz = object.getClass();
         StringBuilder toQ = new StringBuilder();
@@ -313,12 +313,11 @@ public class SQLUtil {
     @SneakyThrows
     public static List<Object> getSortedList(String table, String orderBy, Class<?> castTo, int limit, String key) {
         List<Object> ret = new ArrayList<>();
-        String query = "SELECT * FROM " + table + " ORDER BY " + orderBy + " LIMIT " + limit;
+        String query = "SELECT * FROM " + table + " ORDER BY " + orderBy + " DESC LIMIT " + limit;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
         while (resultSet.next()) {
             ret.add(getObject(key, resultSet.getString(key), castTo));
         }
-        Collections.reverse(ret);
         return ret;
     }
 
