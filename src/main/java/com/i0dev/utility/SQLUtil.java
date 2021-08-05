@@ -38,6 +38,74 @@ public class SQLUtil {
     }
 
     @SneakyThrows
+    public static void absenceCheck(Class<?> clazz) {
+        String table = clazz.getSimpleName();
+        List<String> columns = getColumns(table);
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (Modifier.isTransient(field.getModifiers())) continue;
+            field.setAccessible(true);
+            if (columns.contains(field.getName())) continue;
+            String type = "";
+            switch (field.getType().getName()) {
+                case "java.lang.Long":
+                case "long":
+                    type = "BIGINT NOT NULL DEFAULT 0";
+                    break;
+                case "java.lang.Double":
+                case "double":
+                    type = "DOUBLE(16,10) NOT NULL DEFAULT 0";
+                    break;
+                case "java.lang.String":
+                    type = "VARCHAR(300) NOT NULL DEFAULT 0";
+                    break;
+                case "java.lang.Boolean":
+                case "boolean":
+                    type = "BIT NOT NULL DEFAULT 0";
+                    break;
+                default:
+                    return;
+            }
+            LogUtil.debug("Adding column [" + field.getName() + "] to " + table + " during an absence check.");
+            String query = "ALTER TABLE " + table + " ADD COLUMN " + field.getName() + " " + type + ";";
+            Statement statement = connection.createStatement();
+            statement.execute(query);
+        }
+
+        columns = getColumns(table);
+
+        List<String> fields = new ArrayList<>();
+        Arrays.stream(clazz.getDeclaredFields()).filter(field -> !Modifier.isTransient(field.getModifiers())).forEach(field -> fields.add(field.getName()));
+        for (String column : columns) {
+            if (fields.contains(column)) continue;
+            LogUtil.debug("Removing column [" + column + "] from " + table + " during an absence check.");
+            String query = "ALTER TABLE " + table + " DROP COLUMN " + column + ";";
+            Statement statement = connection.createStatement();
+            statement.execute(query);
+        }
+    }
+
+    public static List<String> getColumns(String table) throws SQLException {
+        if (GeneralConfig.get().isUseDatabase()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SHOW COLUMNS FROM " + table + ";");
+            ResultSet set = preparedStatement.executeQuery();
+            List<String> columns = new ArrayList<>();
+            while (set.next()) {
+                columns.add(set.getString("field"));
+            }
+            return columns;
+        } else {
+            PreparedStatement preparedStatement = connection.prepareStatement("PRAGMA table_info(" + table + ");");
+            ResultSet set = preparedStatement.executeQuery();
+            List<String> columns = new ArrayList<>();
+            while (set.next()) {
+                columns.add(set.getString("name"));
+            }
+            return columns;
+        }
+    }
+
+    @SneakyThrows
     public static void makeTable(Class<?> clazz) {
         String name = clazz.getSimpleName();
         List<String> list = new ArrayList<>();

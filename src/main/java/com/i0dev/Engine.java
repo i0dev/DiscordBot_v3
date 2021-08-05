@@ -5,6 +5,7 @@ import com.i0dev.config.MiscConfig;
 import com.i0dev.modules.giveaway.Create;
 import com.i0dev.modules.giveaway.Giveaway;
 import com.i0dev.modules.giveaway.GiveawayHandler;
+import com.i0dev.modules.points.DiscordPoints;
 import com.i0dev.modules.points.PointsHandler;
 import com.i0dev.modules.points.PointsManager;
 import com.i0dev.object.LogObject;
@@ -15,11 +16,8 @@ import com.i0dev.utility.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
-import javax.rmi.CORBA.Util;
-import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,6 +44,7 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskUpdateGiveawayTimes, 15, 30, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskGiveContinuousRoles, 1, 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(taskFlushDiscordPoints, 30, 45, TimeUnit.SECONDS);
 
         executorService.scheduleAtFixedRate(DPlayer.taskClearCache, 25, 5, TimeUnit.MINUTES);
     }
@@ -186,6 +185,7 @@ public class Engine {
             LogUtil.severe("Failed to verify with authentication servers.");
             if (Bot.getJda() != null) Bot.getJda().shutdown();
             Bot.getAsyncService().shutdown();
+            PluginMessageUtil.sendMessage("bot_command", "shutdown");
         }
     };
 
