@@ -6,7 +6,7 @@
 
     <groupId>com.i0dev</groupId>
     <artifactId>DiscordBot</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <packaging>jar</packaging>
 
     <name>DiscordBot</name>
@@ -110,6 +110,7 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>LATEST</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>bungee</groupId>
@@ -138,6 +139,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>compile</scope>
             <version>LATEST</version>
         </dependency>
         <dependency>
@@ -151,6 +153,12 @@
             <version>3.12.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>LATEST</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.i0dev</groupId>

@@ -1,8 +1,6 @@
 package com.i0dev.object.discordLinking;
 
-import com.i0dev.modules.blacklist.Blacklist;
 import com.i0dev.modules.linking.LinkData;
-import com.i0dev.modules.points.DiscordPoints;
 import com.i0dev.utility.LogUtil;
 import com.i0dev.utility.SQLUtil;
 import lombok.Getter;
@@ -25,13 +23,10 @@ public class DPlayer {
     // Identifiers
     long discordID;
     long lastUpdatedMillis = System.currentTimeMillis();
-    long lastRewardsClaim = 0;
     long lastBoostTime = 0;
-    long linkedTime = 0;
 
     // Other
     long invitedByDiscordID = 0;
-    String linkCode = "";
 
     // Values
     long ticketsClosed = 0;
@@ -40,10 +35,13 @@ public class DPlayer {
     long warnings = 0;
     long boosts = 0;
     long boostCredits = 0;
-    long rewardsClaimed = 0;
 
     // Statuses
-    boolean claimedReclaim = false;
+    boolean blacklisted = false;
+
+    // Transient
+    transient String minecraftSkin = !isLinked() ? null : "https://crafatar.com/renders/body/" + getMinecraftUUID() + ".png?scale=7&overlay.png";
+
 
     public DPlayer(long discordID) {
         this.discordID = discordID;
@@ -58,10 +56,9 @@ public class DPlayer {
         return this;
     }
 
-    public DPlayer addToCache() {
+    public void addToCache() {
         getCachedUsers().add(this);
         used();
-        return this;
     }
 
     public void save() {
@@ -74,57 +71,20 @@ public class DPlayer {
         save();
     }
 
+    public LinkData getLinkData() {
+        return LinkData.getLinkData(getDiscordID());
+    }
+
     public String getMinecraftIGN() {
-        return LinkData.getLinkData(discordID).getMinecraftIGN();
+        return getLinkData().getMinecraftIGN();
     }
 
     public String getMinecraftUUID() {
-        return LinkData.getLinkData(discordID).getMinecraftUUID();
+        return getLinkData().getMinecraftUUID();
     }
 
     public boolean isLinked() {
-        return LinkData.getLinkData(discordID).isLinked();
-    }
-
-    public void setLinked(boolean linked) {
-        LinkData obj = LinkData.getLinkData(discordID);
-        obj.setLinked(linked);
-        obj.save();
-    }
-
-    public void setMinecraftIGN(String minecraftIGN) {
-        LinkData obj = LinkData.getLinkData(discordID);
-        obj.setMinecraftIGN(minecraftIGN);
-        obj.save();
-    }
-
-    public void setMinecraftUUID(String minecraftUUID) {
-        LinkData obj = LinkData.getLinkData(discordID);
-        obj.setMinecraftUUID(minecraftUUID);
-        obj.save();
-    }
-
-    public double getPoints() {
-        return DiscordPoints.getDiscordPoints(discordID).getPoints();
-    }
-
-    public void setPoints(double points) {
-        DiscordPoints obj = DiscordPoints.getDiscordPoints(discordID);
-        obj.setPoints(points);
-    }
-
-    public boolean isBlacklisted() {
-        return Blacklist.getBlacklist(discordID).isBlacklisted();
-    }
-
-    public void setBlacklisted(boolean blacklisted) {
-        Blacklist obj = Blacklist.getBlacklist(discordID);
-        obj.setBlacklisted(blacklisted);
-        obj.save();
-    }
-
-    public boolean isCached() {
-        return cachedUsers.contains(this);
+        return getLinkData().isLinked();
     }
 
     public void increase(DPlayerFieldType type, long... values) {
@@ -148,18 +108,11 @@ public class DPlayer {
             case WARNINGS:
                 this.setWarnings(this.getWarnings() + value);
                 break;
-            case POINTS:
-                this.setPoints(this.getPoints() + value);
-                this.used();
-                return;
             case BOOSTS:
                 this.setBoosts(this.getBoosts() + value);
                 break;
             case BOOST_CREDITS:
                 this.setBoostCredits(this.getBoostCredits() + value);
-                break;
-            case CLAIMED_REWARDS:
-                this.setRewardsClaimed(this.getRewardsClaimed() + value);
                 break;
         }
         this.save();
@@ -187,18 +140,11 @@ public class DPlayer {
             case MESSAGES:
                 this.setMessages(this.getMessages() - value);
                 break;
-            case POINTS:
-                this.setPoints(this.getPoints() - value);
-                this.used();
-                return;
             case BOOSTS:
                 this.setBoosts(this.getBoosts() - value);
                 break;
             case BOOST_CREDITS:
                 this.setBoostCredits(this.getBoostCredits() - value);
-                break;
-            case CLAIMED_REWARDS:
-                this.setRewardsClaimed(this.getRewardsClaimed() - value);
                 break;
         }
         this.save();
@@ -215,17 +161,11 @@ public class DPlayer {
             case WARNINGS:
                 this.setWarnings(0);
                 break;
-            case POINTS:
-                this.setPoints(0);
-                break;
             case BOOSTS:
                 this.setBoosts(0);
                 break;
             case BOOST_CREDITS:
                 this.setBoostCredits(0);
-                break;
-            case CLAIMED_REWARDS:
-                this.setRewardsClaimed(0);
                 break;
             case MESSAGES:
                 this.setMessages(0);
@@ -233,28 +173,28 @@ public class DPlayer {
             case BLACKLISTED:
                 this.setBlacklisted(false);
                 break;
-            case RECLAIM:
-                this.setClaimedReclaim(false);
-                break;
             case LINKED:
-                this.setLinkCode("");
-                this.setLinkedTime(0);
-                this.setLinked(false);
-                this.setMinecraftUUID("");
-                this.setMinecraftIGN("");
+                LinkData obj = LinkData.getLinkData(discordID);
+                obj.setLinkCode("");
+                obj.setLinkedTime(0);
+                obj.setLinked(false);
+                obj.setMinecraftUUID("");
+                obj.setMinecraftIGN("");
+                obj.save();
                 break;
         }
         this.save();
     }
 
     public void link(String code, String ign, String UUID) {
-        setLinkCode(code);
-        setMinecraftUUID(UUID);
-        setLinkedTime(System.currentTimeMillis());
-        setLinked(true);
-        setMinecraftIGN(ign);
-        save();
-        used();
+        LinkData obj = LinkData.getLinkData(discordID);
+        obj.setLinked(true);
+        obj.setLinkCode(code);
+        obj.setMinecraftUUID(UUID);
+        obj.setLinkedTime(System.currentTimeMillis());
+        obj.setLinked(true);
+        obj.setMinecraftIGN(ign);
+        obj.save();
     }
 
     //
@@ -306,6 +246,7 @@ public class DPlayer {
         List<DPlayer> toRemove = new ArrayList<>();
         cachedUsers.stream().filter(dPlayer -> dPlayer.getLastUsedTime() + time < System.currentTimeMillis()).forEach(toRemove::add);
         LogUtil.debug("Updated the DPlayer Cache and removed " + toRemove.size() + " cached objects, with a remaining total of: " + (cachedUsers.size() - toRemove.size()));
+        toRemove.forEach(DPlayer::save);
         toRemove.forEach(DPlayer::removeFromCache);
     };
 
