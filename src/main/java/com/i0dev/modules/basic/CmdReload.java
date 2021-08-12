@@ -7,7 +7,7 @@ import com.i0dev.object.DiscordCommand;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.utility.ConfigUtil;
 import com.i0dev.utility.EmbedMaker;
-import com.i0dev.utility.PluginMessageUtil;
+import com.i0dev.utility.MessageUtil;
 
 public class CmdReload extends DiscordCommand {
 
@@ -15,7 +15,7 @@ public class CmdReload extends DiscordCommand {
     public static void run(CommandEvent e) {
         ConfigUtil.reloadConfig();
         Bot.registerCommands();
-        PluginMessageUtil.sendMessage("bot_command","reload");
+        MessageUtil.sendPluginMessage("bot_command","reload");
         e.reply(EmbedMaker.builder().content("You have reloaded the configuration.").embedColor(EmbedColor.SUCCESS).build());
     }
 }
