@@ -23,6 +23,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +47,8 @@ public class Bot {
     public static ScheduledExecutorService asyncService = Executors.newScheduledThreadPool(Math.max(Runtime.getRuntime().availableProcessors() / 2, 10));
     @Getter
     public static Map<Class<?>, String> configMap = new HashMap<>();
+    @Getter
+    public static Logger logger = LoggerFactory.getLogger(Bot.class.getName());
 
 
     @SneakyThrows
@@ -53,6 +57,7 @@ public class Bot {
         Utility.createFile(getConfigPath());
         Utility.createFile(getMiscConfigPath());
         Utility.createDirectory(getTicketLogsPath());
+        Utility.createDirectory(getStoragePath());
         configMap.put(CommandsConfig.class, getBasicConfigPath());
         configMap.put(GeneralConfig.class, getConfigPath());
         configMap.put(MiscConfig.class, getMiscConfigPath());
@@ -63,6 +68,7 @@ public class Bot {
         registerCommands();
         registerListeners();
         Engine.run();
+
         System.out.println("Successfully loaded DiscordBot");
     }
 
