@@ -19,7 +19,7 @@ public class EmbedMaker {
 
     String title, content, footer, footerImg, image, thumbnail, authorName, authorURL, authorImg;
 
-    User mentioned, author, user;
+    User author, user;
 
     MessageEmbed.Field[] fields;
 
