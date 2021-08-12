@@ -48,7 +48,7 @@ public class InGamePunishmentLogs implements Listener {
                 msg.append("Punished IGN: `").append(APIUtil.getIGNFromUUID(e.getUuid())).append("`\n");
                 msg.append("Punished UUID: `").append(e.getUuid()).append("`\n");
                 msg.append("Staff IGN: `").append(e.getExecutorName()).append("`\n");
-                msg.append("Reason: `").append(e.getReason()).append("`\n");
+                msg.append("Reason: `").append(e.getReason().equals("") ? "No Reason Provided" : e.getReason()).append("`\n");
                 msg.append("Duration: `").append(e.getDurationString()).append("`\n");
 
                 LogUtil.logDiscord(EmbedMaker.builder()
@@ -74,7 +74,7 @@ public class InGamePunishmentLogs implements Listener {
         msg.append("Punished IGN: `").append(e.getPlayerIGN()).append("`\n");
         msg.append("Punished UUID: `").append(uuid).append("`\n");
         msg.append("Staff IGN: `").append(e.getStaffIGN()).append("`\n");
-        msg.append("Reason: `").append(e.getReason()).append("`\n");
+        msg.append("Reason: `").append(e.getReason().equals("") ? "No Reason Provided" : e.getReason()).append("`\n");
         msg.append("Duration: `").append("Forever").append("`\n");
 
         LogUtil.logDiscord(EmbedMaker.builder()

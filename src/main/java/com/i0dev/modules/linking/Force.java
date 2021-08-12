@@ -19,12 +19,15 @@ public class Force extends SuperDiscordCommand {
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
         DPlayer dPlayer = DPlayer.getDPlayer(user);
         String ign = e.getOffsetSplit().get(2);
-
+        if (APIUtil.getUUIDFromIGN(ign) == null) {
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("That ign does not exist!").build());
+            return;
+        }
         dPlayer.link("forced", ign, APIUtil.getUUIDFromIGN(ign).toString());
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("You forced :link: `{tag}` to the ign `{ign}`").user(user).build());
 
         LogUtil.logDiscord(EmbedMaker.builder().user(user).content("{authorTag} forced linked `{tag}` to the ign `{ign}`").author(e.getAuthor()).build());
-//        RoleRefreshHandler.RefreshUserRank(DPlayerEngine.getObject(MentionedUser.getIdLong()));
+        RoleRefreshHandler.RefreshUserRank(dPlayer);
 
     }
 }
