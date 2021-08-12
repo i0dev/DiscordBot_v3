@@ -40,6 +40,8 @@ public class Bot {
     @Setter
     public static boolean pluginMode = false;
     @Getter
+    public static long startupTime = 0;
+    @Getter
     public static JDA jda = null;
     @Getter
     public static List<BasicCommand> registeredCommands;
@@ -53,6 +55,7 @@ public class Bot {
 
     @SneakyThrows
     public static void main(String[] args) {
+        if (startupTime == 0) startupTime = System.currentTimeMillis();
         Utility.createFile(getBasicConfigPath());
         Utility.createFile(getConfigPath());
         Utility.createFile(getMiscConfigPath());
