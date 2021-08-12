@@ -2,16 +2,14 @@ package com.i0dev.utility;
 
 import com.google.gson.*;
 import com.i0dev.Bot;
-import com.i0dev.object.AdvancedCommand;
-import com.i0dev.object.AdvancedDiscordCommand;
 import lombok.SneakyThrows;
-import org.json.simple.JSONObject;
+import org.apache.logging.log4j.core.util.IOUtils;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class ConfigUtil {
 
@@ -60,14 +58,16 @@ public class ConfigUtil {
     @SneakyThrows
     public static void load(Class<?> clazz, String path) {
         JsonObject savedObject = getJsonObject(path);
-        Gson gson = new Gson();
-        Object config = gson.fromJson(savedObject, clazz);
+        String configString = IOUtils.toString(Files.newBufferedReader(Paths.get(path)));
+        Object config = new Gson().fromJson(savedObject, clazz);
         Field field = clazz.getDeclaredField("instance");
         field.setAccessible(true);
-        if (config == null) {
+        if ("".equals(configString)) {
             save(field.get(new Object()), path);
             return;
         }
+
+        if (config == null) throw new IOException("The config file: [" + path + "] is not in valid json format.");
         field.set(new Object(), config);
         save(config, path);
         LogUtil.log("Loaded config: " + clazz.getSimpleName() + " from storage.");

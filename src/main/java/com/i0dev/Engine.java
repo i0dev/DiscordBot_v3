@@ -90,6 +90,31 @@ public class Engine {
         }
     };
 
+
+    static Runnable taskBackupConfig = () -> {
+        //month-day-year
+        //8-6-2021
+        String date = ZonedDateTime.now().getMonthValue() + "-" + ZonedDateTime.now().getDayOfMonth() + "-" + ZonedDateTime.now().getYear();
+        try {
+            File commandsFile = new File(Bot.getStoragePath() + "/" + "CommandsConfigBackup-" + date);
+            if (!commandsFile.exists()) {
+                Files.write(Paths.get(commandsFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBasicConfigPath()).toString().getBytes());
+            }
+
+            File generalFile = new File(Bot.getStoragePath() + "/" + "GeneralConfigBackup-" + date);
+            if (!generalFile.exists()) {
+                Files.write(Paths.get(generalFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getConfigPath()).toString().getBytes());
+            }
+
+            File miscFile = new File(Bot.getStoragePath() + "/" + "MiscConfigBackup-" + date);
+            if (!miscFile.exists()) {
+                Files.write(Paths.get(miscFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getMiscConfigPath()).toString().getBytes());
+            }
+        } catch (Exception ignored) {
+
+        }
+    };
+
     static Runnable taskExecuteMemberCountUpdate = () -> {
         if (!MiscConfig.instance.memberCount_enabled) return;
         GuildChannel channel = Bot.getJda().getGuildChannelById(MiscConfig.get().getMemberCount_channel());

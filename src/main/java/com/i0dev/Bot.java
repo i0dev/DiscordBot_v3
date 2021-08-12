@@ -168,6 +168,10 @@ public class Bot {
         return pluginMode ? getDataFolder() + "/ticketLogs/" : "DiscordBot/ticketLogs/";
     }
 
+    public static String getStoragePath() {
+        return pluginMode ? getDataFolder() + "/storage/" : "DiscordBot/storage/";
+    }
+
     public static String getMainFolder() {
         return pluginMode ? getDataFolder() + "" : "DiscordBot";
     }
