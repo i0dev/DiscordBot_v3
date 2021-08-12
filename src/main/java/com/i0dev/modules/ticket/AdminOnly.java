@@ -22,7 +22,7 @@ public class AdminOnly extends SuperDiscordCommand {
     public static void load() {
         addOption("adminOnlySeeRoles", ConfigUtil.ObjectToJsonArr(adminOnlySeeRoles));
         adminOnlySeeRoles = new ArrayList<>();
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(AdminOnly.class).commandID() + ".options.adminOnlySeeRoles", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> adminOnlySeeRoles.add(jsonElement.getAsLong()));
+        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".parts.adminOnly.options.adminOnlySeeRoles", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> adminOnlySeeRoles.add(jsonElement.getAsLong()));
     }
 
     @CommandData(commandID = "adminOnly", identifier = "Ticket AdminOnly", messageLength = 1, parentClass = TicketManager.class)
