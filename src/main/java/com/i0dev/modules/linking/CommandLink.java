@@ -53,9 +53,12 @@ public class CommandLink extends Command {
                 dPlayer.link(code, commandSender.getName(), commandSender.getUniqueId().toString());
                 MessageUtil.sendMessageInGame(commandSender, "&7You have linked yourself to the discord tag: &c{tag}".replace("{tag}", codeLinker.getUser().getAsTag()));
                 LogUtil.logDiscord(EmbedMaker.builder().content("{tag} is now linked to the ign: `{ign}`").user(codeLinker.getUser()).build());
-                //    RoleRefreshHandler.RefreshUserRank(dPlayer);
+                RoleRefreshHandler.RefreshUserRank(dPlayer);
+                CodeCache.getInstance().getFrom_Discord_cache().remove(codeLinker);
+
             } else
                 MessageUtil.sendMessageInGame(commandSender, "&7You are already linked to the discord tag &c{tag}".replace("{tag}", Bot.getJda().retrieveUserById(preDPlayer.getDiscordID()).complete().getAsTag()));
+
             return;
         }
 

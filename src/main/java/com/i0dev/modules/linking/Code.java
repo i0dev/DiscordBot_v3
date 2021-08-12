@@ -2,6 +2,7 @@ package com.i0dev.modules.linking;
 
 import com.i0dev.object.*;
 import com.i0dev.object.discordLinking.CodeCache;
+import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.object.discordLinking.From_IngameCodeLinker;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.LogUtil;
@@ -29,8 +30,8 @@ public class Code extends SuperDiscordCommand {
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("You have linked yourself to the ign: `{ign}`").user(e.getAuthor()).build());
 
         LogUtil.logDiscord(EmbedMaker.builder().content("{tag} is now linked to the ign: `{ign}`").user(e.getAuthor()).build());
-
-        //   RoleRefreshHandler.RefreshUserRank(dPlayer);
+        CodeCache.getInstance().getFrom_Ingame_cache().remove(codeLinker);
+        RoleRefreshHandler.RefreshUserRank(DPlayer.getDPlayer(e.getAuthor()));
 
     }
 }

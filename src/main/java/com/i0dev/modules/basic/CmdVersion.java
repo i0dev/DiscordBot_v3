@@ -16,9 +16,9 @@ public class CmdVersion extends DiscordCommand {
     public static void load() {
         StringBuilder msg = new StringBuilder();
         msg.append("Prefixes: `").append(Utility.FormatListStringComma(GeneralConfig.get().getPrefixes())).append("`\n");
-        msg.append("Bot Author: ").append("`i0#0001`").append("\n");
-        msg.append("Bot Version: `").append("{DiscordBotVersion}").append("`\n");
-        msg.append("Plugin Mode: `").append(Bot.isPluginMode() ? "Enabled" : "Disabled").append("`\n");
+        msg.append("Bot Author: ").append("`{botAuthor}`").append("\n");
+        msg.append("Bot Version: `").append("{version}").append("`\n");
+        msg.append("Plugin Mode: `").append("{pluginMode}").append("`\n");
 
         message = EmbedMaker.builder()
                 .authorName("DiscordBot Information")

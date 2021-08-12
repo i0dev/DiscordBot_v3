@@ -3,8 +3,11 @@ package com.i0dev.utility;
 import com.i0dev.Bot;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.List;
 
 public class MessageUtil {
@@ -47,6 +50,23 @@ public class MessageUtil {
             if (message != null)
                 CommandEvent.replyStatic(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Failed to send a direct message to you. Please make sure they are enabled.").build(), message);
             return null;
+        }
+    }
+
+    @SneakyThrows
+    public static void sendPluginMessage(String specialChannel, String data) {
+        if (Bot.pluginMode) {
+            com.google.common.io.ByteArrayDataOutput out = com.google.common.io.ByteStreams.newDataOutput();
+            out.writeUTF("Forward");
+            out.writeUTF("ALL");
+            out.writeUTF(specialChannel);
+            ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+            DataOutputStream msgout = new DataOutputStream(msgbytes);
+            msgout.writeUTF(data);
+            out.writeShort(msgbytes.toByteArray().length);
+            out.write(msgbytes.toByteArray());
+            LogUtil.log("Sent Plugin message: [" + data + "]");
+            com.i0dev.BotPlugin.get().getProxy().getServersCopy().forEach((s, serverInfo) -> serverInfo.sendData("BungeeCord", out.toByteArray()));
         }
     }
 

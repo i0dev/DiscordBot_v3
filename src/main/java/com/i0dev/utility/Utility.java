@@ -59,6 +59,21 @@ public class Utility {
         return ret;
     }
 
+    public static boolean hasRole(User user, List<Long> roleIDS) {
+        List<Role> roles = new ArrayList<>();
+        getAllowedGuilds().forEach(guild -> {
+            Member member = guild.getMember(user);
+            if (member == null) return;
+            roles.addAll(member.getRoles());
+        });
+        for (long roleID : roleIDS) {
+            Role toRole = Bot.getJda().getRoleById(roleID);
+            if (toRole == null) continue;
+            if (roles.contains(toRole)) return true;
+        }
+        return false;
+    }
+
     public static Guild.Ban getBan(Guild guild, User user) {
         try {
             return guild.retrieveBan(user).complete();
@@ -66,7 +81,6 @@ public class Utility {
             return null;
         }
     }
-
 
 
     @SneakyThrows
@@ -462,25 +476,6 @@ public class Utility {
         }
         return r;
     }
-
-//    public static String getFactionName(DPlayer dPlayer) {
-//        String uid = dPlayer..getMinecraftUUID();
-//        UUID uuid = uid.equals("") ? null : UUID.fromString(uid);
-//        if (uuid == null) return "";
-//        org.bukkit.entity.Player p = org.bukkit.Bukkit.getPlayer(uuid);
-//        if (p == null) return "";
-//        com.massivecraft.factions.entity.Faction f = com.massivecraft.factions.entity.MPlayer.get(p).getFaction();
-//        return f.isNone() ? "Wilderness" : f.getName();
-//    }
-//
-//    public static String getPrefix(DPlayer dPlayer) {
-//        UUID uuid = dPlayer..getMinecraftUUID().equals("") ? null : UUID.fromString(dPlayer..getMinecraftUUID());
-//        if (uuid == null) return "";
-//        org.bukkit.entity.Player p = org.bukkit.Bukkit.getPlayer(uuid);
-//        if (p == null) return "";
-//        com.massivecraft.factions.entity.Faction f = com.massivecraft.factions.entity.MPlayer.get(p).getFaction();
-//        return f.isNone() ? "" : com.massivecraft.factions.entity.MPlayer.get(p).getRole().getPrefix();
-//    }
 
     public static boolean isUUID(String uid) {
         try {

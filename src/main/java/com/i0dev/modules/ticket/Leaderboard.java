@@ -1,7 +1,6 @@
 package com.i0dev.modules.ticket;
 
 import com.i0dev.Bot;
-import com.i0dev.modules.points.PointsManager;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;

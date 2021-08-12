@@ -1,5 +1,6 @@
 package com.i0dev.modules.basic;
 
+import com.i0dev.Bot;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.DiscordCommand;
@@ -24,17 +25,18 @@ public class CmdProfile extends DiscordCommand {
         DPlayer dPlayer = DPlayer.getDPlayer(user.getIdLong());
 
         StringBuilder bot = new StringBuilder();
-        bot.append("Tickets Closed: ").append("`{mentionedUserTicketsClosed}`").append("\n");
-        bot.append("Invites: ").append("`{mentionedUserInviteCount}`").append("\n");
-        bot.append("Warnings: ").append("`{mentionedUserWarnCount}`").append("\n");
-        bot.append("Blacklisted: ").append("`{mentionedUserIsBlacklisted}`").append("\n");
-        bot.append("Invited By: ").append("`{mentionedUserInvitedByTag}`").append("\n");
-        bot.append("Linked IGN: ").append("`{mentionedUserLinkedIGN}`").append("\n");
-        bot.append("Boosts: ").append("`{mentionedUserBoostCount}`").append("\n");
-        bot.append("Points: ").append("`{mentionedUserPointsCount}`").append("\n");
-        bot.append("Boost Credits: ").append("`{mentionedUserBoostCredits}`").append("\n");
-        bot.append("Rewards Claimed: ").append("`{mentionedUserRewardsClaimed}`").append("\n");
-        bot.append("Claimed Reclaim: ").append("`{mentionedUserHasReclaim}`").append("\n");
+        bot.append("Tickets Closed: ").append("`{ticketsClosed}`").append("\n");
+        bot.append("Invites: ").append("`{invites}`").append("\n");
+        bot.append("Warnings: ").append("`{warnings}`").append("\n");
+        bot.append("Blacklisted: ").append("`{blacklisted}`").append("\n");
+        User invitedBy = null;
+        if (dPlayer.getInvitedByDiscordID() != 0) {
+            invitedBy = Bot.getJda().retrieveUserById(dPlayer.getInvitedByDiscordID()).complete();
+        }
+        bot.append("Invited By: `").append(invitedBy == null ? "Unkown" : invitedBy.getAsTag()).append("`\n");
+        bot.append("Linked IGN: ").append("`{ign}`").append("\n");
+        bot.append("Boosts: ").append("`{boosts}`").append("\n");
+        bot.append("Boost Credits: ").append("`{boostCredits}`").append("\n");
 
         StringBuilder general = new StringBuilder();
         general.append("Created Date: ").append("`{timeCreated}`").append("\n");
@@ -56,8 +58,7 @@ public class CmdProfile extends DiscordCommand {
                 .authorName("{tag}'s User Profile")
                 .authorImg(user.getEffectiveAvatarUrl())
                 .user(user)
-                .thumbnail("https://crafatar.com/renders/body/" + (dPlayer.getMinecraftUUID().equals("") ? "ec561538-f3fd-461d-aff5-086b22154bce" : dPlayer.getMinecraftUUID()))
-                .mentioned(user)
+                .thumbnail("https://crafatar.com/renders/body/" + (dPlayer.getMinecraftUUID().equals("") ? "ec561538-f3fd-461d-aff5-086b22154bce" : dPlayer.getMinecraftUUID()) + "?scale=7&overlay")
                 .build());
     }
 

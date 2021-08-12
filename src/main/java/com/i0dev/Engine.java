@@ -5,9 +5,8 @@ import com.i0dev.config.MiscConfig;
 import com.i0dev.modules.giveaway.Create;
 import com.i0dev.modules.giveaway.Giveaway;
 import com.i0dev.modules.giveaway.GiveawayHandler;
-import com.i0dev.modules.points.DiscordPoints;
-import com.i0dev.modules.points.PointsHandler;
-import com.i0dev.modules.points.PointsManager;
+import com.i0dev.modules.linking.LinkData;
+import com.i0dev.modules.linking.RoleRefreshHandler;
 import com.i0dev.object.LogObject;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
@@ -18,14 +17,13 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import net.dv8tion.jda.api.entities.*;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +34,6 @@ public class Engine {
         ScheduledExecutorService executorService = Bot.getAsyncService();
         executorService.scheduleAtFixedRate(taskExecuteMemberCountUpdate, 1, 2, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskUpdateDPlayerCache, 1, 1, TimeUnit.HOURS);
-        executorService.scheduleAtFixedRate(taskPointsCheckVoiceChannels, 1, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskExecuteGiveaways, 1, 10, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskAppendToFile, 1, 10, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskUpdateActivity, 1, 30, TimeUnit.SECONDS);
@@ -44,7 +41,7 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskUpdateGiveawayTimes, 15, 30, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskGiveContinuousRoles, 1, 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(taskFlushDiscordPoints, 30, 45, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(taskBackupConfig, 1, 2 * 60, TimeUnit.MINUTES);
 
         executorService.scheduleAtFixedRate(DPlayer.taskClearCache, 25, 5, TimeUnit.MINUTES);
     }
@@ -126,12 +123,14 @@ public class Engine {
         SQLUtil.getAllObjects(DPlayer.class.getSimpleName(), "discordID", DPlayer.class).stream().filter(o -> ((DPlayer) o).isLinked()).forEach(o -> {
             DPlayer dPlayer = (DPlayer) o;
 
-            //refresh lp role stuff
+            RoleRefreshHandler.RefreshUserRank(dPlayer);
 
             if (dPlayer.getLastUpdatedMillis() + 259200000 < System.currentTimeMillis()) return;
             String ign = APIUtil.getIGNFromUUID(dPlayer.getMinecraftUUID());
             if (ign == null) return;
-            dPlayer.setMinecraftIGN(ign);
+            LinkData linkData = LinkData.getLinkData(dPlayer.getDiscordID());
+            linkData.setMinecraftIGN(ign);
+            linkData.save();
             dPlayer.setLastUpdatedMillis(System.currentTimeMillis());
             dPlayer.save();
         });
@@ -141,25 +140,6 @@ public class Engine {
         SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> !((Giveaway) o).isEnded()).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
     };
 
-    static Runnable taskPointsCheckVoiceChannels = () -> {
-        Map<Member, Long> voiceChannelCache = PointsHandler.getVoiceChannelCache();
-        if (voiceChannelCache.isEmpty()) return;
-        List<Member> toRemove = new ArrayList<>();
-        voiceChannelCache.forEach((member, time) -> {
-            if (member == null || member.getVoiceState() == null || member.getVoiceState().getChannel() == null || member.getUser().isBot()) {
-                toRemove.add(member);
-            } else {
-                double voiceChannelSeconds = PointsManager.getOption("voiceChannelSeconds", PointsManager.class).getAsDouble();
-                double voiceChannelXSecondsPoints = PointsManager.getOption("voiceChannelXSecondsPoints", PointsManager.class).getAsDouble();
-                if (System.currentTimeMillis() >= time + (voiceChannelSeconds * 1000)) {
-                    DPlayer dpLayer = DPlayer.getDPlayer(member);
-                    dpLayer.setPoints(dpLayer.getPoints() + voiceChannelXSecondsPoints);
-                    voiceChannelCache.put(member, System.currentTimeMillis());
-                }
-            }
-        });
-        toRemove.forEach(voiceChannelCache::remove);
-    };
 
     static Runnable taskUpdateGiveawayTimes = () -> {
         SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> {
@@ -191,7 +171,7 @@ public class Engine {
     };
 
     static Runnable taskUpdateActivity = () -> {
-        String activity = PlaceholderUtil.convert(GeneralConfig.get().getActivity(), null, null, null);
+        String activity = PlaceholderUtil.convert(GeneralConfig.get().getActivity(), null, null);
         switch (GeneralConfig.get().activityType.toLowerCase()) {
             case "watching":
                 Bot.getJda().getPresence().setActivity(Activity.watching(activity));
@@ -210,23 +190,10 @@ public class Engine {
             LogUtil.severe("Failed to verify with authentication servers.");
             if (Bot.getJda() != null) Bot.getJda().shutdown();
             Bot.getAsyncService().shutdown();
-            PluginMessageUtil.sendMessage("bot_command", "shutdown");
+            MessageUtil.sendPluginMessage("bot_command", "shutdown");
         }
     };
 
-
-    static Runnable taskFlushDiscordPoints = () -> {
-        List<DiscordPoints> toRemove = new ArrayList<>();
-        DiscordPoints.getCachedPoints().stream().filter(discordPoints -> {
-            DiscordPoints fromSQL = (DiscordPoints) SQLUtil.getObject("discordID", discordPoints.getDiscordID() + "", DiscordPoints.class);
-            if (fromSQL == null) return false;
-            return fromSQL.getPoints() != discordPoints.getPoints();
-        }).forEach(discordPoints -> {
-            toRemove.add(discordPoints);
-            discordPoints.save();
-        });
-        toRemove.forEach(DiscordPoints::removeFromCache);
-    };
 
     @Getter
     static final List<LogObject> toLog = new LinkedList<>();

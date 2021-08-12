@@ -41,7 +41,6 @@ public class CommandsConfig {
     BasicCommand cmd_members = new BasicCommand(s("members"), Permission.none());
     BasicCommand cmd_profile = new BasicCommand(s("profile"), Permission.none());
     BasicCommand cmd_reload = new BasicCommand(s("reload"), Permission.strict());
-    BasicCommand cmd_rewards = new BasicCommand(s("rewards"), Permission.none());
     BasicCommand cmd_roleInfo = new BasicCommand(s("roleInfo"), Permission.none());
     BasicCommand cmd_roles = new BasicCommand(s("roles"), Permission.none());
     BasicCommand cmd_serverInfo = new BasicCommand(s("serverInfo"), Permission.none());
@@ -71,7 +70,6 @@ public class CommandsConfig {
     AdvancedCommand cmd_blacklist = new AdvancedCommand(s("blacklist"), Permission.strict());
     AdvancedCommand cmd_invite = new AdvancedCommand(s("invite"), Permission.none());
     AdvancedCommand cmd_link = new AdvancedCommand(s("link"), Permission.none());
-    AdvancedCommand cmd_points = new AdvancedCommand(s("points"), Permission.none());
     AdvancedCommand cmd_movement = new AdvancedCommand(s("movement"), Permission.strict());
     AdvancedCommand cmd_mute = new AdvancedCommand(s("mute"), Permission.lite());
     AdvancedCommand cmd_suggestion = new AdvancedCommand(s("suggestion"), Permission.none());

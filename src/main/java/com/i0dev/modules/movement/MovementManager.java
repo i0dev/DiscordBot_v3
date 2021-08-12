@@ -20,7 +20,6 @@ import java.util.List;
 public class MovementManager extends AdvancedDiscordCommand {
 
     public static void load() {
-        addSuperCommand("assign", new SuperCommand(s("assign"), Permission.strict(), Assign.class));
         addSuperCommand("demote", new SuperCommand(s("demote"), Permission.strict(), Demote.class));
         addSuperCommand("promote", new SuperCommand(s("promote"), Permission.strict(), Promote.class));
         addSuperCommand("remove", new SuperCommand(s("remove"), Permission.strict(), Remove.class));

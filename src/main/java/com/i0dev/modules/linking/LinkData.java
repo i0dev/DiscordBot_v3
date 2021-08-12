@@ -1,6 +1,5 @@
 package com.i0dev.modules.linking;
 
-import com.i0dev.modules.points.DiscordPoints;
 import com.i0dev.utility.SQLUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +17,8 @@ public class LinkData {
     String minecraftIGN = "";
     String minecraftUUID = "";
     boolean linked = false;
+    long linkedTime = 0;
+    String linkCode = "";
 
 
     public void save() {
@@ -28,8 +29,7 @@ public class LinkData {
         LinkData obj;
         obj = (LinkData) SQLUtil.getObject("discordID", discordID + "", LinkData.class);
         if (obj == null)
-            obj = new LinkData(discordID, "", "", false);
-        obj.save();
+            obj = new LinkData(discordID, "", "", false, 0, "");
         return obj;
     }
 

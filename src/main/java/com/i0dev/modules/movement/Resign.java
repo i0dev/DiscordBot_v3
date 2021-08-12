@@ -24,14 +24,13 @@ public class Resign extends SuperDiscordCommand {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).user(user).content("{tag} is not currently a staff member.").build());
             return;
         }
-
+        DPlayer dPlayer = DPlayer.getDPlayer(user);
         Role currentParentRole = MovementManager.getParentStaff(member);
         MovementManager.removeOldRoles(member, Long.valueOf(currentParentRole.getId()));
-        NicknameUtil.modifyNickname(user, "");
+        NicknameUtil.modifyNicknameGlobally(user, "");
 
-        String thumbnail = DPlayer.getDPlayer(user).getMinecraftUUID().equals("") ? null : "https://crafatar.com/renders/body/" + DPlayer.getDPlayer(user).getMinecraftUUID();
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You have resigned {tag}").user(user).build());
-        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(thumbnail).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Resignation").content("**{tag}** has resigned from the staff team.").build());
+        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Resignation").content("**{tag}** has resigned from the staff team.").build());
 
     }
 }

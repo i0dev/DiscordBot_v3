@@ -1,7 +1,6 @@
 package com.i0dev.modules.invite;
 
 import com.i0dev.config.MiscConfig;
-import com.i0dev.modules.points.PointsManager;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.object.discordLinking.DPlayerFieldType;
@@ -17,7 +16,6 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -38,7 +36,6 @@ public class InviteHandler extends ListenerAdapter {
                 cachedInvite.incrementUses();
 
                 DPlayer inviter = DPlayer.getDPlayer(retrievedInvite.getInviter());
-                inviter.increase(DPlayerFieldType.POINTS, PointsManager.getOption("inviteUser", PointsManager.class).getAsLong());
                 inviter.increase(DPlayerFieldType.INVITES);
 
                 DPlayer joined = DPlayer.getDPlayer(e.getMember());

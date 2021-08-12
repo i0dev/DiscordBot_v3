@@ -11,7 +11,6 @@ import com.i0dev.utility.NicknameUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import org.json.simple.JSONObject;
 
 public class Demote extends SuperDiscordCommand {
 
@@ -38,13 +37,13 @@ public class Demote extends SuperDiscordCommand {
         MovementManager.removeOldRoles(member, Long.valueOf(currentParentRole.getId()));
         MovementManager.giveNewRoles(member, Long.valueOf(previousRole.getId()));
 
+        DPlayer dPlayer = DPlayer.getDPlayer(user);
+
         MovementObject previousRoleObject = MovementManager.getPreviousRoleObject(currentParentRole);
-        NicknameUtil.modifyNickname(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", DPlayer.getDPlayer(user).isLinked() ? DPlayer.getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", previousRoleObject.getDisplayName()));
+        NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? DPlayer.getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", previousRoleObject.getDisplayName()));
 
-
-        String thumbnail = DPlayer.getDPlayer(user).getMinecraftUUID().equals("") ? null : "https://crafatar.com/renders/body/" + DPlayer.getDPlayer(user).getMinecraftUUID();
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You demoted {tag} to {role}".replace("{role}", previousRole.getAsMention())).user(user).build());
-        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(thumbnail).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been demoted to {role}".replace("{role}", previousRole.getAsMention())).build());
+        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been demoted to {role}".replace("{role}", previousRole.getAsMention())).build());
 
 
     }

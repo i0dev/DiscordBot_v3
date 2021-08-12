@@ -20,6 +20,7 @@ public class Remove extends SuperDiscordCommand {
         User user;
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
         Member member = e.getGuild().getMember(user);
+        DPlayer dPlayer = DPlayer.getDPlayer(user);
 
         if (!MovementManager.isAlreadyStaff(member)) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).user(user).content("{tag} is not currently a staff member.").build());
@@ -28,11 +29,10 @@ public class Remove extends SuperDiscordCommand {
 
         Role currentParentRole = MovementManager.getParentStaff(member);
         MovementManager.removeOldRoles(member, Long.valueOf(currentParentRole.getId()));
-        NicknameUtil.modifyNickname(user, "");
+        NicknameUtil.modifyNicknameGlobally(user, "");
 
-        String thumbnail = DPlayer.getDPlayer(user).getMinecraftUUID().equals("") ? null : "https://crafatar.com/renders/body/" + DPlayer.getDPlayer(user).getMinecraftUUID();
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You removed {tag} from the staff team.").user(user).build());
-        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(thumbnail).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been removed from the staff team.").build());
+        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been removed from the staff team.").build());
 
 
     }

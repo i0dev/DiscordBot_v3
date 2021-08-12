@@ -8,6 +8,7 @@ import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.FindUtil;
 import com.i0dev.utility.LogUtil;
+import com.i0dev.utility.NicknameUtil;
 import net.dv8tion.jda.api.entities.User;
 
 public class Remove extends SuperDiscordCommand {
@@ -23,12 +24,16 @@ public class Remove extends SuperDiscordCommand {
         }
 
         String cachedIGN = dPlayer.getMinecraftIGN();
-        dPlayer.setLinked(false);
-        dPlayer.setLinkCode("");
-        dPlayer.setMinecraftIGN("");
-        dPlayer.setMinecraftUUID("");
-        dPlayer.setLinkedTime(0);
-        dPlayer.used().save();
+        LinkData linkData = LinkData.getLinkData(dPlayer.getDiscordID());
+        linkData.setLinked(false);
+        linkData.setMinecraftIGN("");
+        linkData.setMinecraftUUID("");
+        linkData.setLinkedTime(0);
+        linkData.setLinkCode("");
+        linkData.save();
+        LinkData.getLinkData(dPlayer.getDiscordID()).save();
+        NicknameUtil.modifyNicknameGlobally(user, "");
+
 
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).content("You removed the :link: between `{tag}` and `{ign}`".replace("{ign}", cachedIGN)).build());
 

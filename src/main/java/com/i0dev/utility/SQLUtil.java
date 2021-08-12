@@ -2,7 +2,6 @@ package com.i0dev.utility;
 
 import com.i0dev.Bot;
 import com.i0dev.config.GeneralConfig;
-import com.i0dev.modules.points.DiscordPoints;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -11,7 +10,6 @@ import java.lang.reflect.Modifier;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SQLUtil {
@@ -22,6 +20,7 @@ public class SQLUtil {
     @SneakyThrows
     public static void connect() {
         Class.forName("org.sqlite.JDBC");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         String database = GeneralConfig.get().getDbName();
         if (GeneralConfig.get().isUseDatabase()) {
             String url = "jdbc:mysql://" + GeneralConfig.get().getDbAddress() + ":" + GeneralConfig.get().getDbPort() + "/" + database;
