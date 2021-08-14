@@ -71,7 +71,6 @@ public class Bot {
         registerCommands();
         registerListeners();
         Engine.run();
-
         System.out.println("Successfully loaded DiscordBot");
     }
 
