@@ -1,12 +1,16 @@
 package com.i0dev.modules.mute;
 
+import com.i0dev.Bot;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
+import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
+import com.i0dev.utility.SQLUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,14 +24,18 @@ public class Retrieve extends SuperDiscordCommand {
             return;
         }
 
-        List<Member> list = e.getGuild().getMembers().stream().filter(member -> member.getRoles().contains(MuteManager.mutedRole)).collect(Collectors.toList());
+        List<Object> list = SQLUtil.getListWhere(DPlayer.class.getSimpleName(), "muted", "1", DPlayer.class, "discordID");
         if (list.isEmpty()) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("There are currently not any muted users.").build());
             return;
         }
 
         StringBuilder msg = new StringBuilder();
-        list.forEach(member -> msg.append(member.getUser().getAsTag()).append(" `(").append(member.getIdLong()).append(")`\n"));
+        list.forEach(ob -> {
+            DPlayer dPlayer = ((DPlayer) ob);
+            User user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            msg.append(user.getAsTag()).append(" `(").append(dPlayer.getDiscordID()).append(")`\n");
+        });
 
         e.reply(EmbedMaker.builder().field(new MessageEmbed.Field("Muted Users:", msg.toString(), true)).build());
     }
