@@ -27,7 +27,7 @@ public class Panel extends SuperDiscordCommand {
             msg.append(EmojiUtil.getSimpleEmoji(Emoji.fromMarkdown(ticketOption.getEmoji()).getAsMention())).append("** - ").append(ticketOption.getDisplayName()).append("**\n");
         });
 
-        String image = getOption("image").getAsString().equals("") ? null : "https://cdn.discordapp.com/attachments/766330396832432150/856722791494320158/McRivals2.png";
+        String image = getOption("image").getAsString().equals("") ? null : getOption("image").getAsString();
         Message panel = e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()
                         .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
                         .authorName("Ticket Creation Panel")
