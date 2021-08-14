@@ -7,6 +7,7 @@ import com.i0dev.modules.giveaway.Giveaway;
 import com.i0dev.modules.giveaway.GiveawayHandler;
 import com.i0dev.modules.linking.LinkData;
 import com.i0dev.modules.linking.RoleRefreshHandler;
+import com.i0dev.modules.mute.MuteManager;
 import com.i0dev.object.LogObject;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
@@ -42,6 +43,7 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskGiveContinuousRoles, 1, 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskBackupConfig, 1, 2 * 60, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(taskAssureMuted, 1, 10, TimeUnit.MINUTES);
 
         executorService.scheduleAtFixedRate(DPlayer.taskClearCache, 25, 5, TimeUnit.MINUTES);
     }
@@ -73,6 +75,18 @@ public class Engine {
         } catch (Exception ignored) {
 
         }
+    };
+
+    static Runnable taskAssureMuted = () -> {
+        LogUtil.log("Started assuring muted users have the muted role.");
+        Role mutedRole = MuteManager.mutedRole;
+        if (mutedRole == null) return;
+        List<Object> muted = SQLUtil.getListWhere(DPlayer.class.getSimpleName(), "muted", "1", DPlayer.class, "discordID");
+        muted.forEach(o -> {
+            DPlayer dPlayer = ((DPlayer) o);
+            if (Utility.hasRoleAlready(mutedRole.getIdLong(), dPlayer.getDiscordID())) return;
+            new RoleQueueObject(dPlayer.getDiscordID(), mutedRole.getIdLong(), Type.ADD_ROLE).add();
+        });
     };
 
     static Runnable taskGiveContinuousRoles = () -> {
