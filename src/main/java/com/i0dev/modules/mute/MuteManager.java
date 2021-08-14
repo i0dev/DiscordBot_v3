@@ -3,8 +3,11 @@ package com.i0dev.modules.mute;
 import com.i0dev.Bot;
 import com.i0dev.config.CommandsConfig;
 import com.i0dev.object.*;
+import com.i0dev.object.discordLinking.DPlayer;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class MuteManager extends AdvancedDiscordCommand {
 
@@ -31,4 +34,11 @@ public class MuteManager extends AdvancedDiscordCommand {
         MuteManager.forceSaveOption("role", roleID);
     }
 
+
+    @Override
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        DPlayer dPlayer = DPlayer.getDPlayer(event.getUser());
+        if (!dPlayer.isMuted()) return;
+        new RoleQueueObject(event.getUser().getIdLong(), MuteManager.mutedRole.getIdLong(), Type.ADD_ROLE).add();
+    }
 }

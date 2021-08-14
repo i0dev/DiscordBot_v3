@@ -1,6 +1,7 @@
 package com.i0dev.modules.mute;
 
 import com.i0dev.object.*;
+import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.FindUtil;
 import com.i0dev.utility.LogUtil;
@@ -25,6 +26,10 @@ public class Remove extends SuperDiscordCommand {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).user(user).content("{tag} is not currently muted.").build());
             return;
         }
+
+        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        dPlayer.setMuted(false);
+        dPlayer.save();
 
         new RoleQueueObject(member.getIdLong(), MuteManager.mutedRole.getIdLong(), Type.REMOVE_ROLE).add();
 

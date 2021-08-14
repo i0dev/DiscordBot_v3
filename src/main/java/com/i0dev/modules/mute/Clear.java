@@ -1,6 +1,7 @@
 package com.i0dev.modules.mute;
 
 import com.i0dev.object.*;
+import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.LogUtil;
 import net.dv8tion.jda.api.entities.Member;
@@ -16,6 +17,9 @@ public class Clear extends SuperDiscordCommand {
 
         for (Member member : e.getGuild().getMembers()) {
             if (member.getRoles().contains(MuteManager.mutedRole)) {
+                DPlayer dPlayer = DPlayer.getDPlayer(member);
+                dPlayer.setMuted(false);
+                dPlayer.save();
                 new RoleQueueObject(member.getIdLong(), MuteManager.mutedRole.getIdLong(), Type.REMOVE_ROLE).add();
             }
         }

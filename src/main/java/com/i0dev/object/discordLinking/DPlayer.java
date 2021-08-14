@@ -38,6 +38,7 @@ public class DPlayer {
 
     // Statuses
     boolean blacklisted = false;
+    boolean muted = false;
 
     // Transient
     transient String minecraftSkin = !isLinked() ? null : "https://crafatar.com/renders/body/" + getMinecraftUUID() + ".png?scale=7&overlay.png";

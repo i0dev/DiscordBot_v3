@@ -1,6 +1,7 @@
 package com.i0dev.modules.mute;
 
 import com.i0dev.object.*;
+import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.FindUtil;
 import com.i0dev.utility.LogUtil;
@@ -27,8 +28,9 @@ public class Add extends SuperDiscordCommand {
         }
 
         new RoleQueueObject(user.getIdLong(), MuteManager.mutedRole.getIdLong(), Type.ADD_ROLE).add();
-
-
+        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        dPlayer.setMuted(true);
+        dPlayer.save();
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).content("You have muted {tag}\nReason: `{reason}`".replace("{reason}", reason)).build());
         LogUtil.logDiscord(EmbedMaker.builder().content("{authorTag} has muted **{tag}** with the reason: `{reason}`".replace("{reason}", reason)).author(e.getAuthor()).user(user).build());
     }
