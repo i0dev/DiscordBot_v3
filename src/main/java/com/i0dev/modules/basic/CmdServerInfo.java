@@ -43,7 +43,6 @@ public class CmdServerInfo extends DiscordCommand {
 
         List<String> emotes = new ArrayList<>();
         guild.getEmotes().forEach(emote -> emotes.add(emote.getAsMention()));
-        System.out.println(emotes.get(0));
         int length = 0;
         List<String> toRemove = new ArrayList<>();
         for (String emote : emotes) {
