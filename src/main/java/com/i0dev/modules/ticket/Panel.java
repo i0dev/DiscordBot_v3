@@ -23,9 +23,7 @@ public class Panel extends SuperDiscordCommand {
         msg.append("React with the emoji that corresponds with the ticket you wish to create.").append("\n\n");
 
 
-        TicketManager.options.forEach(ticketOption -> {
-            msg.append(EmojiUtil.getSimpleEmoji(Emoji.fromMarkdown(ticketOption.getEmoji()).getAsMention())).append("** - ").append(ticketOption.getDisplayName()).append("**\n");
-        });
+        TicketManager.options.forEach(ticketOption -> msg.append(Emoji.fromMarkdown(ticketOption.getEmoji()).getAsMention()).append("** - ").append(ticketOption.getDisplayName()).append("**\n"));
 
         String image = getOption("image").getAsString().equals("") ? null : getOption("image").getAsString();
         Message panel = e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()
