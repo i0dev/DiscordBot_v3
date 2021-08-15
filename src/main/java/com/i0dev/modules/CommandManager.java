@@ -52,77 +52,87 @@ public class CommandManager extends ListenerAdapter {
     @SneakyThrows
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
-        if (e.getAuthor().isBot()) return;
-        if (!Utility.isValidGuild(e.getGuild())) return;
-        String[] message = e.getMessage().getContentRaw().split(" ");
+        try {
+            if (e.getAuthor().isBot()) return;
+            if (!Utility.isValidGuild(e.getGuild())) return;
+            String[] message = e.getMessage().getContentRaw().split(" ");
 
-        boolean initCheck = false;
-        for (String prefix : GeneralConfig.get().getPrefixes()) {
-            if (e.getMessage().getContentRaw().startsWith(prefix)) {
-                initCheck = true;
-                break;
-            }
-        }
-        if (!initCheck) return;
-
-        DPlayer dPlayer = DPlayer.getDPlayer(e.getAuthor().getIdLong());
-        if (dPlayer.isBlacklisted()) {
-            CommandEvent.replyStaticComplete(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("You are blacklisted and cannot use commands.").build(), e.getMessage()).delete().queueAfter(5, TimeUnit.SECONDS);
-            return;
-        }
-
-        for (BasicCommand command : Bot.getRegisteredCommands()) {
-            if (isCommand(command.getAliases(), e.getMessage())) {
-                CommandData data = DiscordCommand.getAnnotation(command.getClazz());
-                if (!check(e.getMessage(), data, command, command.isEnabled(), data.identifier(), dPlayer, e.getMember(), command.getAliases().get(0), 0))
-                    return;
-                if (command instanceof AdvancedCommand) {
-                    StringBuilder usages = new StringBuilder();
-                    for (SuperCommand superCommand : AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getSuperCommands()) {
-                        usages.append(GeneralConfig.get().getPrefixes().get(0)).append(AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getAliases().get(0)).append(" ").append(superCommand.getAliases().get(0)).append(" ").append(SuperDiscordCommand.getAnnotation(superCommand.getClazz()).usage()).append("\n");
-                    }
-                    EmbedMaker usage = EmbedMaker.builder().field(new MessageEmbed.Field(DiscordCommand.getAnnotation(AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getClazz()).identifier() + " Commands", usages.toString(), true)).build();
-
-                    if (message.length == 1) {
-                        CommandEvent.replyStatic(usage, e.getMessage());
-                        return;
-                    }
-                    for (SuperCommand superCommand : AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getSuperCommands()) {
-                        if (CommandManager.isSuperCommand(superCommand.getAliases(), e.getMessage())) {
-                            CommandData superData = SuperDiscordCommand.getAnnotation(superCommand.getClazz());
-                            if (!check(e.getMessage(), superData, superCommand, command.isEnabled(), superData.identifier(), dPlayer, e.getMember(), command.getAliases().get(0) + " " + superCommand.getAliases().get(0), 1))
-                                return;
-                            superCommand.getClazz().getMethod("run", CommandEvent.class).invoke(superCommand.getClazz().newInstance(), newEvent(e, 1));
-                            return;
-                        }
-                    }
-                    CommandEvent.replyStatic(usage, e.getMessage());
-
-                    return;
+            boolean initCheck = false;
+            for (String prefix : GeneralConfig.get().getPrefixes()) {
+                if (e.getMessage().getContentRaw().startsWith(prefix)) {
+                    initCheck = true;
+                    break;
                 }
+            }
+            if (!initCheck) return;
 
-                command.getClazz().getMethod("run", CommandEvent.class).invoke(command.getClazz().newInstance(), newEvent(e, 0));
+            DPlayer dPlayer = DPlayer.getDPlayer(e.getAuthor().getIdLong());
+            if (dPlayer.isBlacklisted()) {
+                CommandEvent.replyStaticComplete(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("You are blacklisted and cannot use commands.").build(), e.getMessage()).delete().queueAfter(5, TimeUnit.SECONDS);
                 return;
             }
-        }
 
-        for (BasicCommand advancedCommand : Bot.getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).collect(Collectors.toList())) {
-            for (SuperCommand superCommand : ((AdvancedCommand) advancedCommand).getSuperCommands()) {
-                if (isCommand(superCommand.getAlternateCommands(), e.getMessage())) {
-                    CommandData data = DiscordCommand.getAnnotation(superCommand.getClazz());
-                    if (!check(e.getMessage(), data, superCommand, superCommand.isEnabled(), data.identifier(), dPlayer, e.getMember(), message[0].substring(1), 0))
+            for (BasicCommand command : Bot.getRegisteredCommands()) {
+                if (isCommand(command.getAliases(), e.getMessage())) {
+                    CommandData data = DiscordCommand.getAnnotation(command.getClazz());
+                    if (!check(e.getMessage(), data, command, command.isEnabled(), data.identifier(), dPlayer, e.getMember(), command.getAliases().get(0), 0))
                         return;
-                    superCommand.getClazz().getMethod("run", CommandEvent.class).invoke(superCommand.getClazz().newInstance(), newEvent(e, 0));
+                    if (command instanceof AdvancedCommand) {
+                        StringBuilder usages = new StringBuilder();
+                        for (SuperCommand superCommand : AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getSuperCommands()) {
+                            usages.append(GeneralConfig.get().getPrefixes().get(0)).append(AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getAliases().get(0)).append(" ").append(superCommand.getAliases().get(0)).append(" ").append(SuperDiscordCommand.getAnnotation(superCommand.getClazz()).usage()).append("\n");
+                        }
+                        EmbedMaker usage = EmbedMaker.builder().field(new MessageEmbed.Field(DiscordCommand.getAnnotation(AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getClazz()).identifier() + " Commands", usages.toString(), true)).build();
+
+                        if (message.length == 1) {
+                            CommandEvent.replyStatic(usage, e.getMessage());
+                            return;
+                        }
+                        for (SuperCommand superCommand : AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getSuperCommands()) {
+                            if (CommandManager.isSuperCommand(superCommand.getAliases(), e.getMessage())) {
+                                CommandData superData = SuperDiscordCommand.getAnnotation(superCommand.getClazz());
+                                if (!check(e.getMessage(), superData, superCommand, command.isEnabled(), superData.identifier(), dPlayer, e.getMember(), command.getAliases().get(0) + " " + superCommand.getAliases().get(0), 1))
+                                    return;
+                                superCommand.getClazz().getMethod("run", CommandEvent.class).invoke(superCommand.getClazz().newInstance(), newEvent(e, 1));
+                                return;
+                            }
+                        }
+                        CommandEvent.replyStatic(usage, e.getMessage());
+
+                        return;
+                    }
+
+                    command.getClazz().getMethod("run", CommandEvent.class).invoke(command.getClazz().newInstance(), newEvent(e, 0));
                     return;
                 }
             }
+
+            for (BasicCommand advancedCommand : Bot.getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).collect(Collectors.toList())) {
+                for (SuperCommand superCommand : ((AdvancedCommand) advancedCommand).getSuperCommands()) {
+                    if (isCommand(superCommand.getAlternateCommands(), e.getMessage())) {
+                        CommandData data = DiscordCommand.getAnnotation(superCommand.getClazz());
+                        if (!check(e.getMessage(), data, superCommand, superCommand.isEnabled(), data.identifier(), dPlayer, e.getMember(), message[0].substring(1), 0))
+                            return;
+                        superCommand.getClazz().getMethod("run", CommandEvent.class).invoke(superCommand.getClazz().newInstance(), newEvent(e, 0));
+                        return;
+                    }
+                }
+            }
+        } catch (Exception error) {
+            e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()
+                    .embedColor(EmbedColor.FAILURE)
+                    .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                    .authorName("An Error Occurred: " + error.getCause().getClass().getSimpleName())
+                    .content(error.getCause().getMessage())
+                    .build())).queue();
+            error.printStackTrace();
         }
     }
 
     public static boolean check(Message message, CommandData data, BasicCommand command, boolean enabled, String identifier, DPlayer dPlayer, Member member, String usagePrefix, int offset) {
         String[] msg = message.getContentRaw().split(" ");
         EmbedMaker maker = EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Command usage: " +
-                GeneralConfig.get().getPrefixes().get(0) + (data.usage().equals("") ? usagePrefix : usagePrefix + " " + data.usage()))
+                        GeneralConfig.get().getPrefixes().get(0) + (data.usage().equals("") ? usagePrefix : usagePrefix + " " + data.usage()))
                 .build();
         if (!enabled) {
             CommandEvent.replyStatic(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("The command `{cmd}` is not enabled.".replace("{cmd}", identifier)).build(), message);

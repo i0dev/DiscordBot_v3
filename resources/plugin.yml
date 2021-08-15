@@ -1,5 +1,5 @@
 name: DiscordBot
-version: 3.0.0
+version: ${project.version}
 main: com.i0dev.BotPlugin
 author: i01
 description: i0dev DiscordBot v3
