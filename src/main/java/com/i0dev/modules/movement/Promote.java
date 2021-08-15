@@ -30,10 +30,11 @@ public class Promote extends SuperDiscordCommand {
 
         if (assign != null) {
             MovementManager.giveNewRoles(e.getGuild().getMember(user), assign.getIdLong());
-            MovementObject assignRoleObject = MovementManager.getObject(assign);
-            NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? DPlayer.getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", assignRoleObject.getDisplayName()));
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You assigned {tag} to {role}".replace("{role}", assign.getAsMention())).user(user).build());
             MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Promotion").content("**{tag}** has been assigned to {role}".replace("{role}", assign.getAsMention())).build());
+            MovementObject assignRoleObject = MovementManager.getObject(assign);
+            if (assignRoleObject != null)
+                NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? DPlayer.getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", assignRoleObject.getDisplayName()));
             return;
         }
 
