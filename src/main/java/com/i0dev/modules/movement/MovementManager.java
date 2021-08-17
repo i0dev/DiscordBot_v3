@@ -7,6 +7,7 @@ import com.i0dev.object.*;
 import com.i0dev.utility.ConfigUtil;
 import com.i0dev.utility.EmbedMaker;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -49,7 +50,8 @@ public class MovementManager extends AdvancedDiscordCommand {
         movementChannel.sendMessageEmbeds(EmbedMaker.create(maker)).queue();
     }
 
-    private static List<MovementObject> Tracks = Collections.singletonList(new MovementObject(0, "", new ArrayList<>()));
+    @Getter
+    private static List<MovementObject> Tracks = Collections.singletonList(new MovementObject(0, "", new ArrayList<>(), ""));
 
     public static Role getParentStaff(Member member) {
         for (MovementObject object : Tracks) {
@@ -75,11 +77,6 @@ public class MovementManager extends AdvancedDiscordCommand {
                 new RoleQueueObject(member.getIdLong(), roleToGive.getIdLong(), Type.ADD_ROLE).add();
             }
         }
-    }
-
-    public static List<MovementObject> getTracks() {
-        return Tracks;
-
     }
 
     public static void removeOldRoles(Member member, long oldMainRoleID) {
