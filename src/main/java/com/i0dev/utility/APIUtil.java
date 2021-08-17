@@ -33,6 +33,7 @@ public class APIUtil {
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while ((line = rd.readLine()) != null) result.append(line);
             rd.close();
+            if (result.toString().contains("�")) return null;
             return (JSONObject) new JSONParser().parse(result.toString());
         } catch (ParseException | IOException exception) {
             exception.printStackTrace();
@@ -141,7 +142,7 @@ public class APIUtil {
     }
 
     public static void refreshAPICache(String uuid) {
-        getGeneralRequest("GET", "https://crafatar.com/renders/head/", uuid);
+        getGeneralRequest("GET", "https://crafatar.com/renders/body/", uuid);
     }
 
     private static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
