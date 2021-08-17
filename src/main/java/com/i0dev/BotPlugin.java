@@ -54,5 +54,8 @@ public class BotPlugin extends Plugin {
         return instance;
     }
 
+    public static void runCommand(String command) {
+        server.getPluginManager().dispatchCommand(server.getConsole(), command);
+    }
 
 }
