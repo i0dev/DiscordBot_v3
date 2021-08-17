@@ -1,18 +1,17 @@
 package com.i0dev.modules.movement;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class MovementObject {
     long mainRole;
     String displayName;
     List<Long> extraRoles;
+    String luckPermsRank;
 }

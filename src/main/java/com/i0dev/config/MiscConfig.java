@@ -64,4 +64,9 @@ public class MiscConfig {
 
     List<Long> rolesToConstantlyGive = new ArrayList<>();
 
+    boolean litebans_banDiscord = true;
+    boolean litebans_unbanDiscord = true;
+    boolean litebans_muteDiscord = true;
+    boolean litebans_unmuteDiscord = true;
+
 }
