@@ -55,7 +55,6 @@ public class InviteHandler extends ListenerAdapter {
         DPlayer left = DPlayer.getDPlayer(e.getUser());
         if (left.getInvitedByDiscordID() == 0) return;
         DPlayer inviter = DPlayer.getDPlayer(e.getJDA().retrieveUserById(left.getInvitedByDiscordID()).complete());
-        inviter.decrease(DPlayerFieldType.POINTS, InviteManager.getOption("pointsPerJoin", InviteManager.class).getAsLong());
         inviter.decrease(DPlayerFieldType.INVITES);
         if (MiscConfig.get().invite_leaveLog)
             LogUtil.logDiscord(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("**{tag}** left the server, invited by {authorTag}").user(e.getUser()).author(e.getJDA().retrieveUserById(left.getInvitedByDiscordID()).complete()).build());
