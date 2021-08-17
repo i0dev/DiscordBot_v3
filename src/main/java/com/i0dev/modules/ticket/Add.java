@@ -7,6 +7,7 @@ import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.FindUtil;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.Objects;
@@ -22,7 +23,7 @@ public class Add extends SuperDiscordCommand {
         User user;
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
 
-        e.getChannel().putPermissionOverride(Objects.requireNonNull(e.getGuild().getMember(user)))
+        ((TextChannel) e.getChannel()).putPermissionOverride(Objects.requireNonNull(e.getGuild().getMember(user)))
                 .setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ATTACH_FILES,
                         Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_HISTORY,
                         Permission.MESSAGE_ADD_REACTION, Permission.CREATE_INSTANT_INVITE)

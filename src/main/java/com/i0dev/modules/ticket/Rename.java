@@ -6,6 +6,7 @@ import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.Utility;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Rename extends SuperDiscordCommand {
 
@@ -17,7 +18,7 @@ public class Rename extends SuperDiscordCommand {
         }
         Ticket ticket = Ticket.getTicket(e.getChannel());
         String newTicketName = Utility.remainingArgFormatter(e.getOffsetSplit(), 1).replace(" ", "-") + "-" + ticket.getTicketNumber();
-        e.getChannel().getManager().setName(newTicketName).queue();
+        ((TextChannel) e.getChannel()).getManager().setName(newTicketName).queue();
         ticket.setTicketName(newTicketName);
         ticket.save();
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("You have renamed this ticket to: `{name}`".replace("{name}", newTicketName)).build());

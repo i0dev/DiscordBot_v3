@@ -19,7 +19,7 @@ public class CommandEvent {
     public long authorIdLong;
     public String authorId;
     public Message message;
-    public TextChannel channel;
+    public MessageChannel channel;
     public Guild guild;
     public Member member;
     public DPlayer dPlayer;

@@ -11,6 +11,7 @@ import com.i0dev.utility.ConfigUtil;
 import com.i0dev.utility.EmbedMaker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class AdminOnly extends SuperDiscordCommand {
         for (Long roleID : TicketManager.getRolesToSeeTickets()) {
             Role role = e.getGuild().getRoleById(roleID);
             if (role == null) continue;
-            e.getChannel().putPermissionOverride(role)
+            ((TextChannel) e.getChannel()).putPermissionOverride(role)
                     .setDeny(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ATTACH_FILES,
                             Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EMBED_LINKS,
                             Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
@@ -55,7 +56,7 @@ public class AdminOnly extends SuperDiscordCommand {
         for (Long roleID : adminOnlySeeRoles) {
             Role role = e.getGuild().getRoleById(roleID);
             if (role == null) continue;
-            e.getChannel().putPermissionOverride(role)
+            ((TextChannel) e.getChannel()).putPermissionOverride(role)
                     .setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ATTACH_FILES,
                             Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_HISTORY,
                             Permission.MESSAGE_ADD_REACTION, Permission.CREATE_INSTANT_INVITE)

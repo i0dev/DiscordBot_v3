@@ -51,10 +51,12 @@ public class CommandManager extends ListenerAdapter {
 
     @SneakyThrows
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         try {
             if (e.getAuthor().isBot()) return;
-            if (!Utility.isValidGuild(e.getGuild())) return;
+            if (e.getChannelType().isGuild()) {
+                if (!Utility.isValidGuild(e.getGuild())) return;
+            }
             String[] message = e.getMessage().getContentRaw().split(" ");
 
             boolean initCheck = false;
