@@ -38,6 +38,25 @@ public class InGamePunishmentLogs implements Listener {
 
         Events.get().register(new Events.Listener() {
             @Override
+            public void entryRemoved(Entry e) {
+
+                DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getUuid());
+                if (dPlayer != null && e.getType().equalsIgnoreCase("ban") && MiscConfig.get().litebans_unbanDiscord)
+                    Utility.getAllowedGuilds().forEach(guild -> guild.unban(dPlayer.getDiscordID() + "").queue());
+
+                if (dPlayer != null && e.getType().equalsIgnoreCase("mute") && MiscConfig.get().litebans_unmuteDiscord) {
+                    dPlayer.setMuted(false);
+                    dPlayer.save();
+                    dPlayer.removeRole(MuteManager.mutedRole.getIdLong());
+                }
+
+
+                log(e, false);
+            }
+        });
+
+        Events.get().register(new Events.Listener() {
+            @Override
             public void entryAdded(Entry e) {
                 APIUtil.refreshAPICache(e.getUuid());
 
