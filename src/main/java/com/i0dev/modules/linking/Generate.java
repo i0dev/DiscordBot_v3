@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public class Generate extends SuperDiscordCommand {
 
-    @CommandData(commandID = "generate", identifier = "Link Generate", messageLength = 1, requirePluginMode = true, parentClass = LinkManager.class)
+    @CommandData(commandID = "generate", identifier = "Link Generate", messageLength = 1, requirePluginMode = true, parentClass = LinkManager.class, canBePrivateMessage = true)
     public static void run(CommandEvent e) {
         if (e.getDPlayer().isLinked()) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("You are already linked to the ign: {ign}").user(e.getAuthor()).build());

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class CmdHelp extends DiscordCommand {
 
-    @CommandData(commandID = "cmd_help", identifier = "Help", maxMessageLength = 2)
+    @CommandData(commandID = "cmd_help", identifier = "Help", maxMessageLength = 2, canBePrivateMessage = true)
     public static void run(CommandEvent e) {
         Integer page = 1;
         if (e.getSplit().length > 1) {

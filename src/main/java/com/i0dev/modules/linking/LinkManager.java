@@ -47,7 +47,7 @@ public class LinkManager extends AdvancedDiscordCommand {
     }
 
     @SneakyThrows
-    @CommandData(commandID = "cmd_link", identifier = "Link")
+    @CommandData(commandID = "cmd_link", identifier = "Link", canBePrivateMessage = true)
     public static void run(CommandEvent e) {
     }
 

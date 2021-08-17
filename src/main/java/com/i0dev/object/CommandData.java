@@ -25,4 +25,6 @@ public @interface CommandData {
     boolean requirePluginMode() default false;
 
     Class<? extends AdvancedDiscordCommand> parentClass() default AdvancedDiscordCommand.class;
+
+    boolean canBePrivateMessage() default false;
 }
