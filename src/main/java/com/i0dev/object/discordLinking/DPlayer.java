@@ -1,6 +1,8 @@
 package com.i0dev.object.discordLinking;
 
 import com.i0dev.modules.linking.LinkData;
+import com.i0dev.object.RoleQueueObject;
+import com.i0dev.object.Type;
 import com.i0dev.utility.LogUtil;
 import com.i0dev.utility.SQLUtil;
 import lombok.Getter;
@@ -196,6 +198,14 @@ public class DPlayer {
         obj.setLinked(true);
         obj.setMinecraftIGN(ign);
         obj.save();
+    }
+
+    public void giveRole(long roleID) {
+        new RoleQueueObject(getDiscordID(), roleID, Type.ADD_ROLE).add();
+    }
+
+    public void removeRole(long roleID) {
+        new RoleQueueObject(getDiscordID(), roleID, Type.REMOVE_ROLE).add();
     }
 
     //
