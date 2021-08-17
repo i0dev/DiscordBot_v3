@@ -23,6 +23,7 @@ public class LinkManager extends AdvancedDiscordCommand {
             addSuperCommand("info", new SuperCommand(s("info"), Permission.lite(), Info.class));
             addSuperCommand("remove", new SuperCommand(s("remove"), Permission.strict(), Remove.class));
             addSuperCommand("resync", new SuperCommand(s("resync"), Permission.strict(), Resync.class));
+            addSuperCommand("panel", new SuperCommand(s("panel"), Permission.strict(), Panel.class));
             SQLUtil.makeTable(LinkData.class);
             addOption("nicknameFormat", "[VIP] {ign}");
             addOption("rolesToGiveAlways", ConfigUtil.ObjectToJsonArr(rolesToGiveAlways));
