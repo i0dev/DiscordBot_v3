@@ -51,17 +51,10 @@ public class Panel extends SuperDiscordCommand {
             return;
         }
 
-        e.getInteraction().deferReply(true).setContent("Check your direct messages for instructions!").queue();
-
         String code = Utility.GenerateRandomString(5);
-
         From_DiscordCodeLinker from_discordCodeLinker = new From_DiscordCodeLinker(e.getUser(), code);
         CodeCache.getInstance().getFrom_Discord_cache().add(from_discordCodeLinker);
-
-        MessageUtil.sendPrivateMessage(e.getMessage(), e.getUser(), EmbedMaker.builder().field(
-                new MessageEmbed.Field("Your code is: `{code}`".replace("{code}", code), "Use the command: `/link code {code}` in game to finish linking!".replace("{code}", code), false)
-        ).build());
-
+        e.getInteraction().deferReply(true).setContent("Your code is: **{code}**\nUse the command: `/link code {code}` in game to finish linking!".replace("{code}", code)).queue();
     }
 
 
