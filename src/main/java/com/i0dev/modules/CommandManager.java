@@ -57,7 +57,10 @@ public class CommandManager extends ListenerAdapter {
         try {
             if (e.getAuthor().isBot()) return;
             if (e.getChannelType().isGuild()) {
-                if (!Utility.isValidGuild(e.getGuild())) return;
+                if (!Utility.isValidGuild(e.getGuild())) {
+                    CommandEvent.replyStatic(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("This guild is not on the allowed list.").build(), e.getMessage());
+                    return;
+                }
             }
             String[] message = e.getMessage().getContentRaw().split(" ");
 
@@ -141,6 +144,10 @@ public class CommandManager extends ListenerAdapter {
         EmbedMaker maker = EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Command usage: " +
                         GeneralConfig.get().getPrefixes().get(0) + (data.usage().equals("") ? usagePrefix : usagePrefix + " " + data.usage()))
                 .build();
+        if (!data.canBePrivateMessage() && event.getChannelType().equals(ChannelType.PRIVATE)) {
+            CommandEvent.replyStatic(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("This command can only be used in a guild.").build(), message);
+            return false;
+        }
         if (!enabled) {
             CommandEvent.replyStatic(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("The command `{cmd}` is not enabled.".replace("{cmd}", identifier)).build(), message);
             return false;
@@ -174,10 +181,6 @@ public class CommandManager extends ListenerAdapter {
                 CommandEvent.replyStatic(EmbedMaker.builder().content("You need to be linked in order to use this command.").embedColor(EmbedColor.FAILURE).build(), message);
                 return false;
             }
-        }
-        if (!data.canBePrivateMessage() && event.getChannelType().equals(ChannelType.PRIVATE)) {
-            CommandEvent.replyStatic(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("This command can only be used in a guild.").build(), message);
-            return false;
         }
         if (!hasPermission(member, command.getPermission().isStrict(), command.getPermission().isLite(), command.getPermission().isAdmin())) {
             CommandEvent.replyStatic(EmbedMaker.builder().content("You do not have permission to use this command.").embedColor(EmbedColor.FAILURE).build(), message);
