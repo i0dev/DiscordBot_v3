@@ -39,7 +39,6 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskAppendToFile, 1, 10, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskUpdateActivity, 1, 30, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskVerifyAuthentication, 15, 15 * 60, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(taskUpdateGiveawayTimes, 15, 30, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskGiveContinuousRoles, 1, 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskBackupConfig, 1, 2 * 60, TimeUnit.MINUTES);
@@ -152,36 +151,6 @@ public class Engine {
 
     static Runnable taskExecuteGiveaways = () -> {
         SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> !((Giveaway) o).isEnded()).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
-    };
-
-
-    static Runnable taskUpdateGiveawayTimes = () -> {
-        SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> {
-            Giveaway giveaway = ((Giveaway) o);
-            TextChannel channel = Bot.getJda().getTextChannelById(giveaway.getChannelID());
-            return !giveaway.isEnded() && channel != null && Utility.getMessage(channel, giveaway.getMessageID()) != null;
-        }).forEach(o -> {
-            Giveaway giveaway = ((Giveaway) o);
-            TextChannel channel = Bot.getJda().getTextChannelById(giveaway.getChannelID());
-            Message message = Utility.getMessage(channel, giveaway.getMessageID());
-            User host = Bot.getJda().retrieveUserById(giveaway.getHostID()).complete();
-
-            StringBuilder content = new StringBuilder();
-            content.append("Prize: `").append(giveaway.getPrize()).append("`\n");
-            content.append("Host: `").append(host.getAsTag()).append("`\n");
-            content.append("Winners: `").append(giveaway.getWinnerAmount()).append("`\n");
-            content.append("Time Remaining: ").append(TimeUtil.formatTime(giveaway.getEndTime() - System.currentTimeMillis())).append("\n");
-            content.append("\nReact with {emoji} to enter.".replace("{emoji}", Emoji.fromMarkdown(Create.getOption("emoji", Create.class).getAsString()).getAsMention()));
-
-            EmbedMaker embed = EmbedMaker.builder()
-                    .authorName("New Giveaway!")
-                    .content(content.toString())
-                    .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
-                    .build();
-
-            message.editMessageEmbeds(EmbedMaker.create(embed)).queue();
-
-        });
     };
 
     static Runnable taskUpdateActivity = () -> {

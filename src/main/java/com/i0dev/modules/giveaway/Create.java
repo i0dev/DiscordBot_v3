@@ -108,7 +108,7 @@ public class Create extends SuperDiscordCommand {
                     content.append("Prize: `").append(response.prize).append("`\n");
                     content.append("Host: `").append(e.getAuthor().getAsTag()).append("`\n");
                     content.append("Winners: `").append(response.getWinners()).append("`\n");
-                    content.append("Time Remaining: ").append(TimeUtil.formatTime(response.length)).append("\n");
+                    content.append("Ending: ").append("<t:" + ((System.currentTimeMillis() + response.length) / 1000L) + ":R>").append("\n");
                     content.append("\nReact with {emoji} to enter.".replace("{emoji}", Emoji.fromMarkdown(getOption("emoji").getAsString()).getAsMention()));
 
                     EmbedMaker embed = EmbedMaker.builder()

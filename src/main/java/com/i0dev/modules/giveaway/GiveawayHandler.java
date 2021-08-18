@@ -37,7 +37,6 @@ public class GiveawayHandler {
             } catch (Exception ignored) {
                 return;
             }
-            ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTime), ZoneId.of("America/New_York"));
             List<User> UsersReacted = new ArrayList<>();
             Message.getReactions().get(0).retrieveUsers().forEach(UsersReacted::add);
 
@@ -55,11 +54,10 @@ public class GiveawayHandler {
             info.append("Host: `").append(Host.getAsTag()).append("`\n");
             info.append("Entries: `").append(UsersReacted.size()).append("`\n");
             info.append("Winner(s): ").append(winnersFormatted).append("\n");
+            info.append("Ended: ").append("<t:" + (endTime / 1000) + ":R>").append("\n");
 
             EmbedMaker edit = EmbedMaker.builder()
                     .authorName("Giveaway Ended!")
-                    .timestamp(time)
-                    .footer("End Time")
                     .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
                     .field(new MessageEmbed.Field("__Information:__", info.toString(), false))
                     .build();
