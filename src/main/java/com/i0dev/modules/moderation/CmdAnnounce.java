@@ -11,6 +11,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 public class CmdAnnounce extends DiscordCommand {
 
+    public void load() {
+        addOption("includeHeader", true);
+    }
+
     @CommandData(commandID = "cmd_announce", minMessageLength = 3, identifier = "Announce", usage = "<channel> <announcement>")
     public static void run(CommandEvent e) {
         TextChannel channel;
@@ -18,12 +22,26 @@ public class CmdAnnounce extends DiscordCommand {
 
 
         String content = Utility.remainingArgFormatter(e.getSplit(), 2);
+        boolean includeHeader = getOption("includeHeader").getAsBoolean();
 
         if (content.endsWith(" -normal")) {
             content = content.substring(0, content.length() - " -normal".length());
             channel.sendMessage(content).queue();
         } else {
-            channel.sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().content(content).authorName("Announcement from {tag}").authorImg(e.getAuthor().getEffectiveAvatarUrl()).user(e.getAuthor()).build())).queue();
+            EmbedColor color = EmbedColor.NORMAL;
+            String[] split = content.split(" ");
+            int len = split.length;
+            if (split[len - 1].contains("color:")) {
+                color.setCustom(split[len - 1].substring("color:".length()));
+                content = content.substring(0, content.length() - split[len - 1].length() + 1);
+            }
+            String authorImg = e.getAuthor().getEffectiveAvatarUrl();
+            String authorName = "Announcement from {tag}";
+            if (!includeHeader) {
+                authorImg = null;
+                authorName = null;
+            }
+            channel.sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().embedColor(color).content(content).authorName(authorName).authorImg(authorImg).user(e.getAuthor()).build())).queue();
         }
 
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("You have made an announcement in {channel}".replace("{channel}", channel.getAsMention())).build());
