@@ -39,8 +39,8 @@ public class CmdProfile extends DiscordCommand {
         bot.append("Boost Credits: ").append("`{boostCredits}`").append("\n");
 
         StringBuilder general = new StringBuilder();
-        general.append("Created Date: ").append("`{timeCreated}`").append("\n");
-        general.append("Joined Date: ").append("`" + e.getGuild().getMember(user).getTimeJoined().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "`").append("\n");
+        general.append("Created Date: ").append("{timeCreated}").append("\n");
+        general.append("Joined Date: ").append("<t:" + (e.getGuild().getMember(user).getTimeJoined().toInstant().toEpochMilli() / 1000L) + ":R>").append("\n");
         general.append("Mention: ").append("{mention}").append("\n");
         general.append("Tag: ").append("`{tag}`").append("\n");
         general.append("DiscordID: ").append("`{id}`").append("\n");

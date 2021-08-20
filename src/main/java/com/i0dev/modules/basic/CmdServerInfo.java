@@ -29,7 +29,7 @@ public class CmdServerInfo extends DiscordCommand {
         general.append("Text Channels: `").append(guild.getTextChannels().size()).append("`\n");
         general.append("Voice Channels: `").append(guild.getVoiceChannels().size()).append("`\n");
         general.append("Roles: `").append(guild.getRoles().size()).append("`\n");
-        general.append("Creation Date: `").append(guild.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME)).append("`\n");
+        general.append("Creation Date: <t:").append((guild.getTimeCreated().toInstant().toEpochMilli() / 1000L)).append(":R>\n");
         List<Member> members = e.getGuild().getMembers();
         StringBuilder memberInfo = new StringBuilder();
         memberInfo.append("Members: ").append("`").append(members.size()).append("`").append("\n");

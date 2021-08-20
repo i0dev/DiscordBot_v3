@@ -42,7 +42,7 @@ public class PlaceholderUtil {
                     .replace("{invites}", dPlayer.getInvites() + "")
                     .replace("{isBot}", user.isBot() ? "Yes" : "No")
                     .replace("{effectiveName}", member == null ? Bot.getJda().getSelfUser().getName() : member.getEffectiveName())
-                    .replace("{timeCreated}", user.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME))
+                    .replace("{timeCreated}", "<t:" + (user.getTimeCreated().toInstant().toEpochMilli() / 1000L) + ":R>")
                     .replace("{isBoosting}", guild.getBoosters().contains(member) ? "Yes" : "No")
                     .replace("{name}", user.getName());
         }

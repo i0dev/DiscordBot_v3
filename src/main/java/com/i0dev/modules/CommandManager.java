@@ -253,8 +253,6 @@ public class CommandManager extends ListenerAdapter {
                 e.getAuthor().getId(),
                 e.getMessage(),
                 e.getChannel(),
-
-
                 guild,
                 e.getMember(),
                 DPlayer.getDPlayer(e.getAuthor().getIdLong()),
