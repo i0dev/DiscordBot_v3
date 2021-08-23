@@ -33,7 +33,7 @@ public class CmdAnnounce extends DiscordCommand {
             int len = split.length;
             if (split[len - 1].contains("color:")) {
                 color.setCustom(split[len - 1].substring("color:".length()));
-                content = content.substring(0, content.length() - split[len - 1].length() + 1);
+                content = content.substring(0, content.length() - split[len - 1].length() - 1);
             }
             String authorImg = e.getAuthor().getEffectiveAvatarUrl();
             String authorName = "Announcement from {tag}";
