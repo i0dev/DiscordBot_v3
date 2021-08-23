@@ -2,10 +2,8 @@ package com.i0dev;
 
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.config.MiscConfig;
-import com.i0dev.modules.giveaway.Create;
 import com.i0dev.modules.giveaway.Giveaway;
 import com.i0dev.modules.giveaway.GiveawayHandler;
-import com.i0dev.modules.linking.LinkData;
 import com.i0dev.modules.linking.RoleRefreshHandler;
 import com.i0dev.modules.mute.MuteManager;
 import com.i0dev.object.LogObject;
@@ -27,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @FieldDefaults(level = AccessLevel.PUBLIC)
 public class Engine {
@@ -77,27 +76,31 @@ public class Engine {
     };
 
     static Runnable taskAssureMuted = () -> {
-        LogUtil.log("Started assuring muted users have the muted role.");
         Role mutedRole = MuteManager.mutedRole;
         if (mutedRole == null) return;
         List<Object> muted = SQLUtil.getListWhere(DPlayer.class.getSimpleName(), "muted", "1", DPlayer.class, "discordID");
+        AtomicInteger total = new AtomicInteger();
         muted.forEach(o -> {
             DPlayer dPlayer = ((DPlayer) o);
             if (Utility.hasRoleAlready(mutedRole.getIdLong(), dPlayer.getDiscordID())) return;
+            total.getAndIncrement();
             new RoleQueueObject(dPlayer.getDiscordID(), mutedRole.getIdLong(), Type.ADD_ROLE).add();
         });
+        if (total.get() != 0) LogUtil.log("Assured " + total + " muted users have the muted role.");
     };
 
     static Runnable taskGiveContinuousRoles = () -> {
-        LogUtil.debug("Started giving missing roles to users.");
+        AtomicInteger count = new AtomicInteger(0);
         for (User user : Bot.getJda().getUsers()) {
             for (Long roleID : MiscConfig.get().rolesToConstantlyGive) {
                 Role role = Bot.getJda().getRoleById(roleID);
                 if (role == null) continue;
                 if (Utility.hasRoleAlready(roleID, user.getIdLong())) continue;
+                count.getAndIncrement();
                 new RoleQueueObject(user.getIdLong(), roleID, Type.ADD_ROLE).add();
             }
         }
+        if (count.get() != 0) LogUtil.debug("Gave " + count + " users missing roles.");
     };
 
 
@@ -141,9 +144,7 @@ public class Engine {
             if (dPlayer.getLastUpdatedMillis() + 259200000 < System.currentTimeMillis()) return;
             String ign = APIUtil.getIGNFromUUID(dPlayer.getMinecraftUUID());
             if (ign == null) return;
-            LinkData linkData = LinkData.getLinkData(dPlayer.getDiscordID());
-            linkData.setMinecraftIGN(ign);
-            linkData.save();
+            dPlayer.setMinecraftIGN(ign);
             dPlayer.setLastUpdatedMillis(System.currentTimeMillis());
             dPlayer.save();
         });

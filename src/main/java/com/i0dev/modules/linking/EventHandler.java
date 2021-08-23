@@ -9,7 +9,7 @@ public class EventHandler implements Listener {
     public void onJoin(PostLoginEvent e) {
         DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getPlayer().getUniqueId().toString());
         if (dPlayer == null) return;
-        if (!LinkData.getLinkData(dPlayer.getDiscordID()).isLinked()) return;
+        if (dPlayer.isLinked()) return;
         RoleRefreshHandler.RefreshUserRank(dPlayer);
     }
 }

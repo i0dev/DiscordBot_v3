@@ -16,11 +16,12 @@ public class Clear extends SuperDiscordCommand {
 
     @CommandData(commandID = "clear", identifier = "Blacklist Clear", messageLength = 1, parentClass = BlacklistManager.class)
     public static void run(CommandEvent e) {
-        DPlayer.loadAll();
-        DPlayer.getCachedUsers().forEach(dPlayer -> {
+        SQLUtil.getListWhere(DPlayer.class.getSimpleName(), "blacklisted", "1", DPlayer.class, "discordID").forEach(o -> {
+            DPlayer dPlayer = DPlayer.getDPlayer(((DPlayer) o).getDiscordID());
             dPlayer.setBlacklisted(false);
             dPlayer.save();
         });
+        System.gc();
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("You have successfully cleared all blacklisted users.").build());
     }
 }

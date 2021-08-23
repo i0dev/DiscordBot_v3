@@ -25,7 +25,7 @@ public class RoleRefreshHandler {
         if (dPlayer == null) return;
         User discordUser = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
         if (discordUser == null) return;
-        if ("".equals(dPlayer.getLinkData().getMinecraftIGN())) return;
+        if ("".equals(dPlayer.getMinecraftIGN())) return;
         if (!Utility.hasRole(discordUser, LinkManager.rolesThatBypassNicknameChange)) {
             String nickname = LinkManager.getOption("nicknameFormat", LinkManager.class).getAsString()
                     .replace("{ign}", dPlayer.getMinecraftIGN());
@@ -43,7 +43,7 @@ public class RoleRefreshHandler {
 
         // in game stuff
 
-        if (!LinkData.getLinkData(dPlayer.getDiscordID()).isLinked()) return;
+        if (!dPlayer.isLinked()) return;
         if (!Bot.isPluginMode()) return;
         if (com.i0dev.BotPlugin.server.getPluginManager().getPlugin("LuckPerms") == null) return;
         net.luckperms.api.LuckPerms luckPerms = net.luckperms.api.LuckPermsProvider.get();

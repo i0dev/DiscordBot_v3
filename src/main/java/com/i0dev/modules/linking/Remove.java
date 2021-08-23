@@ -24,16 +24,13 @@ public class Remove extends SuperDiscordCommand {
         }
 
         String cachedIGN = dPlayer.getMinecraftIGN();
-        LinkData linkData = LinkData.getLinkData(dPlayer.getDiscordID());
-        linkData.setLinked(false);
-        linkData.setMinecraftIGN("");
-        linkData.setMinecraftUUID("");
-        linkData.setLinkedTime(0);
-        linkData.setLinkCode("");
-        linkData.save();
-        LinkData.getLinkData(dPlayer.getDiscordID()).save();
+        dPlayer.setLinked(false);
+        dPlayer.setMinecraftIGN("");
+        dPlayer.setMinecraftUUID("");
+        dPlayer.setLinkedTime(0);
+        dPlayer.setLinkCode("");
+        dPlayer.save();
         NicknameUtil.modifyNicknameGlobally(user, "");
-
 
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).content("You removed the :link: between `{tag}` and `{ign}`".replace("{ign}", cachedIGN)).build());
 

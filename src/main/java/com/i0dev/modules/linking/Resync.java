@@ -26,11 +26,8 @@ public class Resync extends SuperDiscordCommand {
 
         String ign = APIUtil.getIGNFromUUID(dPlayer.getMinecraftUUID());
         if (ign == null) return;
-        LinkData linkData = LinkData.getLinkData(dPlayer.getDiscordID());
-        linkData.setMinecraftIGN(ign);
-        linkData.save();
+        dPlayer.setMinecraftIGN(ign);
         dPlayer.setLastUpdatedMillis(System.currentTimeMillis());
         dPlayer.save();
-
     }
 }

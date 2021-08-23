@@ -26,7 +26,7 @@ public class Info extends SuperDiscordCommand {
         StringBuilder msg = new StringBuilder();
         msg.append("Minecraft IGN: `").append("{ign}").append("`\n");
         msg.append("Minecraft UUID: `").append("{uuid}").append("`\n");
-        msg.append("Linked Time: `").append(Utility.formatDate(LinkData.getLinkData(dPlayer.getDiscordID()).getLinkedTime())).append("`\n");
+        msg.append("Linked Time: ").append("{linkTime}").append("\n");
 
         e.reply(EmbedMaker.builder().user(user)
                 .content(msg.toString())

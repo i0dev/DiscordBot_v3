@@ -10,8 +10,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
-import java.time.format.DateTimeFormatter;
-
 public class PlaceholderUtil {
 
     public static String convert(String message, EmbedMaker maker) {
@@ -43,6 +41,7 @@ public class PlaceholderUtil {
                     .replace("{isBot}", user.isBot() ? "Yes" : "No")
                     .replace("{effectiveName}", member == null ? Bot.getJda().getSelfUser().getName() : member.getEffectiveName())
                     .replace("{timeCreated}", "<t:" + (user.getTimeCreated().toInstant().toEpochMilli() / 1000L) + ":R>")
+                    .replace("{linkTime}", "<t:" + (dPlayer.getLinkedTime() / 1000L) + ":R>")
                     .replace("{isBoosting}", guild.getBoosters().contains(member) ? "Yes" : "No")
                     .replace("{name}", user.getName());
         }
@@ -88,19 +87,20 @@ public class PlaceholderUtil {
         }
 
         //Self User
-        message = message
-                .replace("{botTag}", jda.getSelfUser().getAsTag())
-                .replace("{botMention}", jda.getSelfUser().getAsMention())
-                .replace("{botAvatarUL}", jda.getSelfUser().getEffectiveAvatarUrl())
-                .replace("{botID}", jda.getSelfUser().getId())
-                .replace("{botName}", jda.getSelfUser().getName());
+        if (Bot.jda != null)
+            message = message
+                    .replace("{botTag}", jda.getSelfUser().getAsTag())
+                    .replace("{botMention}", jda.getSelfUser().getAsMention())
+                    .replace("{botAvatarUL}", jda.getSelfUser().getEffectiveAvatarUrl())
+                    .replace("{botID}", jda.getSelfUser().getId())
+                    .replace("{botName}", jda.getSelfUser().getName());
 
         //General
         message = message
                 .replace("{botAuthor}", "i0#0001")
                 .replace("{pluginMode}", Bot.pluginMode ? "Yes" : "No")
                 .replace("{prefix}", GeneralConfig.get().getPrefixes().get(0))
-                .replace("{version}", "3.0.10");
+                .replace("{version}", "3.0.11");
 
         //plugin mode
         if (Bot.isPluginMode()) {
