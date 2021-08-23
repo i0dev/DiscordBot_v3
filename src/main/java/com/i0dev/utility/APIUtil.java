@@ -33,6 +33,7 @@ public class APIUtil {
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while ((line = rd.readLine()) != null) result.append(line);
             rd.close();
+            conn.disconnect();
             if (result.toString().contains("�")) return null;
             return (JSONObject) new JSONParser().parse(result.toString());
         } catch (ParseException | IOException exception) {

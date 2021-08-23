@@ -8,9 +8,7 @@ import com.i0dev.object.BasicCommand;
 import com.i0dev.object.DiscordCommand;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.utility.ConfigUtil;
-import com.i0dev.utility.SQLUtil;
-import com.i0dev.utility.Utility;
+import com.i0dev.utility.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -22,15 +20,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.internal.managers.AudioManagerImpl;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -55,6 +51,17 @@ public class Bot {
 
     @SneakyThrows
     public static void main(String[] args) {
+        System.out.println("    _    ____        __                                                            \n" +
+                "   (_)  / __ \\  ____/ /  ___  _   __                                               \n" +
+                "  / /  / / / / / __  /  / _ \\| | / /                                               \n" +
+                " / /  / /_/ / / /_/ /  /  __/| |/ /                                                \n" +
+                "/_/   \\____/  \\__,_/   \\___/ |___/                                                 \n" +
+                "    ____     _                                      __           ____           __ \n" +
+                "   / __ \\   (_)   _____  _____  ____    _____  ____/ /          / __ )  ____   / /_\n" +
+                "  / / / /  / /   / ___/ / ___/ / __ \\  / ___/ / __  /          / __  | / __ \\ / __/\n" +
+                " / /_/ /  / /   (__  ) / /__  / /_/ / / /    / /_/ /          / /_/ / / /_/ // /_  \n" +
+                "/_____/  /_/   /____/  \\___/  \\____/ /_/     \\__,_/          /_____/  \\____/ \\__/  \n" +
+                "                                                                                   \n");
         if (startupTime == 0) startupTime = System.currentTimeMillis();
         Utility.createFile(getBasicConfigPath());
         Utility.createFile(getConfigPath());
@@ -65,6 +72,13 @@ public class Bot {
         configMap.put(GeneralConfig.class, getConfigPath());
         configMap.put(MiscConfig.class, getMiscConfigPath());
         ConfigUtil.reloadConfig();
+        if (GeneralConfig.get().getDiscordToken().equals("Enter your token here!")) {
+            System.out.println("\n\nWelcome to the i0dev DiscordBot, configuration files have been generated for you!\nGo fill them out and then re-enable the bot.\n\n");
+            if (pluginMode)
+                com.i0dev.BotPlugin.get().onDisable();
+            else shutdown();
+            return;
+        }
         SQLUtil.connect();
         SQLUtil.makeTable(DPlayer.class);
         createJDA();
@@ -72,40 +86,43 @@ public class Bot {
         registerListeners();
         Engine.run();
         System.out.println("Successfully loaded DiscordBot");
+        if (!pluginMode) {
+            Scanner scanner = new Scanner(System.in);
+            String incomingCommand = scanner.nextLine();
+
+            switch (incomingCommand) {
+                case "end": {
+                    shutdown();
+                }
+            }
+
+        }
+
+    }
+
+    @SneakyThrows
+    public static void shutdown() {
+        LogUtil.log(PlaceholderUtil.convert("Shutting down DiscordBot v{version}", null, null));
+        DPlayer.getCachedUsers().forEach(DPlayer::save);
+        startupTime = 0;
+        //SQLUtil.getConnection().close();
+        asyncService.shutdown();
+        if (registeredCommands != null) registeredCommands.clear();
+        configMap.clear();
+        jda = null;
+        System.gc();
+        if (!pluginMode) System.exit(0);
     }
 
     @SneakyThrows
     public static void createJDA() {
-        try {
-            jda = JDABuilder.create(GeneralConfig.get().getDiscordToken(),
-                            GatewayIntent.DIRECT_MESSAGES,
-                            GatewayIntent.GUILD_BANS,
-                            GatewayIntent.GUILD_EMOJIS,
-                            GatewayIntent.GUILD_PRESENCES,
-                            GatewayIntent.GUILD_MEMBERS,
-                            GatewayIntent.GUILD_INVITES,
-                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                            GatewayIntent.GUILD_MESSAGE_TYPING,
-                            GatewayIntent.GUILD_MESSAGES,
-                            GatewayIntent.GUILD_VOICE_STATES,
-                            GatewayIntent.DIRECT_MESSAGE_TYPING,
-                            GatewayIntent.DIRECT_MESSAGE_REACTIONS)
-                    .setStatus(OnlineStatus.DO_NOT_DISTURB)
-                    .setContextEnabled(true)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL)
-                    .enableCache(
-                            CacheFlag.ACTIVITY,
-                            CacheFlag.VOICE_STATE,
-                            CacheFlag.MEMBER_OVERRIDES,
-                            CacheFlag.EMOTE,
-                            CacheFlag.CLIENT_STATUS)
-                    .build()
-                    .awaitReady();
-        } catch (Exception ignored) {
-            System.out.println("\n\nCould not load previous settings. If this is the first time you launched the bot, it will generate a folder with config and storage.\n");
-            if (pluginMode)
-                com.i0dev.BotPlugin.get().onDisable();
-        }
+        jda = JDABuilder.create(GeneralConfig.get().getDiscordToken(), EnumSet.allOf(GatewayIntent.class))
+                .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .setContextEnabled(true)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .enableCache(EnumSet.allOf(CacheFlag.class))
+                .build()
+                .awaitReady();
     }
 
     @SneakyThrows

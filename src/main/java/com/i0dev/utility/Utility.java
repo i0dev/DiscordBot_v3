@@ -50,13 +50,18 @@ public class Utility {
 
 
     public static List<Guild> getAllowedGuilds() {
-        List<Guild> ret = new ArrayList<>();
-        for (Long allowedGuild : GeneralConfig.get().getAllowedGuilds()) {
-            Guild guild = Bot.getJda().getGuildById(allowedGuild);
-            if (guild == null) continue;
-            ret.add(guild);
+        try {
+            List<Guild> ret = new ArrayList<>();
+            for (Long allowedGuild : GeneralConfig.get().getAllowedGuilds()) {
+                Guild guild = Bot.getJda().getGuildById(allowedGuild);
+                if (guild == null) continue;
+                ret.add(guild);
+            }
+            return ret;
+
+        } catch (Exception ignored) {
         }
-        return ret;
+        return Collections.singletonList(null);
     }
 
     public static boolean hasRole(User user, List<Long> roleIDS) {

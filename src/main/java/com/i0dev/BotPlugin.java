@@ -40,8 +40,7 @@ public class BotPlugin extends Plugin {
         server.getScheduler().cancel(this);
         server.getPluginManager().unregisterCommands(this);
         server.getPluginManager().unregisterListeners(this);
-        Bot.getJda().shutdown();
-        Bot.getAsyncService().shutdown();
+        Bot.shutdown();
         instance = null;
         getLogger().info(ChatColor.RED + "DiscordBot Disabled!");
     }

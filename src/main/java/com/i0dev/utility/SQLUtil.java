@@ -155,7 +155,6 @@ public class SQLUtil {
             insertToTable(object);
             return;
         }
-        LogUtil.debug("Updating SQL pair: [" + key + ", " + value + "] DB: [" + object.getClass().getSimpleName() + "]");
 
         Class<?> clazz = object.getClass();
         StringBuilder toQ = new StringBuilder();
@@ -279,18 +278,18 @@ public class SQLUtil {
             switch (type) {
                 case "java.lang.Long":
                 case "long":
-                    field.setLong(ret, result.getLong(iter));
+                    field.setLong(ret, result.getLong(field.getName()));
                     break;
                 case "java.lang.String":
-                    field.set(ret, result.getString(iter));
+                    field.set(ret, result.getString(field.getName()));
                     break;
                 case "java.lang.Boolean":
                 case "boolean":
-                    field.setBoolean(ret, result.getBoolean(iter));
+                    field.setBoolean(ret, result.getBoolean(field.getName()));
                     break;
                 case "java.lang.Double":
                 case "double":
-                    field.setDouble(ret, result.getDouble(iter));
+                    field.setDouble(ret, result.getDouble(field.getName()));
                     break;
             }
         }
@@ -302,6 +301,17 @@ public class SQLUtil {
     public static List<Object> getListWhere(String table, String key, String value, Class<?> castTo, String objectKey) {
         List<Object> ret = new ArrayList<>();
         String query = "SELECT * FROM " + table + " WHERE " + key + "=" + value;
+        ResultSet resultSet = connection.prepareStatement(query).executeQuery();
+        while (resultSet.next()) {
+            ret.add(getObject(objectKey, resultSet.getString(objectKey), castTo));
+        }
+        return ret;
+    }
+
+    @SneakyThrows
+    public static List<Object> getListWhereNot(String table, String key, String value, Class<?> castTo, String objectKey) {
+        List<Object> ret = new ArrayList<>();
+        String query = "SELECT * FROM " + table + " WHERE " + key + "!=" + value;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
         while (resultSet.next()) {
             ret.add(getObject(objectKey, resultSet.getString(objectKey), castTo));
