@@ -43,7 +43,7 @@ public class InviteHandler extends ListenerAdapter {
                 joined.used().save();
 
                 if (MiscConfig.get().invite_joinLog)
-                    LogUtil.logDiscord(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).content("**{tag}** joined the server, invited by {authorTag}").user(e.getUser()).author(retrievedInvite.getInviter()).build());
+                    LogUtil.logDiscord(EmbedMaker.builder().authorImg(e.getUser().getEffectiveAvatarUrl()).embedColor(EmbedColor.SUCCESS).content("**{tag}** joined the server, invited by {authorTag}").user(e.getUser()).author(retrievedInvite.getInviter()).build());
                 break;
             }
         });

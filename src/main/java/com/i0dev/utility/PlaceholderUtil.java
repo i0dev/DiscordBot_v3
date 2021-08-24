@@ -100,7 +100,7 @@ public class PlaceholderUtil {
                 .replace("{botAuthor}", "i0#0001")
                 .replace("{pluginMode}", Bot.pluginMode ? "Yes" : "No")
                 .replace("{prefix}", GeneralConfig.get().getPrefixes().get(0))
-                .replace("{version}", "3.0.12");
+                .replace("{version}", "3.0.13");
 
         //plugin mode
         if (Bot.isPluginMode()) {
