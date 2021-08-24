@@ -7,10 +7,7 @@ import com.i0dev.object.EmbedColor;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.utility.EmbedMaker;
-import com.i0dev.utility.MessageUtil;
-import com.i0dev.utility.TimeUtil;
-import com.i0dev.utility.Utility;
+import com.i0dev.utility.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -30,5 +27,6 @@ public class VerifyHandler extends ListenerAdapter {
         e.getInteraction().deferReply(true).setContent("You have successfully verified yourself.").queue();
         MiscConfig.get().verify_removeRoles.forEach(roleID -> new RoleQueueObject(e.getUser().getIdLong(), roleID, Type.REMOVE_ROLE).add());
         MiscConfig.get().verify_giveRoles.forEach(roleID -> new RoleQueueObject(e.getUser().getIdLong(), roleID, Type.ADD_ROLE).add());
+        LogUtil.logDiscord(EmbedMaker.builder().author(e.getUser()).user(e.getUser()).content("{tag} has successfully verified themselves.").embedColor(EmbedColor.SUCCESS).build());
     }
 }
