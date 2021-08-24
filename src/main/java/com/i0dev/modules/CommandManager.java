@@ -173,6 +173,7 @@ public class CommandManager extends ListenerAdapter {
                     if (customMessage.isReply()) e.getMessage().reply(customMessage.getContent()).queue();
                     else e.getChannel().sendMessage(customMessage.getContent()).queue();
                 }
+                if (customMessage.isDeleteCommand()) e.getMessage().delete().queue();
                 break;
             }
 

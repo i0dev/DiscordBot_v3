@@ -32,6 +32,7 @@ public class CustomCommandsConfig {
         boolean callersIgnoreCase = true;
         String content = "You can set any value to null and it will remove it from the config. If you ever need to see which fields you can use, you can always resort to looking at this custom message.";
         boolean reply = false;
+        boolean deleteCommand = true;
 
         //Embed
         boolean embedEnabled = true;
