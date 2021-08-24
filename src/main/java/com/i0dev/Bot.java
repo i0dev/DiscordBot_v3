@@ -93,6 +93,7 @@ public class Bot {
             String incomingCommand = scanner.nextLine();
 
             switch (incomingCommand) {
+                case "stop":
                 case "end": {
                     shutdown();
                 }
