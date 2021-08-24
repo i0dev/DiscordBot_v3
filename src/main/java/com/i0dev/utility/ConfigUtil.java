@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class ConfigUtil {
 
     public static String ObjectToJson(Object object) {
-        return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(new JsonParser().parse(new Gson().fromJson(new Gson().toJson(object), JsonObject.class).toString()));
+        return new GsonBuilder().setPrettyPrinting().serializeNulls().disableHtmlEscaping().create().toJson(new JsonParser().parse(new Gson().fromJson(new Gson().toJson(object), JsonObject.class).toString()));
     }
 
     public static JsonObject ObjectToJsonObj(Object object) {
@@ -64,6 +64,7 @@ public class ConfigUtil {
         field.setAccessible(true);
         if ("".equals(configString)) {
             save(field.get(new Object()), path);
+            load(clazz, path);
             return;
         }
 

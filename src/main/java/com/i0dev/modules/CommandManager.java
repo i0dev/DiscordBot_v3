@@ -1,19 +1,22 @@
 package com.i0dev.modules;
 
 import com.i0dev.Bot;
+import com.i0dev.config.CustomCommandsConfig;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.object.*;
 import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.Utility;
 import lombok.SneakyThrows;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +66,7 @@ public class CommandManager extends ListenerAdapter {
                 }
             }
             String[] message = e.getMessage().getContentRaw().split(" ");
+
 
             boolean initCheck = false;
             for (String prefix : GeneralConfig.get().getPrefixes()) {
@@ -128,6 +132,51 @@ public class CommandManager extends ListenerAdapter {
                     }
                 }
             }
+
+
+            for (CustomCommandsConfig.MessageSetting customMessage : CustomCommandsConfig.get().getCustomCommands()) {
+                boolean found = false;
+                for (String caller : customMessage.getCallers()) {
+                    if (customMessage.isCallersIgnoreCase()) {
+                        if (!e.getMessage().getContentRaw().substring(1).equalsIgnoreCase(caller)) {
+                            continue;
+                        }
+                    } else {
+                        if (!e.getMessage().getContentRaw().substring(1).equals(caller)) {
+                            continue;
+                        }
+                    }
+                    found = true;
+                    break;
+                }
+                if (!found) continue;
+                if (customMessage.isEmbedEnabled()) {
+                    EmbedBuilder builder = new EmbedBuilder()
+                            .setAuthor("".equals(customMessage.getAuthorName()) ? null : customMessage.getAuthorName(), "".equals(customMessage.getAuthorUrl()) ? null : customMessage.getAuthorUrl(), "".equals(customMessage.getAuthorIconUrl()) ? null : customMessage.getAuthorIconUrl())
+                            .setDescription(customMessage.getContent())
+                            .setImage("".equals(customMessage.getImage()) ? null : customMessage.getImage())
+                            .setTitle("".equals(customMessage.getTitle()) ? null : customMessage.getTitle())
+                            .setThumbnail("".equals(customMessage.getThumbnail()) ? null : customMessage.getThumbnail())
+                            .setFooter("".equals(customMessage.getFooterText()) ? null : customMessage.getFooterText(), "".equals(customMessage.getFooterIconUrl()) ? null : customMessage.getFooterIconUrl());
+                    if (customMessage.isTimestamp()) builder.setTimestamp(ZonedDateTime.now());
+                    if (customMessage.getColorHex() != null && customMessage.getColorHex().equals("NORMAL_COLOR")) {
+                        builder.setColor(Color.decode(GeneralConfig.get().normalColor));
+                    } else if (customMessage.getColorHex() != null) {
+                        builder.setColor(Color.decode(customMessage.getColorHex()));
+                    }
+                    for (MessageEmbed.Field embedField : customMessage.getFields()) {
+                        builder.addField(embedField);
+                    }
+                    if (customMessage.isReply()) e.getMessage().replyEmbeds(builder.build()).queue();
+                    else e.getChannel().sendMessageEmbeds(builder.build()).queue();
+                } else {
+                    if (customMessage.isReply()) e.getMessage().reply(customMessage.getContent()).queue();
+                    else e.getChannel().sendMessage(customMessage.getContent()).queue();
+                }
+                break;
+            }
+
+
         } catch (Exception error) {
             error.printStackTrace();
             e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()
@@ -139,7 +188,8 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
-    public static boolean check(Message message, CommandData data, BasicCommand command, boolean enabled, String identifier, DPlayer dPlayer, Member member, String usagePrefix, int offset, MessageReceivedEvent event) {
+    public static boolean check(Message message, CommandData data, BasicCommand command, boolean enabled, String
+            identifier, DPlayer dPlayer, Member member, String usagePrefix, int offset, MessageReceivedEvent event) {
         String[] msg = message.getContentRaw().split(" ");
         EmbedMaker maker = EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Command usage: " +
                         GeneralConfig.get().getPrefixes().get(0) + (data.usage().equals("") ? usagePrefix : usagePrefix + " " + data.usage()))

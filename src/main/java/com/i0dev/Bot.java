@@ -1,6 +1,7 @@
 package com.i0dev;
 
 import com.i0dev.config.CommandsConfig;
+import com.i0dev.config.CustomCommandsConfig;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.config.MiscConfig;
 import com.i0dev.object.AdvancedDiscordCommand;
@@ -20,7 +21,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import net.dv8tion.jda.internal.managers.AudioManagerImpl;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +66,13 @@ public class Bot {
         Utility.createFile(getBasicConfigPath());
         Utility.createFile(getConfigPath());
         Utility.createFile(getMiscConfigPath());
+        Utility.createFile(getCustomCommandsConfigPath());
         Utility.createDirectory(getTicketLogsPath());
         Utility.createDirectory(getStoragePath());
         configMap.put(CommandsConfig.class, getBasicConfigPath());
         configMap.put(GeneralConfig.class, getConfigPath());
         configMap.put(MiscConfig.class, getMiscConfigPath());
+        configMap.put(CustomCommandsConfig.class, getCustomCommandsConfigPath());
         ConfigUtil.reloadConfig();
         if (GeneralConfig.get().getDiscordToken().equals("Enter your token here!")) {
             System.out.println("\n\nWelcome to the i0dev DiscordBot, configuration files have been generated for you!\nGo fill them out and then re-enable the bot.\n\n");
@@ -174,6 +176,10 @@ public class Bot {
 
     public static String getMiscConfigPath() {
         return pluginMode ? getDataFolder() + "/miscConfig.json" : "DiscordBot/miscConfig.json";
+    }
+
+    public static String getCustomCommandsConfigPath() {
+        return pluginMode ? getDataFolder() + "/customCommands.json" : "DiscordBot/customCommands.json";
     }
 
     public static String getBasicConfigPath() {
