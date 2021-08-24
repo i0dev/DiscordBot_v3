@@ -177,8 +177,7 @@ public class Engine {
     static Runnable taskVerifyAuthentication = () -> {
         if (Bot.getJda() == null || Bot.getJda().getGuildById("773035795023790131") == null) {
             LogUtil.severe("Failed to verify with authentication servers.");
-            if (Bot.getJda() != null) Bot.getJda().shutdown();
-            Bot.getAsyncService().shutdown();
+            Bot.shutdown();
             MessageUtil.sendPluginMessage("bot_command", "shutdown");
         }
     };
