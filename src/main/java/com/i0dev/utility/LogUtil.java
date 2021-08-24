@@ -10,19 +10,19 @@ public class LogUtil {
 
     public static void debug(String message) {
         if (debug)
-            System.out.println("DEBUG: " + message);
+            System.out.println("[DEBUG] " + message);
     }
 
     public static void warn(String message) {
-        System.out.println("WARN: " + message);
+        System.out.println("[WARN] " + message);
     }
 
     public static void severe(String message) {
-        System.out.println("SEVERE: " + message);
+        System.out.println("[SEVERE] " + message);
     }
 
     public static void log(String message) {
-        System.out.println("BOT: " + message);
+        System.out.println(message);
     }
 
     public static void logDiscord(EmbedMaker embedMaker) {
