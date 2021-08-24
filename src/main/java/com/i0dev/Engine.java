@@ -123,6 +123,11 @@ public class Engine {
             if (!miscFile.exists()) {
                 Files.write(Paths.get(miscFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getMiscConfigPath()).toString().getBytes());
             }
+
+            File customCmdFile = new File(Bot.getStoragePath() + "/" + "CustomCommandsBackup-" + date);
+            if (!customCmdFile.exists()) {
+                Files.write(Paths.get(customCmdFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getCustomCommandsConfigPath()).toString().getBytes());
+            }
         } catch (Exception ignored) {
 
         }
