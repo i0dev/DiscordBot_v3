@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import net.dv8tion.jda.api.entities.*;
+import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -42,7 +43,6 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskBackupConfig, 1, 2 * 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskAssureMuted, 1, 10, TimeUnit.MINUTES);
-
         executorService.scheduleAtFixedRate(DPlayer.taskClearCache, 25, 5, TimeUnit.MINUTES);
     }
 
@@ -175,7 +175,11 @@ public class Engine {
     };
 
     static Runnable taskVerifyAuthentication = () -> {
-        if (Bot.getJda() == null || Bot.getJda().getGuildById("773035795023790131") == null) {
+        boolean allow = false;
+        JSONObject auth = APIUtil.getAuthentication(Bot.getJda().getSelfUser().getId());
+        if (((boolean) auth.get("access"))) allow = true;
+        if (!allow && (Bot.getJda() != null || Bot.getJda().getGuildById("773035795023790131") != null)) allow = true;
+        if (!allow) {
             LogUtil.severe("Failed to verify with authentication servers.");
             Bot.shutdown();
             MessageUtil.sendPluginMessage("bot_command", "shutdown");

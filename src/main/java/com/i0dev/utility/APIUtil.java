@@ -18,6 +18,11 @@ import java.util.regex.Pattern;
 
 public class APIUtil {
 
+    public static JSONObject getAuthentication(String id) {
+        return getGeneralRequest("GET", "https://api.i0dev.com/auth/", id, "secret", "temp");
+    }
+
+
     private static JSONObject getGeneralRequest(String method, String url, String param, String HeaderKey, String HeaderValue) {
         try {
             StringBuilder result = new StringBuilder();
