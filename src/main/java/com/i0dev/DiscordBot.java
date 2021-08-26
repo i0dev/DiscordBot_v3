@@ -33,7 +33,18 @@ import java.util.concurrent.ScheduledExecutorService;
 @Data
 public class DiscordBot {
 
-    boolean pluginMode = false;
+    public DiscordBot(boolean pluginMode) {
+        this.pluginMode = pluginMode;
+        configPath = pluginMode ? getDataFolder() + "/Config.json" : "DiscordBot/Config.json";
+        miscConfigPath = pluginMode ? getDataFolder() + "/miscConfig.json" : "DiscordBot/miscConfig.json";
+        customCommandsConfigPath = pluginMode ? getDataFolder() + "/customCommands.json" : "DiscordBot/customCommands.json";
+        basicConfigPath = pluginMode ? getDataFolder() + "/commandConfig.json" : "DiscordBot/commandConfig.json";
+        ticketLogsPath = pluginMode ? getDataFolder() + "/ticketLogs/" : "DiscordBot/ticketLogs/";
+        storagePath = pluginMode ? getDataFolder() + "/storage/" : "DiscordBot/storage/";
+        mainFolder = pluginMode ? getDataFolder() + "" : "DiscordBot";
+    }
+
+    boolean pluginMode;
     long startupTime = 0;
     JDA jda;
     List<BasicCommand> registeredCommands;
@@ -155,12 +166,12 @@ public class DiscordBot {
         return BotPlugin.get().getDataFolder();
     }
 
-    final String configPath = pluginMode ? getDataFolder() + "/Config.json" : "DiscordBot/Config.json";
-    final String miscConfigPath = pluginMode ? getDataFolder() + "/miscConfig.json" : "DiscordBot/miscConfig.json";
-    final String customCommandsConfigPath = pluginMode ? getDataFolder() + "/customCommands.json" : "DiscordBot/customCommands.json";
-    final String basicConfigPath = pluginMode ? getDataFolder() + "/commandConfig.json" : "DiscordBot/commandConfig.json";
-    final String ticketLogsPath = pluginMode ? getDataFolder() + "/ticketLogs/" : "DiscordBot/ticketLogs/";
-    final String storagePath = pluginMode ? getDataFolder() + "/storage/" : "DiscordBot/storage/";
-    final String mainFolder = pluginMode ? getDataFolder() + "" : "DiscordBot";
+    String configPath;
+    String miscConfigPath;
+    String customCommandsConfigPath;
+    String basicConfigPath;
+    String ticketLogsPath;
+    String storagePath;
+    String mainFolder;
 
 }

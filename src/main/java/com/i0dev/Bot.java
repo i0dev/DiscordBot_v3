@@ -12,17 +12,15 @@ public class Bot {
 
     @SneakyThrows
     public static void main(String[] args) {
-        bot = new DiscordBot();
+        bot = new DiscordBot(false);
         bot.initialize();
-        if (!bot.isPluginMode()) {
-            Scanner scanner = new Scanner(System.in);
-            String incomingCommand = scanner.nextLine();
+        Scanner scanner = new Scanner(System.in);
+        String incomingCommand = scanner.nextLine();
 
-            switch (incomingCommand) {
-                case "stop":
-                case "end": {
-                    bot.shutdown();
-                }
+        switch (incomingCommand) {
+            case "stop":
+            case "end": {
+                bot.shutdown();
             }
         }
     }

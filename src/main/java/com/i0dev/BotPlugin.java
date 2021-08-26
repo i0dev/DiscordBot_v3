@@ -16,8 +16,8 @@ public class BotPlugin extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
-        Bot.getBot().setPluginMode(true);
-        Bot.main(null);
+        Bot.bot = new DiscordBot(true);
+        Bot.bot.initialize();
         server.getPluginManager().registerCommand(this, new CommandLink("link"));
         server.getPluginManager().registerCommand(this, new Command2fa("2fa"));
         server.getPluginManager().registerCommand(this, new CommandDiscordBot("discordBot"));
