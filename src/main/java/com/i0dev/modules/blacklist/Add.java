@@ -1,5 +1,6 @@
 package com.i0dev.modules.blacklist;
 
+import com.i0dev.Bot;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
@@ -17,7 +18,7 @@ public class Add extends SuperDiscordCommand {
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
 
 
-        DPlayer dp = DPlayer.getDPlayer(user.getIdLong());
+        DPlayer dp = Bot.getBot().getDPlayerManager().getDPlayer(user.getIdLong());
         if (dp.isBlacklisted()) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).user(user).content("{tag} is already blacklisted!").build());
             return;

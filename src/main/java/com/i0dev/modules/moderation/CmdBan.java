@@ -26,7 +26,7 @@ public class CmdBan extends DiscordCommand {
     public static void run(CommandEvent e) {
         Member member;
         if ((member = FindUtil.getMember(e.getSplit()[1], e.getMessage())) == null) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(member);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(member);
         String reason = Utility.remainingArgFormatter(e.getSplit(), 2);
         if (Utility.getBan(e.getGuild(), member.getUser()) != null) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("{tag} is already banned.").user(member.getUser()).build());

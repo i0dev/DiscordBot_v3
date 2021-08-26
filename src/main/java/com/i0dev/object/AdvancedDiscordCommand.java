@@ -2,7 +2,7 @@ package com.i0dev.object;
 
 import com.i0dev.Bot;
 import com.i0dev.config.CommandsConfig;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
@@ -47,14 +47,14 @@ public class AdvancedDiscordCommand extends DiscordCommand {
     public static void addSuperCommand(String key, SuperCommand value) {
         AdvancedCommand cmd = getAdvancedCommand((Class<? extends DiscordCommand>) Class.forName(Thread.currentThread().getStackTrace()[2].getClassName()));
         if (cmd.getParts().has(key)) {
-            SuperCommand superCommand = (SuperCommand) ConfigUtil.JsonToObject(cmd.getParts().get(key), SuperCommand.class);
+            SuperCommand superCommand = (SuperCommand) Bot.getBot().getConfigManager().JsonToObject(cmd.getParts().get(key), SuperCommand.class);
             superCommand.setClazz(value.getClazz());
             cmd.getSuperCommands().add(superCommand);
             return;
         }
         cmd.addSuperCommand(key, value);
         cmd.getSuperCommands().add(value);
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
+        Bot.getBot().getManager(ConfigManager.class).save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 
 }

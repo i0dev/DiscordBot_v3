@@ -1,5 +1,6 @@
 package com.i0dev.modules.linking;
 
+import com.i0dev.Bot;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.modules.CommandManager;
 import com.i0dev.object.*;
@@ -47,7 +48,7 @@ public class Code extends SuperDiscordCommand {
 
         LogUtil.logDiscord(EmbedMaker.builder().content("{tag} is now linked to the ign: `{ign}`").user(e.getAuthor()).build());
         CodeCache.getInstance().getFrom_Ingame_cache().remove(codeLinker);
-        RoleRefreshHandler.RefreshUserRank(DPlayer.getDPlayer(e.getAuthor()));
+        RoleRefreshHandler.RefreshUserRank(Bot.getBot().getDPlayerManager().getDPlayer(e.getAuthor()));
     }
 
 }

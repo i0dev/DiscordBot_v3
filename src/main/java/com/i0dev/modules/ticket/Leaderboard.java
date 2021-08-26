@@ -6,8 +6,8 @@ import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.object.discordLinking.DPlayer;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.EmbedMaker;
-import com.i0dev.utility.SQLUtil;
 import com.i0dev.utility.Utility;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -24,7 +24,7 @@ public class Leaderboard extends SuperDiscordCommand {
     public static void run(CommandEvent e) {
         StringBuilder msg = new StringBuilder();
 
-        List<Object> list = SQLUtil.getSortedList(DPlayer.class.getSimpleName(), "ticketsClosed", DPlayer.class, getOption("limit").getAsInt(), "discordID");
+        List<Object> list = Bot.getBot().getManager(SQLManager.class).getSortedList(DPlayer.class.getSimpleName(), "ticketsClosed", DPlayer.class, getOption("limit").getAsInt(), "discordID");
         int count = 0;
         for (Object o : list) {
             DPlayer dPlayer = (DPlayer) o;

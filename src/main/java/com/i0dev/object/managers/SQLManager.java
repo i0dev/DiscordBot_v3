@@ -1,8 +1,11 @@
-package com.i0dev.utility;
+package com.i0dev.object.managers;
 
 import com.i0dev.Bot;
+import com.i0dev.DiscordBot;
 import com.i0dev.config.GeneralConfig;
+import com.i0dev.utility.LogUtil;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
@@ -12,13 +15,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SQLUtil {
+@Getter
+@Setter
+public class SQLManager extends Manager {
 
-    @Getter
-    public static Connection connection = null;
+    Connection connection;
+
+    public SQLManager(DiscordBot bot) {
+        super(bot);
+    }
+
+    @Override
+    public void initialize() {
+        if (connection != null) deinitialize();
+        connect();
+    }
 
     @SneakyThrows
-    public static void connect() {
+    @Override
+    public void deinitialize() {
+        connection.close();
+        connection = null;
+    }
+
+
+    @SneakyThrows
+    public void connect() {
         Class.forName("org.sqlite.JDBC");
         Class.forName("com.mysql.cj.jdbc.Driver");
         String database = GeneralConfig.get().getDbName();
@@ -36,7 +58,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static void absenceCheck(Class<?> clazz) {
+    public void absenceCheck(Class<?> clazz) {
         String table = clazz.getSimpleName();
         List<String> columns = getColumns(table);
 
@@ -83,7 +105,7 @@ public class SQLUtil {
         }
     }
 
-    public static List<String> getColumns(String table) throws SQLException {
+    public List<String> getColumns(String table) throws SQLException {
         if (GeneralConfig.get().isUseDatabase()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SHOW COLUMNS FROM " + table + ";");
             ResultSet set = preparedStatement.executeQuery();
@@ -104,7 +126,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static void makeTable(Class<?> clazz) {
+    public void makeTable(Class<?> clazz) {
         String name = clazz.getSimpleName();
         List<String> list = new ArrayList<>();
         for (Field declaredField : clazz.getDeclaredFields()) {
@@ -124,7 +146,7 @@ public class SQLUtil {
         absenceCheck(clazz);
     }
 
-    public static List<String> getColumnLines(Field field) {
+    public List<String> getColumnLines(Field field) {
         String type = field.getType().getTypeName();
         String name = field.getName();
         List<String> ret = new ArrayList<>();
@@ -149,7 +171,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static void updateTable(Object object, String key, String value) {
+    public void updateTable(Object object, String key, String value) {
         if (!objectExists(object.getClass().getSimpleName(), key, value)) {
             LogUtil.debug("SQL pair: [" + key + ", " + value + "] did not exist. Creating now...");
             insertToTable(object);
@@ -186,7 +208,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static void updateAll(String table, String key, Object value) {
+    public void updateAll(String table, String key, Object value) {
         switch (value.getClass().getTypeName()) {
             case "java.lang.Long":
             case "java.lang.Double":
@@ -204,7 +226,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static List<Object> getAllObjects(String table, String key, Class<?> clazz) {
+    public List<Object> getAllObjects(String table, String key, Class<?> clazz) {
         List<Object> ret = new ArrayList<>();
         String query = "SELECT * FROM " + table + ";";
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
@@ -216,26 +238,26 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static boolean objectExists(String table, String key, String value) {
+    public boolean objectExists(String table, String key, String value) {
         String query = "SELECT * FROM " + table + " WHERE " + key + " = " + value;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
         return resultSet.next();
     }
 
     @SneakyThrows
-    public static void clearTable(String table) {
+    public void clearTable(String table) {
         String query = "DELETE FROM " + table;
         connection.prepareStatement(query).execute();
     }
 
     @SneakyThrows
-    public static void deleteFromTable(String table, String key, String value) {
+    public void deleteFromTable(String table, String key, String value) {
         String query = "DELETE FROM " + table + " WHERE " + key + "=" + value;
         connection.prepareStatement(query).execute();
     }
 
     @SneakyThrows
-    public static void insertToTable(Object object) {
+    public void insertToTable(Object object) {
         Class<?> clazz = object.getClass();
         StringBuilder toQ = new StringBuilder();
         for (Field field : clazz.getDeclaredFields()) {
@@ -264,7 +286,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static Object getObject(String key, String value, Class<?> clazz) {
+    public Object getObject(String key, String value, Class<?> clazz) {
         if (!objectExists(clazz.getSimpleName(), key, value)) return null;
         ResultSet result = connection.createStatement().executeQuery("select * from " + clazz.getSimpleName() + " where " + key + "=" + value + ";");
         int iter = 0;
@@ -298,7 +320,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static List<Object> getListWhere(String table, String key, String value, Class<?> castTo, String objectKey) {
+    public List<Object> getListWhere(String table, String key, String value, Class<?> castTo, String objectKey) {
         List<Object> ret = new ArrayList<>();
         String query = "SELECT * FROM " + table + " WHERE " + key + "=" + value;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
@@ -309,7 +331,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static List<Object> getListWhereNot(String table, String key, String value, Class<?> castTo, String objectKey) {
+    public List<Object> getListWhereNot(String table, String key, String value, Class<?> castTo, String objectKey) {
         List<Object> ret = new ArrayList<>();
         String query = "SELECT * FROM " + table + " WHERE " + key + "!=" + value;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
@@ -320,7 +342,7 @@ public class SQLUtil {
     }
 
     @SneakyThrows
-    public static List<Object> getSortedList(String table, String orderBy, Class<?> castTo, int limit, String key) {
+    public List<Object> getSortedList(String table, String orderBy, Class<?> castTo, int limit, String key) {
         List<Object> ret = new ArrayList<>();
         String query = "SELECT * FROM " + table + " ORDER BY " + orderBy + " DESC LIMIT " + limit;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
@@ -329,6 +351,5 @@ public class SQLUtil {
         }
         return ret;
     }
-
 
 }

@@ -6,6 +6,8 @@ import com.i0dev.config.MiscConfig;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.LogObject;
 import com.i0dev.object.discordLinking.DPlayer;
+import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -24,7 +26,7 @@ public class TicketCreateHandler extends ListenerAdapter {
 
     public int getUsersTicketCount(User user) {
         int count = 0;
-        for (Object o : SQLUtil.getAllObjects(Ticket.class.getSimpleName(), "channelID", Ticket.class)) {
+        for (Object o : Bot.getBot().getManager(SQLManager.class).getAllObjects(Ticket.class.getSimpleName(), "channelID", Ticket.class)) {
             Ticket ticket = ((Ticket) o);
             if (ticket.getTicketOwnerID() == user.getIdLong())
                 count++;
@@ -38,7 +40,7 @@ public class TicketCreateHandler extends ListenerAdapter {
         long ticketCreateChannelID = TicketManager.getOption("ticketCreateChannel", TicketManager.class).getAsLong();
         if (e.getChannel().getIdLong() != (ticketCreateChannelID)) return;
         if (!Utility.isValidGuild(e.getGuild())) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(e.getUser());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(e.getUser());
         if (dPlayer.isBlacklisted()) return;
         for (TicketOption option : TicketManager.getOptions()) {
             String Emoji = option.getEmoji();
@@ -59,7 +61,7 @@ public class TicketCreateHandler extends ListenerAdapter {
             Category NewTicketCreatedCategory = Bot.getBot().getJda().getCategoryById(categoryID);
             TextChannel NewTicketCreated;
             MiscConfig.get().ticketNumber += 1;
-            ConfigUtil.save(MiscConfig.get(), Bot.getBot().getMiscConfigPath());
+            Bot.getBot().getManager(ConfigManager.class).save(MiscConfig.get(), Bot.getBot().getMiscConfigPath());
             if (NewTicketCreatedCategory != null)
                 NewTicketCreated = NewTicketCreatedCategory.createTextChannel(ChannelName.replace("{num}", MiscConfig.get().getTicketNumber() + "")).complete();
             else

@@ -60,7 +60,7 @@ public class TwoFactorAuthentication implements Listener {
                 && EncryptionUtil.encrypt(Arrays.toString(e.getPlayer().getAddress().getAddress().getAddress()), e.getPlayer().getUniqueId().toString()).equalsIgnoreCase(getIpCache().get(e.getPlayer().getUniqueId()))) {
             return;
         }
-        DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getPlayer().getUniqueId().toString());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromUUID(e.getPlayer().getUniqueId().toString());
         if (dPlayer == null) return;
         TwoFactor preTwoF = getObject(e.getPlayer());
         MessageUtil.sendMessageInGame(e.getPlayer(), "&7Two Factor Authentication required. Please use the code the Bot.getBot() sent you in Direct Messages. &c/2fa <code>");

@@ -2,8 +2,8 @@ package com.i0dev.modules.suggestion;
 
 import com.i0dev.Bot;
 import com.i0dev.object.*;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.EmbedMaker;
-import com.i0dev.utility.SQLUtil;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -30,7 +30,7 @@ public class SuggestionManager extends AdvancedDiscordCommand {
         accepted = Bot.getBot().getJda().getTextChannelById(getOption("acceptedChannel").getAsLong());
         denied = Bot.getBot().getJda().getTextChannelById(getOption("deniedChannel").getAsLong());
 
-        SQLUtil.makeTable(Suggestion.class);
+        Bot.getBot().getManager(SQLManager.class).makeTable(Suggestion.class);
 
 
     }

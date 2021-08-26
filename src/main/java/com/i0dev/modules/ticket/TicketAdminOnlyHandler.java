@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import com.i0dev.Bot;
 import com.i0dev.modules.CommandManager;
 import com.i0dev.object.EmbedColor;
-import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.Utility;
 import net.dv8tion.jda.api.Permission;
@@ -21,11 +20,11 @@ public class TicketAdminOnlyHandler extends ListenerAdapter {
         if (e.getButton() == null) return;
         if (!"BUTTON_TICKET_ADMIN_ONLY".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
-        if (!ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.adminOnly.enabled", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
+        if (!Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.adminOnly.enabled", Bot.getBot().getManager(ConfigManager.class).getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
             return;
         if (!Utility.isValidGuild(e.getGuild())) return;
-        if (DPlayer.getDPlayer(e.getUser()).isBlacklisted()) return;
-        JsonObject ob = ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.adminOnly.permission", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
+        if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()) return;
+        JsonObject ob = Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.adminOnly.permission", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
         if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean()))
             return;
         if (!TicketManager.isTicket(e.getChannel())) return;

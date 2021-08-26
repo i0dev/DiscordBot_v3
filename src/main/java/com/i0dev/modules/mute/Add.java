@@ -23,7 +23,7 @@ public class Add extends SuperDiscordCommand {
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
         String reason = Utility.remainingArgFormatter(e.getOffsetSplit(), 2);
         Member member = e.getGuild().getMember(user);
-        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
         if (MuteManager.mutedRole == null) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Muted role is not yet setup. You can create one with {prefix}mute create").build());

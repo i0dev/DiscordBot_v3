@@ -21,7 +21,7 @@ public class VerifyHandler extends ListenerAdapter {
         if (!"BUTTON_VERIFY_PANEL_2".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
         if (!Utility.isValidGuild(e.getGuild())) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(e.getUser());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(e.getUser());
         if (dPlayer.isBlacklisted()) return;
         MessageUtil.sendPrivateMessage(e.getMessage(), e.getUser(), EmbedMaker.builder().authorName(CmdVerifyPanel.getOption("title", CmdVerifyPanel.class).getAsString()).authorImg(e.getUser().getEffectiveAvatarUrl()).embedColor(EmbedColor.SUCCESS).content("You have successfully verified yourself in the **{guildName}** discord!".replace("{guildName}", e.getGuild().getName())).build());
         e.getInteraction().deferReply(true).setContent("You have successfully verified yourself.").queue();

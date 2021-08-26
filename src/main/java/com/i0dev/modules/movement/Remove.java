@@ -21,7 +21,7 @@ public class Remove extends SuperDiscordCommand {
         User user;
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
         Member member = e.getGuild().getMember(user);
-        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
         Role currentParentRole = MovementManager.getParentStaff(member);
         if (getOption("removeAllRoles").getAsBoolean())

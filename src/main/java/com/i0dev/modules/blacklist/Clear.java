@@ -1,23 +1,20 @@
 package com.i0dev.modules.blacklist;
 
+import com.i0dev.Bot;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.object.discordLinking.DPlayer;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.EmbedMaker;
-import com.i0dev.utility.FindUtil;
-import com.i0dev.utility.SQLUtil;
-import net.dv8tion.jda.api.entities.User;
-
-import java.util.Arrays;
 
 public class Clear extends SuperDiscordCommand {
 
     @CommandData(commandID = "clear", identifier = "Blacklist Clear", messageLength = 1, parentClass = BlacklistManager.class)
     public static void run(CommandEvent e) {
-        SQLUtil.getListWhere(DPlayer.class.getSimpleName(), "blacklisted", "1", DPlayer.class, "discordID").forEach(o -> {
-            DPlayer dPlayer = DPlayer.getDPlayer(((DPlayer) o).getDiscordID());
+        Bot.getBot().getManager(SQLManager.class).getListWhere(DPlayer.class.getSimpleName(), "blacklisted", "1", DPlayer.class, "discordID").forEach(o -> {
+            DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(((DPlayer) o).getDiscordID());
             dPlayer.setBlacklisted(false);
             dPlayer.save();
         });

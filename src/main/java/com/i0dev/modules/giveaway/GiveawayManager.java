@@ -1,8 +1,9 @@
 package com.i0dev.modules.giveaway;
 
+import com.i0dev.Bot;
 import com.i0dev.config.CommandsConfig;
 import com.i0dev.object.*;
-import com.i0dev.utility.SQLUtil;
+import com.i0dev.object.managers.SQLManager;
 import lombok.SneakyThrows;
 
 public class GiveawayManager extends AdvancedDiscordCommand {
@@ -13,7 +14,7 @@ public class GiveawayManager extends AdvancedDiscordCommand {
         addSuperCommand("info", new SuperCommand(CommandsConfig.s("info"), Permission.none(), Info.class));
         addSuperCommand("reroll", new SuperCommand(CommandsConfig.s("reroll"), Permission.strict(), Reroll.class));
 
-        SQLUtil.makeTable(Giveaway.class);
+        Bot.getBot().getManager(SQLManager.class).makeTable(Giveaway.class);
     }
 
     @SneakyThrows

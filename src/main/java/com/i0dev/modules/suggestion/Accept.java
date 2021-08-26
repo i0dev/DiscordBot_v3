@@ -5,6 +5,7 @@ import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,7 +21,7 @@ public class Accept extends SuperDiscordCommand {
         Long messageID;
         if ((messageID = FindUtil.getLong(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
 
-        Suggestion suggestion = (Suggestion) SQLUtil.getObject("messageID", messageID + "", Suggestion.class);
+        Suggestion suggestion = (Suggestion) Bot.getBot().getManager(SQLManager.class).getObject("messageID", messageID + "", Suggestion.class);
         if (suggestion == null) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Could not find that suggestion.").build());
             return;
@@ -77,7 +78,7 @@ public class Accept extends SuperDiscordCommand {
         }
 
         Message message = e.retrieveMessage().complete();
-        Suggestion suggestion = (Suggestion) SQLUtil.getObject("messageID", e.getMessageId(), Suggestion.class);
+        Suggestion suggestion = (Suggestion) Bot.getBot().getManager(SQLManager.class).getObject("messageID", e.getMessageId(), Suggestion.class);
         if (suggestion == null) return;
         message.delete().queue();
         suggestion.setAccepted(true);

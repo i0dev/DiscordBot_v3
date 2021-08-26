@@ -2,7 +2,6 @@ package com.i0dev.object;
 
 import com.google.gson.JsonObject;
 import com.i0dev.Bot;
-import com.i0dev.utility.ConfigUtil;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,13 +23,13 @@ public class AdvancedCommand extends BasicCommand {
 
     public void addSuperCommand(String key, SuperCommand defaultValue) {
         if (getParts().has(key)) return;
-        getParts().add(key, ConfigUtil.ObjectToJsonObj(defaultValue));
+        getParts().add(key, Bot.getBot().getConfigManager().ObjectToJsonObj(defaultValue));
     }
 
     public static void turnPartsListToParts() {
         Bot.getBot().getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).forEach(command -> {
             JsonObject newOb = new JsonObject();
-            ((AdvancedCommand) command).getSuperCommands().forEach(superCommand -> newOb.add(DiscordCommand.getAnnotation(superCommand.getClazz()).commandID(), ConfigUtil.ObjectToJsonObj(superCommand)));
+            ((AdvancedCommand) command).getSuperCommands().forEach(superCommand -> newOb.add(DiscordCommand.getAnnotation(superCommand.getClazz()).commandID(), Bot.getBot().getConfigManager().ObjectToJsonObj(superCommand)));
             ((AdvancedCommand) command).setParts(newOb);
         });
     }

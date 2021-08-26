@@ -41,7 +41,7 @@ public class InGamePunishmentLogs implements Listener {
             @Override
             public void entryRemoved(Entry e) {
 
-                DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getUuid());
+                DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromUUID(e.getUuid());
                 if (dPlayer != null && e.getType().equalsIgnoreCase("ban") && MiscConfig.get().litebans_unbanDiscord)
                     Utility.getAllowedGuilds().forEach(guild -> guild.unban(dPlayer.getDiscordID() + "").queue());
 
@@ -60,7 +60,7 @@ public class InGamePunishmentLogs implements Listener {
             @Override
             public void entryAdded(Entry e) {
 
-                DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getUuid());
+                DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromUUID(e.getUuid());
                 if (dPlayer != null && e.getType().equalsIgnoreCase("ban") && MiscConfig.get().litebans_banDiscord)
                     Utility.getAllowedGuilds().forEach(guild -> guild.ban(dPlayer.getDiscordID() + "", 0).queue());
 
@@ -78,7 +78,7 @@ public class InGamePunishmentLogs implements Listener {
 
     public static void log(Entry e, boolean add) {
 
-        DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getUuid());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromUUID(e.getUuid());
 
         APIUtil.refreshAPICache(e.getUuid());
 
@@ -106,7 +106,7 @@ public class InGamePunishmentLogs implements Listener {
         UUID uuid = APIUtil.convertUUID(e.getPlayerUUID());
         APIUtil.refreshAPICache(uuid.toString());
 
-        DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getPlayerUUID());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromUUID(e.getPlayerUUID());
         String authorImg = dPlayer == null ? Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl() : Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getEffectiveAvatarUrl();
 
         StringBuilder msg = new StringBuilder();

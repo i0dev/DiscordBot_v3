@@ -3,19 +3,12 @@ package com.i0dev.object.discordLinking;
 import com.i0dev.Bot;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.LogUtil;
-import com.i0dev.utility.SQLUtil;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import net.dv8tion.jda.api.entities.ISnowflake;
+import lombok.Data;
 import net.dv8tion.jda.api.entities.User;
 
-import java.util.*;
-
-@Getter
-@Setter
-@ToString
+@Data
 public class DPlayer {
 
     // Internal
@@ -68,21 +61,21 @@ public class DPlayer {
     }
 
     public void addToCache() {
-        getCachedUsers().add(this);
+        Bot.getBot().getDPlayerManager().getCachedUsers().add(this);
         used();
     }
 
 
     public void save() {
         lastUpdatedMillis = System.currentTimeMillis();
-        SQLUtil.updateTable(this, "discordID", this.getDiscordID() + "");
+        Bot.getBot().getManager(SQLManager.class).updateTable(this, "discordID", this.getDiscordID() + "");
         User discordUser = Bot.bot.getJda().getUserById(discordID);
         used();
         LogUtil.debug("Saved DPlayer: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
     }
 
     public void removeFromCache() {
-        getCachedUsers().remove(this);
+        Bot.getBot().getDPlayerManager().getCachedUsers().remove(this);
         save();
     }
 
@@ -202,52 +195,5 @@ public class DPlayer {
     public void removeRole(long roleID) {
         new RoleQueueObject(getDiscordID(), roleID, Type.REMOVE_ROLE).add();
     }
-
-    //
-    //   Static
-    //
-
-    @Getter
-    public transient static final Set<DPlayer> cachedUsers = new HashSet<>();
-
-    public static DPlayer getDPlayer(ISnowflake user) {
-        return getDPlayer(user.getIdLong());
-    }
-
-    public static DPlayer getDPlayer(long discordID) {
-        return cachedUsers.stream().filter(dPlayer -> dPlayer.getDiscordID() == discordID).findAny().orElseGet(() -> {
-            DPlayer user;
-            User discordUser = Bot.bot.getJda().getUserById(discordID);
-            user = (DPlayer) SQLUtil.getObject("discordID", discordID + "", DPlayer.class);
-            if (user == null) {
-                LogUtil.debug("Creating new DPlayer Object for user: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
-                user = new DPlayer(discordID);
-                user.addToCache();
-                user.save();
-                return user;
-            }
-            LogUtil.debug("Loading DPlayer Object from user: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
-            user.addToCache();
-            return user;
-        });
-    }
-
-    public static DPlayer getDPlayerFromUUID(String uuid) {
-        return cachedUsers.stream().filter(dPlayer -> Objects.equals(dPlayer.getMinecraftUUID(), uuid)).findAny().orElseGet(() -> (DPlayer) SQLUtil.getObject("minecraftUUID", uuid, DPlayer.class));
-    }
-
-    public static DPlayer getDPlayerFromIGN(String ign) {
-        return cachedUsers.stream().filter(dPlayer -> Objects.equals(dPlayer.getMinecraftIGN(), ign)).findAny().orElseGet(() -> (DPlayer) SQLUtil.getObject("minecraftIGN", ign, DPlayer.class));
-    }
-
-    public transient static Runnable taskClearCache = () -> {
-        long time = 1000L * 60L * 30L; // 30 minutes
-        List<DPlayer> toRemove = new ArrayList<>();
-        cachedUsers.stream().filter(dPlayer -> dPlayer.getLastUsedTime() + time < System.currentTimeMillis()).forEach(toRemove::add);
-        if (toRemove.isEmpty()) return;
-        LogUtil.debug("Removed " + toRemove.size() + " cached DPlayer objects, with " + (cachedUsers.size() - toRemove.size() + " still cached."));
-        toRemove.forEach(DPlayer::save);
-        toRemove.forEach(DPlayer::removeFromCache);
-    };
 
 }

@@ -1,5 +1,6 @@
 package com.i0dev.modules.linking;
 
+import com.i0dev.Bot;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
@@ -17,7 +18,7 @@ public class Force extends SuperDiscordCommand {
     public static void run(CommandEvent e) {
         User user;
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
         String ign = e.getOffsetSplit().get(2);
         if (APIUtil.getUUIDFromIGN(ign) == null) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("That ign does not exist!").build());

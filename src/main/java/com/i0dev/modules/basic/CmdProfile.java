@@ -22,7 +22,7 @@ public class CmdProfile extends DiscordCommand {
             if ((user = FindUtil.getUser(e.getSplit()[1], e.getMessage())) == null) return;
         }
 
-        DPlayer dPlayer = DPlayer.getDPlayer(user.getIdLong());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user.getIdLong());
 
         StringBuilder bot = new StringBuilder();
         bot.append("Tickets Closed: ").append("`{ticketsClosed}`").append("\n");

@@ -1,18 +1,16 @@
 package com.i0dev;
 
-import com.i0dev.config.CommandsConfig;
-import com.i0dev.config.CustomCommandsConfig;
 import com.i0dev.config.GeneralConfig;
-import com.i0dev.config.MiscConfig;
 import com.i0dev.object.AdvancedDiscordCommand;
 import com.i0dev.object.BasicCommand;
 import com.i0dev.object.DiscordCommand;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.utility.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.i0dev.object.managers.*;
+import com.i0dev.utility.LogUtil;
+import com.i0dev.utility.PlaceholderUtil;
+import com.i0dev.utility.Utility;
+import lombok.Data;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -25,13 +23,14 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.reflections.Reflections;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class DiscordBot {
 
     boolean pluginMode = false;
@@ -39,10 +38,10 @@ public class DiscordBot {
     JDA jda;
     List<BasicCommand> registeredCommands;
     ScheduledExecutorService asyncService = Executors.newScheduledThreadPool(Math.max(Runtime.getRuntime().availableProcessors() / 2, 10));
-    Map<Class<?>, String> configMap = new HashMap<>();
+    final List<Manager> managers = new ArrayList<>();
 
     @SneakyThrows
-    public void initialize() {
+    void initialize() {
         System.out.println("    _    ____        __                                                            \n" +
                 "   (_)  / __ \\  ____/ /  ___  _   __                                               \n" +
                 "  / /  / / / / / __  /  / _ \\| | / /                                               \n" +
@@ -61,11 +60,12 @@ public class DiscordBot {
         Utility.createFile(getCustomCommandsConfigPath());
         Utility.createDirectory(getTicketLogsPath());
         Utility.createDirectory(getStoragePath());
-        configMap.put(CommandsConfig.class, getBasicConfigPath());
-        configMap.put(GeneralConfig.class, getConfigPath());
-        configMap.put(MiscConfig.class, getMiscConfigPath());
-        configMap.put(CustomCommandsConfig.class, getCustomCommandsConfigPath());
-        ConfigUtil.reloadConfig();
+        managers.addAll(Arrays.asList(
+                new ConfigManager(this),
+                new DPlayerManager(this),
+                new SQLManager(this)
+        ));
+        managers.forEach(Manager::initialize);
         if (GeneralConfig.get().getDiscordToken().equals("Enter your token here!")) {
             System.out.println("\n\nWelcome to the i0dev DiscordBot, configuration files have been generated for you!\nGo fill them out and then re-enable the bot.\n\n");
             if (pluginMode)
@@ -73,8 +73,7 @@ public class DiscordBot {
             else shutdown();
             return;
         }
-        SQLUtil.connect();
-        SQLUtil.makeTable(DPlayer.class);
+        Bot.getBot().getManager(SQLManager.class).makeTable(DPlayer.class);
         jda = JDABuilder.create(GeneralConfig.get().getDiscordToken(), EnumSet.allOf(GatewayIntent.class))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .setContextEnabled(true)
@@ -91,19 +90,17 @@ public class DiscordBot {
     @SneakyThrows
     public void shutdown() {
         LogUtil.log(PlaceholderUtil.convert("Shutting down DiscordBot v{version}", null, null));
-        DPlayer.getCachedUsers().forEach(DPlayer::save);
         startupTime = 0;
-        //SQLUtil.getConnection().close();
         asyncService.shutdown();
         if (registeredCommands != null) registeredCommands.clear();
-        configMap.clear();
+        managers.forEach(Manager::deinitialize);
         jda = null;
         System.gc();
         if (!pluginMode) System.exit(0);
     }
 
     @SneakyThrows
-    public void registerListeners() {
+    void registerListeners() {
         int count = 0;
         for (Class<? extends EventListener> listener : new Reflections("com.i0dev").getSubTypesOf(EventListener.class)) {
             if (listener.getName().equals(ListenerAdapter.class.getName())) continue;
@@ -140,18 +137,30 @@ public class DiscordBot {
         System.out.println("Registered [" + count + "] total command(s).");
     }
 
+    public <T> T getManager(Class<T> clazz) {
+        return (T) managers.stream().filter(manager -> manager.getClass().equals(clazz)).findFirst().orElse(null);
+    }
+
+    public ConfigManager getConfigManager() {
+        return (ConfigManager) managers.stream().filter(manager -> manager.getClass().equals(ConfigManager.class)).findFirst().orElse(null);
+    }
+
+    public DPlayerManager getDPlayerManager() {
+        return (DPlayerManager) managers.stream().filter(manager -> manager.getClass().equals(DPlayerManager.class)).findFirst().orElse(null);
+    }
+
     // File Paths
 
-    private File getDataFolder() {
+    File getDataFolder() {
         return BotPlugin.get().getDataFolder();
     }
 
-    String configPath = pluginMode ? getDataFolder() + "/Config.json" : "DiscordBot/Config.json";
-    String miscConfigPath = pluginMode ? getDataFolder() + "/miscConfig.json" : "DiscordBot/miscConfig.json";
-    String customCommandsConfigPath = pluginMode ? getDataFolder() + "/customCommands.json" : "DiscordBot/customCommands.json";
-    String basicConfigPath = pluginMode ? getDataFolder() + "/commandConfig.json" : "DiscordBot/commandConfig.json";
-    String ticketLogsPath = pluginMode ? getDataFolder() + "/ticketLogs/" : "DiscordBot/ticketLogs/";
-    String storagePath = pluginMode ? getDataFolder() + "/storage/" : "DiscordBot/storage/";
-    String mainFolder = pluginMode ? getDataFolder() + "" : "DiscordBot";
+    final String configPath = pluginMode ? getDataFolder() + "/Config.json" : "DiscordBot/Config.json";
+    final String miscConfigPath = pluginMode ? getDataFolder() + "/miscConfig.json" : "DiscordBot/miscConfig.json";
+    final String customCommandsConfigPath = pluginMode ? getDataFolder() + "/customCommands.json" : "DiscordBot/customCommands.json";
+    final String basicConfigPath = pluginMode ? getDataFolder() + "/commandConfig.json" : "DiscordBot/commandConfig.json";
+    final String ticketLogsPath = pluginMode ? getDataFolder() + "/ticketLogs/" : "DiscordBot/ticketLogs/";
+    final String storagePath = pluginMode ? getDataFolder() + "/storage/" : "DiscordBot/storage/";
+    final String mainFolder = pluginMode ? getDataFolder() + "" : "DiscordBot";
 
 }

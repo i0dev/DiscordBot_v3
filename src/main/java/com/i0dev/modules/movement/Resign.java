@@ -28,7 +28,7 @@ public class Resign extends SuperDiscordCommand {
             return;
         }
 
-        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
         Role currentParentRole = MovementManager.getParentStaff(member);
         if (removeAllRoles) {
             member.getRoles().forEach(role -> new RoleQueueObject(member.getIdLong(), role.getIdLong(), Type.REMOVE_ROLE).add());

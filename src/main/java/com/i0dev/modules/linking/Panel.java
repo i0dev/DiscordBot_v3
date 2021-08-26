@@ -1,21 +1,14 @@
 package com.i0dev.modules.linking;
 
 import com.i0dev.Bot;
-import com.i0dev.config.MiscConfig;
-import com.i0dev.modules.invite.InviteManager;
-import com.i0dev.modules.moderation.CmdVerifyPanel;
 import com.i0dev.object.*;
 import com.i0dev.object.discordLinking.CodeCache;
 import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.object.discordLinking.From_DiscordCodeLinker;
 import com.i0dev.utility.EmbedMaker;
-import com.i0dev.utility.MessageUtil;
-import com.i0dev.utility.SQLUtil;
 import com.i0dev.utility.Utility;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
@@ -43,7 +36,7 @@ public class Panel extends SuperDiscordCommand {
         if (!"BUTTON_LINK_PANEL".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
         if (!Utility.isValidGuild(e.getGuild())) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(e.getUser());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(e.getUser());
         if (dPlayer.isBlacklisted()) return;
 
         if (dPlayer.isLinked()) {

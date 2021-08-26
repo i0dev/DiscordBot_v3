@@ -8,7 +8,7 @@ import com.i0dev.object.EmbedColor;
 import com.i0dev.object.LogObject;
 import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.object.discordLinking.DPlayerFieldType;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.Utility;
 import lombok.SneakyThrows;
@@ -28,11 +28,11 @@ public class TicketCloseHandler extends ListenerAdapter {
         if (e.getButton() == null) return;
         if (!"BUTTON_TICKET_CLOSE".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
-        if (!ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.close.enabled", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
+        if (!Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.enabled", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
             return;
         if (!Utility.isValidGuild(e.getGuild())) return;
-        if (DPlayer.getDPlayer(e.getUser()).isBlacklisted()) return;
-        JsonObject ob = ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.close.permission", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
+        if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()) return;
+        JsonObject ob = Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.permission", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
         if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean()))
             return;
         if (!TicketManager.isTicket(e.getChannel())) return;
@@ -45,7 +45,7 @@ public class TicketCloseHandler extends ListenerAdapter {
     static void closeTicket(Ticket ticket, String reason, User closer) {
         File ticketLogsFile = new File(Bot.getBot().getTicketLogsPath() + ticket.getChannelID() + ".log");
         TextChannel channel = Bot.getBot().getJda().getTextChannelById(ticket.getChannelID());
-        DPlayer dPlayer = DPlayer.getDPlayer(closer);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(closer);
         String toFile = "\n\nClosed Ticket Information:\n " +
                 "  Ticket Closer Tag: " + closer.getAsTag() + "\n" +
                 "   Ticket Closer ID: " + closer.getId() + "\n" +

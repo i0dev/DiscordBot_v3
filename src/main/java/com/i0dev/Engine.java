@@ -10,12 +10,13 @@ import com.i0dev.object.LogObject;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
 import com.i0dev.object.discordLinking.DPlayer;
+import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.object.managers.SQLManager;
 import com.i0dev.utility.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -32,6 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @FieldDefaults(level = AccessLevel.PUBLIC)
 public class Engine {
 
+
+
     static void run() {
         ScheduledExecutorService executorService = Bot.getBot().getAsyncService();
         executorService.scheduleAtFixedRate(taskExecuteMemberCountUpdate, 1, 2, TimeUnit.MINUTES);
@@ -44,7 +47,7 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskBackupConfig, 1, 2 * 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskAssureMuted, 1, 10, TimeUnit.MINUTES);
-        executorService.scheduleAtFixedRate(DPlayer.taskClearCache, 25, 5, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(Bot.getBot().getDPlayerManager().taskClearCache, 25, 5, TimeUnit.MINUTES);
     }
 
     @Getter
@@ -79,7 +82,7 @@ public class Engine {
     static Runnable taskAssureMuted = () -> {
         Role mutedRole = MuteManager.mutedRole;
         if (mutedRole == null) return;
-        List<Object> muted = SQLUtil.getListWhere(DPlayer.class.getSimpleName(), "muted", "1", DPlayer.class, "discordID");
+        List<Object> muted = Bot.getBot().getManager(SQLManager.class).getListWhere(DPlayer.class.getSimpleName(), "muted", "1", DPlayer.class, "discordID");
         AtomicInteger total = new AtomicInteger();
         muted.forEach(o -> {
             DPlayer dPlayer = ((DPlayer) o);
@@ -108,26 +111,27 @@ public class Engine {
     static Runnable taskBackupConfig = () -> {
         //month-day-year
         //8-6-2021
+        ConfigManager configManager = Bot.getBot().getManager(ConfigManager.class);
         String date = ZonedDateTime.now().getMonthValue() + "-" + ZonedDateTime.now().getDayOfMonth() + "-" + ZonedDateTime.now().getYear();
         try {
             File commandsFile = new File(Bot.getBot().getStoragePath() + "/" + "CommandsConfigBackup-" + date);
             if (!commandsFile.exists()) {
-                Files.write(Paths.get(commandsFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath()).toString().getBytes());
+                Files.write(Paths.get(commandsFile.getAbsolutePath()), configManager.getJsonObject(Bot.getBot().getBasicConfigPath()).toString().getBytes());
             }
 
             File generalFile = new File(Bot.getBot().getStoragePath() + "/" + "GeneralConfigBackup-" + date);
             if (!generalFile.exists()) {
-                Files.write(Paths.get(generalFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getConfigPath()).toString().getBytes());
+                Files.write(Paths.get(generalFile.getAbsolutePath()), configManager.getJsonObject(Bot.getBot().getConfigPath()).toString().getBytes());
             }
 
             File miscFile = new File(Bot.getBot().getStoragePath() + "/" + "MiscConfigBackup-" + date);
             if (!miscFile.exists()) {
-                Files.write(Paths.get(miscFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getMiscConfigPath()).toString().getBytes());
+                Files.write(Paths.get(miscFile.getAbsolutePath()), configManager.getJsonObject(Bot.getBot().getMiscConfigPath()).toString().getBytes());
             }
 
             File customCmdFile = new File(Bot.getBot().getStoragePath() + "/" + "CustomCommandsBackup-" + date);
             if (!customCmdFile.exists()) {
-                Files.write(Paths.get(customCmdFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getCustomCommandsConfigPath()).toString().getBytes());
+                Files.write(Paths.get(customCmdFile.getAbsolutePath()), configManager.getJsonObject(Bot.getBot().getCustomCommandsConfigPath()).toString().getBytes());
             }
         } catch (Exception ignored) {
 
@@ -142,7 +146,7 @@ public class Engine {
     };
 
     static Runnable taskUpdateDPlayerCache = () -> {
-        SQLUtil.getAllObjects(DPlayer.class.getSimpleName(), "discordID", DPlayer.class).stream().filter(o -> ((DPlayer) o).isLinked()).forEach(o -> {
+        Bot.getBot().getManager(SQLManager.class).getAllObjects(DPlayer.class.getSimpleName(), "discordID", DPlayer.class).stream().filter(o -> ((DPlayer) o).isLinked()).forEach(o -> {
             DPlayer dPlayer = (DPlayer) o;
 
             RoleRefreshHandler.RefreshUserRank(dPlayer);
@@ -157,7 +161,7 @@ public class Engine {
     };
 
     static Runnable taskExecuteGiveaways = () -> {
-        SQLUtil.getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> !((Giveaway) o).isEnded()).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
+        Bot.getBot().getManager(SQLManager.class).getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> !((Giveaway) o).isEnded()).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
     };
 
     static Runnable taskUpdateActivity = () -> {

@@ -1,6 +1,7 @@
 package com.i0dev.modules.suggestion;
 
-import com.i0dev.utility.SQLUtil;
+import com.i0dev.Bot;
+import com.i0dev.object.managers.SQLManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ public class Suggestion {
 
 
     public void save() {
-        SQLUtil.updateTable(this, "messageID", this.getMessageID() + "");
+        Bot.getBot().getManager(SQLManager.class).updateTable(this, "messageID", this.getMessageID() + "");
     }
 
 }

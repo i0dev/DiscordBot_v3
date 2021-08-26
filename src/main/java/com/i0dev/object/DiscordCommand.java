@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.i0dev.Bot;
 import com.i0dev.config.CommandsConfig;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -80,7 +80,7 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addMessage(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
+        Bot.getBot().getManager(ConfigManager.class).save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 
     @SneakyThrows
@@ -96,7 +96,7 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addOption(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
+        Bot.getBot().getManager(ConfigManager.class).save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 
     @SneakyThrows
@@ -110,6 +110,6 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addOption(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
+        Bot.getBot().getManager(ConfigManager.class).save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 }

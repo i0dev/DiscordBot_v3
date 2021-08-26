@@ -6,7 +6,7 @@ import com.i0dev.object.AdvancedDiscordCommand;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import com.i0dev.utility.NicknameUtil;
 import com.i0dev.utility.Utility;
 import net.dv8tion.jda.api.entities.Member;
@@ -53,7 +53,7 @@ public class RoleRefreshHandler {
                 .map(net.luckperms.api.node.types.InheritanceNode::getGroupName)
                 .collect(Collectors.toList());
         if (groups.isEmpty()) return;
-        JsonObject jsonMap = ConfigUtil.getObjectFromInternalPath(AdvancedDiscordCommand.getAnnotation(LinkManager.class).commandID() + ".options.ranksToLink", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
+        JsonObject jsonMap = Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath(AdvancedDiscordCommand.getAnnotation(LinkManager.class).commandID() + ".options.ranksToLink", Bot.getBot().getManager(ConfigManager.class).getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
         Map<String, Long> ranksToLink = new HashMap<>();
         jsonMap.entrySet().forEach(s -> ranksToLink.put(s.getKey(), s.getValue().getAsLong()));
         for (Object key : ranksToLink.keySet()) {

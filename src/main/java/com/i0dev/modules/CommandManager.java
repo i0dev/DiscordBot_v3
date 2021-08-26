@@ -77,7 +77,7 @@ public class CommandManager extends ListenerAdapter {
             }
             if (!initCheck) return;
 
-            DPlayer dPlayer = DPlayer.getDPlayer(e.getAuthor().getIdLong());
+            DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(e.getAuthor().getIdLong());
             if (dPlayer.isBlacklisted()) {
                 CommandEvent.replyStaticComplete(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("You are blacklisted and cannot use commands.").build(), e.getMessage()).delete().queueAfter(5, TimeUnit.SECONDS);
                 return;
@@ -306,7 +306,7 @@ public class CommandManager extends ListenerAdapter {
                 e.getChannel(),
                 guild,
                 e.getMember(),
-                DPlayer.getDPlayer(e.getAuthor().getIdLong()),
+                Bot.getBot().getDPlayerManager().getDPlayer(e.getAuthor().getIdLong()),
                 e.getJDA(),
                 e.getMessageId(),
                 e.getMessageIdLong(),

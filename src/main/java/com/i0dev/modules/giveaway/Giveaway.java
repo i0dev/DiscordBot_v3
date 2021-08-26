@@ -1,10 +1,10 @@
 package com.i0dev.modules.giveaway;
 
-import com.i0dev.utility.SQLUtil;
+import com.i0dev.Bot;
+import com.i0dev.object.managers.SQLManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.dv8tion.jda.api.entities.ISnowflake;
 
 
 @Getter
@@ -20,11 +20,11 @@ public class Giveaway {
     boolean ended;
 
     public void save() {
-        SQLUtil.updateTable(this, "messageID", this.getMessageID() + "");
+        Bot.getBot().getManager(SQLManager.class).updateTable(this, "messageID", this.getMessageID() + "");
     }
 
     public static Giveaway getGiveaway(String id) {
-        return (Giveaway) SQLUtil.getObject("messageID", id, Giveaway.class);
+        return (Giveaway) Bot.getBot().getManager(SQLManager.class).getObject("messageID", id, Giveaway.class);
     }
 
 }

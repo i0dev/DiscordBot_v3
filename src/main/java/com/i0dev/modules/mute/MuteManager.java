@@ -37,7 +37,7 @@ public class MuteManager extends AdvancedDiscordCommand {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        DPlayer dPlayer = DPlayer.getDPlayer(event.getUser());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(event.getUser());
         if (!dPlayer.isMuted()) return;
         new RoleQueueObject(event.getUser().getIdLong(), MuteManager.mutedRole.getIdLong(), Type.ADD_ROLE).add();
     }

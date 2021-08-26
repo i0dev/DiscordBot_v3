@@ -1,8 +1,16 @@
-package com.i0dev.utility;
+package com.i0dev.object.managers;
 
 import com.google.gson.*;
-import com.i0dev.Bot;
+import com.i0dev.DiscordBot;
+import com.i0dev.config.CommandsConfig;
+import com.i0dev.config.CustomCommandsConfig;
+import com.i0dev.config.GeneralConfig;
+import com.i0dev.config.MiscConfig;
+import com.i0dev.utility.LogUtil;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.experimental.FieldDefaults;
 import org.apache.logging.log4j.core.util.IOUtils;
 
 import java.io.IOException;
@@ -10,31 +18,57 @@ import java.io.Reader;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ConfigUtil {
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ConfigManager extends Manager {
 
-    public static String ObjectToJson(Object object) {
+    Map<Class<?>, String> configMap = new HashMap<>();
+
+    public ConfigManager(DiscordBot bot) {
+        super(bot);
+    }
+
+    @Override
+    public void initialize() {
+        deinitialize();
+
+        configMap.put(CommandsConfig.class, bot.getBasicConfigPath());
+        configMap.put(GeneralConfig.class, bot.getConfigPath());
+        configMap.put(MiscConfig.class, bot.getMiscConfigPath());
+        configMap.put(CustomCommandsConfig.class, bot.getCustomCommandsConfigPath());
+        configMap.forEach(this::load);
+    }
+
+    @Override
+    public void deinitialize() {
+        configMap.clear();
+    }
+
+    public String ObjectToJson(Object object) {
         return new GsonBuilder().setPrettyPrinting().serializeNulls().disableHtmlEscaping().create().toJson(new JsonParser().parse(new Gson().fromJson(new Gson().toJson(object), JsonObject.class).toString()));
     }
 
-    public static JsonObject ObjectToJsonObj(Object object) {
+    public JsonObject ObjectToJsonObj(Object object) {
         return new Gson().fromJson(new Gson().toJson(object), JsonObject.class);
     }
 
-    public static JsonArray ObjectToJsonArr(Object object) {
+    public JsonArray ObjectToJsonArr(Object object) {
         return new Gson().fromJson(new Gson().toJson(object), JsonArray.class);
     }
 
-    public static Object JsonToObject(JsonElement json, Class<?> clazz) {
+    public Object JsonToObject(JsonElement json, Class<?> clazz) {
         return new Gson().fromJson(new Gson().toJson(json), clazz);
     }
 
     @SneakyThrows
-    public static void save(Object object, String path) {
+    public void save(Object object, String path) {
         Files.write(Paths.get(path), ObjectToJson(object).getBytes());
     }
 
-    public static JsonObject getJsonObject(String path) {
+    public JsonObject getJsonObject(String path) {
         try {
             Reader reader = Files.newBufferedReader(Paths.get(path));
             return new Gson().fromJson(reader, JsonObject.class);
@@ -43,7 +77,7 @@ public class ConfigUtil {
         }
     }
 
-    public static JsonElement getObjectFromInternalPath(String path, JsonObject json) {
+    public JsonElement getObjectFromInternalPath(String path, JsonObject json) {
         String[] paths = path.split("\\.");
         if (paths.length == 1)
             return json.get(paths[0]);
@@ -56,7 +90,7 @@ public class ConfigUtil {
     }
 
     @SneakyThrows
-    public static void load(Class<?> clazz, String path) {
+    public void load(Class<?> clazz, String path) {
         JsonObject savedObject = getJsonObject(path);
         String configString = IOUtils.toString(Files.newBufferedReader(Paths.get(path)));
         Object config = new Gson().fromJson(savedObject, clazz);
@@ -74,7 +108,7 @@ public class ConfigUtil {
         LogUtil.log("Loaded config: " + clazz.getSimpleName() + " from storage.");
     }
 
-    public static void reloadConfig() {
-        Bot.getBot().getConfigMap().forEach(ConfigUtil::load);
+    public void reloadConfig() {
+        configMap.forEach(this::load);
     }
 }

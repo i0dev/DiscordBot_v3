@@ -21,7 +21,7 @@ public class CmdUnban extends DiscordCommand {
     public static void run(CommandEvent e) {
         User user;
         if ((user = FindUtil.retrieveUser(e.getSplit()[1], e.getMessage())) == null) return;
-        DPlayer dPlayer = DPlayer.getDPlayer(user);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
 
         if (Utility.getBan(e.getGuild(), user) == null) {

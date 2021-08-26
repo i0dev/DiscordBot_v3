@@ -4,10 +4,8 @@ import com.google.gson.JsonObject;
 import com.i0dev.Bot;
 import com.i0dev.object.*;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.utility.ConfigUtil;
-import com.i0dev.utility.EmbedMaker;
+import com.i0dev.object.managers.ConfigManager;
 import com.i0dev.utility.LogUtil;
-import com.i0dev.utility.SQLUtil;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 
@@ -25,9 +23,11 @@ public class LinkManager extends AdvancedDiscordCommand {
             addSuperCommand("resync", new SuperCommand(s("resync"), Permission.strict(), Resync.class));
             addSuperCommand("panel", new SuperCommand(s("panel"), Permission.strict(), Panel.class));
             addOption("nicknameFormat", "[VIP] {ign}");
-            addOption("rolesToGiveAlways", ConfigUtil.ObjectToJsonArr(rolesToGiveAlways));
-            addOption("rolesThatBypassNicknameChange", ConfigUtil.ObjectToJsonArr(rolesThatBypassNicknameChange));
-            addOption("guildsThatBypassNicknameChange", ConfigUtil.ObjectToJsonArr(guildsThatBypassNicknameChange));
+            ConfigManager manager = Bot.getBot().getConfigManager();
+
+            addOption("rolesToGiveAlways", manager.ObjectToJsonArr(rolesToGiveAlways));
+            addOption("rolesThatBypassNicknameChange", manager.ObjectToJsonArr(rolesThatBypassNicknameChange));
+            addOption("guildsThatBypassNicknameChange", manager.ObjectToJsonArr(guildsThatBypassNicknameChange));
             JsonObject json = new JsonObject();
             Map<String, Long> ranksToLink = Collections.singletonMap("rival", 791840959687163914L);
             for (Map.Entry<String, Long> entry : ranksToLink.entrySet()) {
@@ -37,10 +37,9 @@ public class LinkManager extends AdvancedDiscordCommand {
             rolesThatBypassNicknameChange = new ArrayList<>();
             guildsThatBypassNicknameChange = new ArrayList<>();
             rolesToGiveAlways = new ArrayList<>();
-
-            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesToGiveAlways", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToGiveAlways.add(jsonElement.getAsLong()));
-            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesThatBypassNicknameChange", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesThatBypassNicknameChange.add(jsonElement.getAsLong()));
-            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.guildsThatBypassNicknameChange", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> guildsThatBypassNicknameChange.add(jsonElement.getAsLong()));
+            manager.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesToGiveAlways", manager.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToGiveAlways.add(jsonElement.getAsLong()));
+            manager.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesThatBypassNicknameChange", manager.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesThatBypassNicknameChange.add(jsonElement.getAsLong()));
+            manager.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.guildsThatBypassNicknameChange", manager.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> guildsThatBypassNicknameChange.add(jsonElement.getAsLong()));
         } catch (Exception e) {
             LogUtil.log(Arrays.toString(e.getStackTrace()));
         }
@@ -59,7 +58,7 @@ public class LinkManager extends AdvancedDiscordCommand {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
-        DPlayer dPlayer = DPlayer.getDPlayer(e.getUser());
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(e.getUser());
         RoleRefreshHandler.RefreshUserRank(dPlayer);
     }
 

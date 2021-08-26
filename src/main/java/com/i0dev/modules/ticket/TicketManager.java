@@ -1,18 +1,14 @@
 package com.i0dev.modules.ticket;
 
 import com.i0dev.Bot;
-import com.i0dev.modules.movement.MovementManager;
-import com.i0dev.modules.movement.MovementObject;
 import com.i0dev.object.*;
-import com.i0dev.utility.ConfigUtil;
-import com.i0dev.utility.SQLUtil;
-import javafx.scene.layout.Pane;
+import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.object.managers.SQLManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.ISnowflake;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,11 +24,11 @@ public class TicketManager extends AdvancedDiscordCommand {
         addSuperCommand("leaderboard", new SuperCommand(ls("lb", "leaderboard"), Permission.lite(), Leaderboard.class));
         addSuperCommand("panel", new SuperCommand(s("panel"), Permission.strict(), Panel.class).addAltCmd("tpanel"));
 
-        SQLUtil.makeTable(Ticket.class);
+        Bot.getBot().getManager(SQLManager.class).makeTable(Ticket.class);
         addOption("adminLogsChannel", 0L);
         addOption("ticketLogsChannel", 0L);
-        addOption("rolesToSeeTickets", ConfigUtil.ObjectToJsonArr(rolesToSeeTickets));
-        addOption("ticketOptions", ConfigUtil.ObjectToJsonArr(options));
+        addOption("rolesToSeeTickets", Bot.getBot().getConfigManager().ObjectToJsonArr(rolesToSeeTickets));
+        addOption("ticketOptions", Bot.getBot().getConfigManager().ObjectToJsonArr(options));
 
         addOption("ticketCreateChannel", 0);
         addOption("maxTicketsPerUser", 3);
@@ -43,8 +39,8 @@ public class TicketManager extends AdvancedDiscordCommand {
         rolesToSeeTickets = new ArrayList<>();
         options = new ArrayList<>();
 
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.rolesToSeeTickets", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToSeeTickets.add(jsonElement.getAsLong()));
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.ticketOptions", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> options.add((TicketOption) ConfigUtil.JsonToObject(jsonElement, TicketOption.class)));
+        Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.rolesToSeeTickets", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToSeeTickets.add(jsonElement.getAsLong()));
+        Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.ticketOptions", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> options.add((TicketOption) Bot.getBot().getConfigManager().JsonToObject(jsonElement, TicketOption.class)));
 
     }
 
@@ -61,7 +57,7 @@ public class TicketManager extends AdvancedDiscordCommand {
     }
 
     public static boolean isTicket(ISnowflake idAble) {
-        return SQLUtil.objectExists(Ticket.class.getSimpleName(), "channelID", idAble.getId());
+        return Bot.getBot().getManager(SQLManager.class).objectExists(Ticket.class.getSimpleName(), "channelID", idAble.getId());
     }
 
 

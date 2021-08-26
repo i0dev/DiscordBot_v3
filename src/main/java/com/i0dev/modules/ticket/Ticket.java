@@ -1,6 +1,7 @@
 package com.i0dev.modules.ticket;
 
-import com.i0dev.utility.SQLUtil;
+import com.i0dev.Bot;
+import com.i0dev.object.managers.SQLManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,15 +23,15 @@ public class Ticket {
     boolean adminOnlyMode;
 
     public static Ticket getTicket(ISnowflake idAble) {
-        return (Ticket) SQLUtil.getObject("channelID", idAble.getId(), Ticket.class);
+        return (Ticket) Bot.getBot().getManager(SQLManager.class).getObject("channelID", idAble.getId(), Ticket.class);
     }
 
     public void save() {
-        SQLUtil.updateTable(this, "channelID", this.getChannelID() + "");
+        Bot.getBot().getManager(SQLManager.class).updateTable(this, "channelID", this.getChannelID() + "");
     }
 
     public void remove() {
-        SQLUtil.deleteFromTable(Ticket.class.getSimpleName(), "channelID", this.getChannelID() + "");
+        Bot.getBot().getManager(SQLManager.class).deleteFromTable(Ticket.class.getSimpleName(), "channelID", this.getChannelID() + "");
     }
 
 }

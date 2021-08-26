@@ -1,5 +1,6 @@
 package com.i0dev.modules.invite;
 
+import com.i0dev.Bot;
 import com.i0dev.config.MiscConfig;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.discordLinking.DPlayer;
@@ -35,10 +36,10 @@ public class InviteHandler extends ListenerAdapter {
                     continue;
                 cachedInvite.incrementUses();
 
-                DPlayer inviter = DPlayer.getDPlayer(retrievedInvite.getInviter());
+                DPlayer inviter = Bot.getBot().getDPlayerManager().getDPlayer(retrievedInvite.getInviter());
                 inviter.increase(DPlayerFieldType.INVITES);
 
-                DPlayer joined = DPlayer.getDPlayer(e.getMember());
+                DPlayer joined = Bot.getBot().getDPlayerManager().getDPlayer(e.getMember());
                 joined.setInvitedByDiscordID(inviter.getDiscordID());
                 joined.used().save();
 
@@ -52,9 +53,9 @@ public class InviteHandler extends ListenerAdapter {
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
         if (!Utility.isValidGuild(e.getGuild())) return;
-        DPlayer left = DPlayer.getDPlayer(e.getUser());
+        DPlayer left = Bot.getBot().getDPlayerManager().getDPlayer(e.getUser());
         if (left.getInvitedByDiscordID() == 0) return;
-        DPlayer inviter = DPlayer.getDPlayer(e.getJDA().retrieveUserById(left.getInvitedByDiscordID()).complete());
+        DPlayer inviter = Bot.getBot().getDPlayerManager().getDPlayer(e.getJDA().retrieveUserById(left.getInvitedByDiscordID()).complete());
         inviter.decrease(DPlayerFieldType.INVITES);
         if (MiscConfig.get().invite_leaveLog)
             LogUtil.logDiscord(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("**{tag}** left the server, invited by {authorTag}").user(e.getUser()).author(e.getJDA().retrieveUserById(left.getInvitedByDiscordID()).complete()).build());

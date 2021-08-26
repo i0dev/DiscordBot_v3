@@ -1,13 +1,11 @@
 package com.i0dev.modules.ticket;
 
 import com.i0dev.Bot;
-import com.i0dev.modules.movement.MovementManager;
-import com.i0dev.modules.movement.MovementObject;
 import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
@@ -21,9 +19,10 @@ public class AdminOnly extends SuperDiscordCommand {
     public static List<Long> adminOnlySeeRoles = new ArrayList<>();
 
     public static void load() {
-        addOption("adminOnlySeeRoles", ConfigUtil.ObjectToJsonArr(adminOnlySeeRoles));
+        ConfigManager manager = Bot.getBot().getConfigManager();
+        addOption("adminOnlySeeRoles", manager.ObjectToJsonArr(adminOnlySeeRoles));
         adminOnlySeeRoles = new ArrayList<>();
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".parts.adminOnly.options.adminOnlySeeRoles", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> adminOnlySeeRoles.add(jsonElement.getAsLong()));
+        manager.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".parts.adminOnly.options.adminOnlySeeRoles", manager.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> adminOnlySeeRoles.add(jsonElement.getAsLong()));
     }
 
     @CommandData(commandID = "adminOnly", identifier = "Ticket AdminOnly", messageLength = 1, parentClass = TicketManager.class)

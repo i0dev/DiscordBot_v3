@@ -1,18 +1,14 @@
 package com.i0dev.modules.movement;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.i0dev.Bot;
 import com.i0dev.object.*;
-import com.i0dev.utility.ConfigUtil;
+import com.i0dev.object.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,11 +23,11 @@ public class MovementManager extends AdvancedDiscordCommand {
         addSuperCommand("resign", new SuperCommand(s("resign"), Permission.strict(), Resign.class));
 
         addOption("nicknameFormat", "[{displayName}] {ignOrName}");
-        addOption("tracks", ConfigUtil.ObjectToJsonArr(Tracks));
+        addOption("tracks", Bot.getBot().getConfigManager().ObjectToJsonArr(Tracks));
         addOption("channel", 0L);
         movementChannel = Bot.getBot().getJda().getTextChannelById(getOption("channel").getAsLong());
         Tracks = new ArrayList<>();
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(MovementManager.class).commandID() + ".options.tracks", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> Tracks.add((MovementObject) ConfigUtil.JsonToObject(jsonElement, MovementObject.class)));
+        Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath(getAnnotation(MovementManager.class).commandID() + ".options.tracks", Bot.getBot().getManager(ConfigManager.class).getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> Tracks.add((MovementObject) Bot.getBot().getConfigManager().JsonToObject(jsonElement, MovementObject.class)));
     }
 
     @SneakyThrows

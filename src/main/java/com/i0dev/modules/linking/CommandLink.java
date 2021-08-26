@@ -29,7 +29,7 @@ public class CommandLink extends Command {
     public void execute(CommandSender sender, String[] args) {
         ProxiedPlayer commandSender = (ProxiedPlayer) sender;
         if (args.length == 1 && args[0].equalsIgnoreCase("generate")) {
-            DPlayer dPlayer = DPlayer.getDPlayerFromIGN(commandSender.getName());
+            DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromIGN(commandSender.getName());
             if (dPlayer == null) {
                 String code = Utility.GenerateRandomString(5);
                 From_IngameCodeLinker codeLinker = new From_IngameCodeLinker(commandSender, code);
@@ -41,7 +41,7 @@ public class CommandLink extends Command {
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("code")) {
-            DPlayer preDPlayer = DPlayer.getDPlayerFromIGN(commandSender.getName());
+            DPlayer preDPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromIGN(commandSender.getName());
             if (preDPlayer == null) {
                 String code = args[1];
                 From_DiscordCodeLinker codeLinker = CodeCache.getInstance().getObjectDiscord(code);
@@ -49,7 +49,7 @@ public class CommandLink extends Command {
                     MessageUtil.sendMessageInGame(commandSender, "&7The code &c{code} &7is invalid. Please try again.".replace("{code}", code));
                     return;
                 }
-                DPlayer dPlayer = DPlayer.getDPlayer(codeLinker.getUser());
+                DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(codeLinker.getUser());
                 dPlayer.link(code, commandSender.getName(), commandSender.getUniqueId().toString());
                 MessageUtil.sendMessageInGame(commandSender, "&7You have linked yourself to the discord tag: &c{tag}".replace("{tag}", codeLinker.getUser().getAsTag()));
                 LogUtil.logDiscord(EmbedMaker.builder().content("{tag} is now linked to the ign: `{ign}`").user(codeLinker.getUser()).build());

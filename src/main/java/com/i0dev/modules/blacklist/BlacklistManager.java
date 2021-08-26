@@ -2,7 +2,6 @@ package com.i0dev.modules.blacklist;
 
 import com.i0dev.config.CommandsConfig;
 import com.i0dev.object.*;
-import com.i0dev.utility.SQLUtil;
 import lombok.SneakyThrows;
 
 public class BlacklistManager extends AdvancedDiscordCommand {

@@ -24,7 +24,7 @@ public class PlaceholderUtil {
 
         // new User
         if (user != null) {
-            DPlayer dPlayer = DPlayer.getDPlayer(user.getIdLong());
+            DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user.getIdLong());
             Member member = guild.getMember(user);
             message = message
                     .replace("{tag}", user.getAsTag())
@@ -48,7 +48,7 @@ public class PlaceholderUtil {
 
         //Author
         if (author != null) {
-            DPlayer dPlayer = DPlayer.getDPlayer(author.getIdLong());
+            DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(author.getIdLong());
             message = message
                     .replace("{authorName}", author.getName())
                     .replace("{authorTag}", author.getAsTag())
