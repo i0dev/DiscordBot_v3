@@ -29,7 +29,7 @@ public class Clear extends SuperDiscordCommand {
                 dPlayer.setMuted(false);
                 dPlayer.save();
                 new RoleQueueObject(member.getIdLong(), MuteManager.mutedRole.getIdLong(), Type.REMOVE_ROLE).add();
-                if (Bot.isPluginMode() && dPlayer.isLinked() && getOption("unmuteInGame").getAsBoolean()) {
+                if (Bot.getBot().isPluginMode() && dPlayer.isLinked() && getOption("unmuteInGame").getAsBoolean()) {
                     com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{ign}", dPlayer.getMinecraftIGN()));
                 }
             }
@@ -41,7 +41,7 @@ public class Clear extends SuperDiscordCommand {
             dPlayer.setMuted(false);
             if (!Utility.hasRoleAlready(MuteManager.mutedRole.getIdLong(), dPlayer.getDiscordID()) && MuteManager.mutedRole.getGuild().getMemberById(dPlayer.getDiscordID()) != null)
                 new RoleQueueObject(dPlayer.getDiscordID(), MuteManager.mutedRole.getIdLong(), Type.REMOVE_ROLE).add();
-            if (Bot.isPluginMode() && dPlayer.isLinked() && getOption("unmuteInGame").getAsBoolean()) {
+            if (Bot.getBot().isPluginMode() && dPlayer.isLinked() && getOption("unmuteInGame").getAsBoolean()) {
                 com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{ign}", dPlayer.getMinecraftIGN()));
             }
             dPlayer.save();

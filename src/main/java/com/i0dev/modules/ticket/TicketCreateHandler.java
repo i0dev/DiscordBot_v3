@@ -56,10 +56,10 @@ public class TicketCreateHandler extends ListenerAdapter {
             boolean PingStaffRoles = option.isPingStaff();
             String ChannelName = option.getChannelName();
             long categoryID = option.getCategory();
-            Category NewTicketCreatedCategory = Bot.getJda().getCategoryById(categoryID);
+            Category NewTicketCreatedCategory = Bot.getBot().getJda().getCategoryById(categoryID);
             TextChannel NewTicketCreated;
             MiscConfig.get().ticketNumber += 1;
-            ConfigUtil.save(MiscConfig.get(), Bot.getMiscConfigPath());
+            ConfigUtil.save(MiscConfig.get(), Bot.getBot().getMiscConfigPath());
             if (NewTicketCreatedCategory != null)
                 NewTicketCreated = NewTicketCreatedCategory.createTextChannel(ChannelName.replace("{num}", MiscConfig.get().getTicketNumber() + "")).complete();
             else
@@ -146,7 +146,7 @@ public class TicketCreateHandler extends ListenerAdapter {
             ticket.setTicketNumber(MiscConfig.get().ticketNumber);
             ticket.save();
 
-            File ticketLogsFile = new File(Bot.getTicketLogsPath() + NewTicketCreated.getId() + ".log");
+            File ticketLogsFile = new File(Bot.getBot().getTicketLogsPath() + NewTicketCreated.getId() + ".log");
 
             String Zone = ZonedDateTime.now().getZone().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
             Long ticketOwnerID = ticket.getTicketOwnerID();

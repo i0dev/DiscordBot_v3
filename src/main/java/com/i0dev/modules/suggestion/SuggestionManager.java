@@ -26,9 +26,9 @@ public class SuggestionManager extends AdvancedDiscordCommand {
         addOption("downvoteEmoji", "U+1F44E");
         addOption("acceptEmoji", "U+2705");
         addOption("denyEmoji", "U+274C");
-        pending = Bot.getJda().getTextChannelById(getOption("pendingChannel").getAsLong());
-        accepted = Bot.getJda().getTextChannelById(getOption("acceptedChannel").getAsLong());
-        denied = Bot.getJda().getTextChannelById(getOption("deniedChannel").getAsLong());
+        pending = Bot.getBot().getJda().getTextChannelById(getOption("pendingChannel").getAsLong());
+        accepted = Bot.getBot().getJda().getTextChannelById(getOption("acceptedChannel").getAsLong());
+        denied = Bot.getBot().getJda().getTextChannelById(getOption("deniedChannel").getAsLong());
 
         SQLUtil.makeTable(Suggestion.class);
 

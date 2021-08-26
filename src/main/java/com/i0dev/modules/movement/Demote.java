@@ -48,7 +48,7 @@ public class Demote extends SuperDiscordCommand {
         MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been demoted to {role}".replace("{role}", previousRole.getAsMention())).build());
 
         MovementObject current = MovementManager.getObject(currentParentRole);
-        if (Bot.isPluginMode() && current != null && current.getLuckPermsRank() != null && previousRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
+        if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && previousRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
             com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
             com.i0dev.BotPlugin.runCommand("lp user {ign} parent add ".replace("{ign}", dPlayer.getMinecraftIGN()) + previousRoleObject.getLuckPermsRank());
         }

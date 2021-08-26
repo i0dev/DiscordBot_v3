@@ -29,9 +29,9 @@ public class MovementManager extends AdvancedDiscordCommand {
         addOption("nicknameFormat", "[{displayName}] {ignOrName}");
         addOption("tracks", ConfigUtil.ObjectToJsonArr(Tracks));
         addOption("channel", 0L);
-        movementChannel = Bot.getJda().getTextChannelById(getOption("channel").getAsLong());
+        movementChannel = Bot.getBot().getJda().getTextChannelById(getOption("channel").getAsLong());
         Tracks = new ArrayList<>();
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(MovementManager.class).commandID() + ".options.tracks", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> Tracks.add((MovementObject) ConfigUtil.JsonToObject(jsonElement, MovementObject.class)));
+        ConfigUtil.getObjectFromInternalPath(getAnnotation(MovementManager.class).commandID() + ".options.tracks", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> Tracks.add((MovementObject) ConfigUtil.JsonToObject(jsonElement, MovementObject.class)));
     }
 
     @SneakyThrows
@@ -57,7 +57,7 @@ public class MovementManager extends AdvancedDiscordCommand {
         for (MovementObject object : Tracks) {
             long mainRoleID = object.getMainRole();
 
-            Role mainRole = Bot.getJda().getRoleById(mainRoleID);
+            Role mainRole = Bot.getBot().getJda().getRoleById(mainRoleID);
             if (mainRole == null) continue;
             if (member.getRoles().contains(mainRole)) {
                 return mainRole;
@@ -72,7 +72,7 @@ public class MovementManager extends AdvancedDiscordCommand {
             List<Long> RoleIDS = object.getExtraRoles();
             RoleIDS.add(mainRoleID);
             for (long roleToGiveID : RoleIDS) {
-                Role roleToGive = Bot.getJda().getRoleById(roleToGiveID);
+                Role roleToGive = Bot.getBot().getJda().getRoleById(roleToGiveID);
                 if (roleToGive == null) continue;
                 new RoleQueueObject(member.getIdLong(), roleToGive.getIdLong(), Type.ADD_ROLE).add();
             }
@@ -85,7 +85,7 @@ public class MovementManager extends AdvancedDiscordCommand {
             List<Long> RoleIDS = object.getExtraRoles();
             RoleIDS.add(oldMainRoleID);
             for (long roleToGiveID : RoleIDS) {
-                Role roleToGive = Bot.getJda().getRoleById(roleToGiveID);
+                Role roleToGive = Bot.getBot().getJda().getRoleById(roleToGiveID);
                 if (roleToGive == null) continue;
                 new RoleQueueObject(member.getIdLong(), roleToGive.getIdLong(), Type.REMOVE_ROLE).add();
             }
@@ -104,7 +104,7 @@ public class MovementManager extends AdvancedDiscordCommand {
     public static boolean isAlreadyStaff(Member member) {
         for (MovementObject object : Tracks) {
             long mainRoleID = object.getMainRole();
-            Role mainRole = Bot.getJda().getRoleById(mainRoleID);
+            Role mainRole = Bot.getBot().getJda().getRoleById(mainRoleID);
             if (mainRole == null) continue;
             if (member.getRoles().contains(mainRole)) {
                 return true;
@@ -115,7 +115,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
     public static boolean isHighestStaff(Member member) {
         long topRoleID = Tracks.get(Tracks.size() - 1).getMainRole();
-        Role topRole = Bot.getJda().getRoleById(topRoleID);
+        Role topRole = Bot.getBot().getJda().getRoleById(topRoleID);
         if (topRole == null) return false;
         if (member.getRoles().contains(topRole)) {
             return true;
@@ -125,7 +125,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
     public static boolean isLowestStaff(Member member) {
         long lowestRoleID = Tracks.get(0).getMainRole();
-        Role lowestRole = Bot.getJda().getRoleById(lowestRoleID);
+        Role lowestRole = Bot.getBot().getJda().getRoleById(lowestRoleID);
         if (lowestRole == null) return false;
         return member.getRoles().contains(lowestRole);
     }
@@ -135,7 +135,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
         for (int i = 0; i < Tracks.size(); i++) {
             long mainRoleID = (long) Tracks.get(i).getMainRole();
-            Role mainRole = Bot.getJda().getRoleById(mainRoleID);
+            Role mainRole = Bot.getBot().getJda().getRoleById(mainRoleID);
             if (mainRole == null) continue;
 
             if (mainRole == role) {
@@ -148,7 +148,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
                 long nextTrackID = Tracks.get(i + 1).getMainRole();
 
-                Role nextRole = Bot.getJda().getRoleById(nextTrackID);
+                Role nextRole = Bot.getBot().getJda().getRoleById(nextTrackID);
                 if (nextRole == null) continue;
 
                 return nextRole;
@@ -161,7 +161,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
         for (int i = 0; i < Tracks.size(); i++) {
             long mainRoleID = (long) Tracks.get(i).getMainRole();
-            Role mainRole = Bot.getJda().getRoleById(mainRoleID);
+            Role mainRole = Bot.getBot().getJda().getRoleById(mainRoleID);
             if (mainRole == null) continue;
 
             if (mainRole == role) {
@@ -174,7 +174,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
                 long nextTrackID = (long) Tracks.get(i - 1).getMainRole();
 
-                Role nextRole = Bot.getJda().getRoleById(nextTrackID);
+                Role nextRole = Bot.getBot().getJda().getRoleById(nextTrackID);
                 if (nextRole == null) continue;
 
                 return nextRole;
@@ -186,7 +186,7 @@ public class MovementManager extends AdvancedDiscordCommand {
     public static MovementObject getNextRoleObject(Role role) {
         for (int i = 0; i < Tracks.size(); i++) {
             long mainRoleID = (long) Tracks.get(i).getMainRole();
-            Role mainRole = Bot.getJda().getRoleById(mainRoleID);
+            Role mainRole = Bot.getBot().getJda().getRoleById(mainRoleID);
             if (mainRole == null) continue;
             if (mainRole == role) {
                 try {
@@ -196,7 +196,7 @@ public class MovementManager extends AdvancedDiscordCommand {
                 }
                 long nextTrackID = Tracks.get(i + 1).getMainRole();
 
-                Role nextRole = Bot.getJda().getRoleById(nextTrackID);
+                Role nextRole = Bot.getBot().getJda().getRoleById(nextTrackID);
                 if (nextRole == null) continue;
                 return getObject(nextRole);
             }
@@ -207,7 +207,7 @@ public class MovementManager extends AdvancedDiscordCommand {
     public static MovementObject getPreviousRoleObject(Role role) {
         for (int i = 0; i < Tracks.size(); i++) {
             long mainRoleID = (long) Tracks.get(i).getMainRole();
-            Role mainRole = Bot.getJda().getRoleById(mainRoleID);
+            Role mainRole = Bot.getBot().getJda().getRoleById(mainRoleID);
             if (mainRole == null) continue;
             if (mainRole == role) {
                 try {
@@ -217,7 +217,7 @@ public class MovementManager extends AdvancedDiscordCommand {
                 }
                 long nextTrackID = (long) Tracks.get(i - 1).getMainRole();
 
-                Role nextRole = Bot.getJda().getRoleById(nextTrackID);
+                Role nextRole = Bot.getBot().getJda().getRoleById(nextTrackID);
                 if (nextRole == null) continue;
                 return getObject(nextRole);
             }

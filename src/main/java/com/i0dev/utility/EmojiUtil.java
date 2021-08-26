@@ -16,7 +16,7 @@ public class EmojiUtil {
 
     public static String getSimpleEmoji(String Emoji) {
         if (Emoji.length() < 20) {
-            return MessageReaction.ReactionEmote.fromUnicode(Emoji, Bot.getJda()).getEmoji();
+            return MessageReaction.ReactionEmote.fromUnicode(Emoji, Bot.getBot().getJda()).getEmoji();
         } else {
             return Emoji.substring(2, Emoji.length() - 20);
         }
@@ -28,7 +28,7 @@ public class EmojiUtil {
 
     public static String getEmojiWithoutArrow(String Emoji) {
         if (Emoji.length() < 15) {
-            return MessageReaction.ReactionEmote.fromUnicode(Emoji, Bot.getJda()).getEmoji();
+            return MessageReaction.ReactionEmote.fromUnicode(Emoji, Bot.getBot().getJda()).getEmoji();
         } else {
             return Emoji.substring(0, Emoji.length() - 1);
         }

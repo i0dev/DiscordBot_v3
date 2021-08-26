@@ -19,7 +19,7 @@ public class MuteManager extends AdvancedDiscordCommand {
         addSuperCommand("create", new SuperCommand(CommandsConfig.s("create"), Permission.strict(), Create.class));
 
         addOption("role", 0L);
-        mutedRole = Bot.getJda().getRoleById(getOption("role").getAsLong());
+        mutedRole = Bot.getBot().getJda().getRoleById(getOption("role").getAsLong());
     }
 
     @SneakyThrows

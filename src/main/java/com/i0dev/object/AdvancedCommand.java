@@ -28,7 +28,7 @@ public class AdvancedCommand extends BasicCommand {
     }
 
     public static void turnPartsListToParts() {
-        Bot.getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).forEach(command -> {
+        Bot.getBot().getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).forEach(command -> {
             JsonObject newOb = new JsonObject();
             ((AdvancedCommand) command).getSuperCommands().forEach(superCommand -> newOb.add(DiscordCommand.getAnnotation(superCommand.getClazz()).commandID(), ConfigUtil.ObjectToJsonObj(superCommand)));
             ((AdvancedCommand) command).setParts(newOb);

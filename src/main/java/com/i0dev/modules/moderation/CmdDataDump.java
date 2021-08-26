@@ -20,7 +20,7 @@ public class CmdDataDump extends DiscordCommand {
     @SneakyThrows
     @CommandData(commandID = "cmd_dataDump", identifier = "DataDump", minMessageLength = 1)
     public static void run(CommandEvent e) {
-        File file = new File(Bot.getStoragePath() + "DataDump_" + UUID.randomUUID() + ".txt");
+        File file = new File(Bot.getBot().getStoragePath() + "DataDump_" + UUID.randomUUID() + ".txt");
         StringBuilder toFile = new StringBuilder();
         toFile.append("DataDump made by: ").append(e.getAuthor().getAsTag()).append(" (").append(e.getAuthor().getId()).append(")\n");
         toFile.append("TimeStamp: ").append(Utility.formatDate(ZonedDateTime.now())).append("\n\n");

@@ -27,7 +27,7 @@ public class Panel extends SuperDiscordCommand {
 
         String image = getOption("image").getAsString().equals("") ? null : getOption("image").getAsString();
         Message panel = e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()
-                        .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                        .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                         .authorName("Ticket Creation Panel")
                         .image(image)
                         .content(msg.toString())

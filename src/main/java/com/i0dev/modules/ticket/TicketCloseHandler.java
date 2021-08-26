@@ -28,11 +28,11 @@ public class TicketCloseHandler extends ListenerAdapter {
         if (e.getButton() == null) return;
         if (!"BUTTON_TICKET_CLOSE".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
-        if (!ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.close.enabled", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsBoolean())
+        if (!ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.close.enabled", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
             return;
         if (!Utility.isValidGuild(e.getGuild())) return;
         if (DPlayer.getDPlayer(e.getUser()).isBlacklisted()) return;
-        JsonObject ob = ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.close.permission", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonObject();
+        JsonObject ob = ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.close.permission", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
         if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean()))
             return;
         if (!TicketManager.isTicket(e.getChannel())) return;
@@ -43,8 +43,8 @@ public class TicketCloseHandler extends ListenerAdapter {
 
     @SneakyThrows
     static void closeTicket(Ticket ticket, String reason, User closer) {
-        File ticketLogsFile = new File(Bot.getTicketLogsPath() + ticket.getChannelID() + ".log");
-        TextChannel channel = Bot.getJda().getTextChannelById(ticket.getChannelID());
+        File ticketLogsFile = new File(Bot.getBot().getTicketLogsPath() + ticket.getChannelID() + ".log");
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(ticket.getChannelID());
         DPlayer dPlayer = DPlayer.getDPlayer(closer);
         String toFile = "\n\nClosed Ticket Information:\n " +
                 "  Ticket Closer Tag: " + closer.getAsTag() + "\n" +
@@ -52,8 +52,8 @@ public class TicketCloseHandler extends ListenerAdapter {
                 "   Ticket Close reason: " + reason;
         Engine.getToLog().add(new LogObject(toFile, ticketLogsFile));
         Engine.taskAppendToFile.run();
-        ticketLogsFile = new File(Bot.getTicketLogsPath() + ticket.getChannelID() + ".log");
-        User ticketOwner = Bot.getJda().retrieveUserById(ticket.getTicketOwnerID()).complete();
+        ticketLogsFile = new File(Bot.getBot().getTicketLogsPath() + ticket.getChannelID() + ".log");
+        User ticketOwner = Bot.getBot().getJda().retrieveUserById(ticket.getTicketOwnerID()).complete();
 
         dPlayer.increase(DPlayerFieldType.TICKETS_CLOSED);
         channel.delete().queueAfter(5, TimeUnit.SECONDS);
@@ -71,9 +71,9 @@ public class TicketCloseHandler extends ListenerAdapter {
 
         TextChannel logs;
         if (ticket.isAdminOnlyMode())
-            logs = Bot.getJda().getTextChannelById(TicketManager.getOption("adminLogsChannel", TicketManager.class).getAsLong());
+            logs = Bot.getBot().getJda().getTextChannelById(TicketManager.getOption("adminLogsChannel", TicketManager.class).getAsLong());
         else
-            logs = Bot.getJda().getTextChannelById(TicketManager.getOption("ticketLogsChannel", TicketManager.class).getAsLong());
+            logs = Bot.getBot().getJda().getTextChannelById(TicketManager.getOption("ticketLogsChannel", TicketManager.class).getAsLong());
 
         if (logs != null) {
             logs.sendMessageEmbeds(EmbedMaker.create(embedMaker.build())).queueAfter(5, TimeUnit.MILLISECONDS);

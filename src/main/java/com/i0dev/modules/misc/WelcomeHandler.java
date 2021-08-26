@@ -18,12 +18,12 @@ public class WelcomeHandler extends ListenerAdapter {
         if (!MiscConfig.get().welcome_enabled) return;
         if (!Utility.isValidGuild(e.getGuild())) return;
         MiscConfig.get().welcome_roles.forEach(roleID -> new RoleQueueObject(e.getUser().getIdLong(), roleID, Type.ADD_ROLE).add());
-        TextChannel channel = Bot.getJda().getTextChannelById(MiscConfig.get().welcome_channel);
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(MiscConfig.get().welcome_channel);
         if (channel == null) return;
         if (MiscConfig.get().welcome_pingJoin)
             channel.sendMessage(e.getMember().getAsMention()).complete();
         String image = MiscConfig.get().welcome_image.equals("") ? null : MiscConfig.get().welcome_image;
-        String thumbnail = MiscConfig.get().welcome_UserThumbnail ? e.getUser().getEffectiveAvatarUrl() : Bot.getJda().getSelfUser().getEffectiveAvatarUrl();
+        String thumbnail = MiscConfig.get().welcome_UserThumbnail ? e.getUser().getEffectiveAvatarUrl() : Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl();
         channel.sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().thumbnail(thumbnail).image(image).title(MiscConfig.get().welcome_title).content(MiscConfig.get().welcome_content).user(e.getUser()).build())).queue();
     }
 }

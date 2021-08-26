@@ -114,7 +114,7 @@ public class Create extends SuperDiscordCommand {
                     EmbedMaker embed = EmbedMaker.builder()
                             .authorName("New Giveaway!")
                             .content(content.toString())
-                            .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                            .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                             .build();
 
                     Message created = response.channel.sendMessageEmbeds(EmbedMaker.create(embed)).complete();

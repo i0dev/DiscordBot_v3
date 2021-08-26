@@ -30,7 +30,7 @@ public class FindUtil {
         }
         try {
             Long.parseLong(arg);
-            User user = Bot.getJda().getUserById(Long.parseLong(arg));
+            User user = Bot.getBot().getJda().getUserById(Long.parseLong(arg));
             if (user == null) {
                 Long.parseLong("fail");
             }
@@ -38,7 +38,7 @@ public class FindUtil {
         } catch (Exception ignored) {
         }
         try {
-            User user = Bot.getJda().getUserByTag(arg);
+            User user = Bot.getBot().getJda().getUserByTag(arg);
             if (user == null) {
                 Long.parseLong("fail");
             }
@@ -82,11 +82,11 @@ public class FindUtil {
         }
         try {
             Long.parseLong(arg);
-            return Bot.getJda().retrieveUserById(Long.parseLong(arg)).complete();
+            return Bot.getBot().getJda().retrieveUserById(Long.parseLong(arg)).complete();
         } catch (Exception ignored) {
         }
         try {
-            return Bot.getJda().getUserByTag(arg);
+            return Bot.getBot().getJda().getUserByTag(arg);
 
         } catch (Exception ignored) {
         }
@@ -101,7 +101,7 @@ public class FindUtil {
         }
         try {
             Long.parseLong(arg);
-            return Bot.getJda().getRoleById(Long.parseLong(arg));
+            return Bot.getBot().getJda().getRoleById(Long.parseLong(arg));
         } catch (Exception ignored) {
         }
         try {
@@ -124,7 +124,7 @@ public class FindUtil {
         }
         try {
             Long.parseLong(arg);
-            return Bot.getJda().getTextChannelById(Long.parseLong(arg));
+            return Bot.getBot().getJda().getTextChannelById(Long.parseLong(arg));
         } catch (Exception ignored) {
         }
         try {
@@ -155,7 +155,7 @@ public class FindUtil {
 
         try {
             Long.parseLong(arg);
-            return Bot.getJda().getTextChannelById(channelID).retrieveMessageById(arg).complete();
+            return Bot.getBot().getJda().getTextChannelById(channelID).retrieveMessageById(arg).complete();
         } catch (Exception exception) {
             return null;
         }

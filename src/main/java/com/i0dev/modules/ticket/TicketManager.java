@@ -43,8 +43,8 @@ public class TicketManager extends AdvancedDiscordCommand {
         rolesToSeeTickets = new ArrayList<>();
         options = new ArrayList<>();
 
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.rolesToSeeTickets", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToSeeTickets.add(jsonElement.getAsLong()));
-        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.ticketOptions", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> options.add((TicketOption) ConfigUtil.JsonToObject(jsonElement, TicketOption.class)));
+        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.rolesToSeeTickets", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToSeeTickets.add(jsonElement.getAsLong()));
+        ConfigUtil.getObjectFromInternalPath(getAnnotation(TicketManager.class).commandID() + ".options.ticketOptions", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> options.add((TicketOption) ConfigUtil.JsonToObject(jsonElement, TicketOption.class)));
 
     }
 

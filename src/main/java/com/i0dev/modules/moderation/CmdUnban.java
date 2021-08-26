@@ -29,7 +29,7 @@ public class CmdUnban extends DiscordCommand {
             return;
         }
 
-        if (Bot.isPluginMode() && dPlayer.isLinked() && getOption("unbanInGame").getAsBoolean()) {
+        if (Bot.getBot().isPluginMode() && dPlayer.isLinked() && getOption("unbanInGame").getAsBoolean()) {
             com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{ign}", dPlayer.getMinecraftIGN()));
         }
 

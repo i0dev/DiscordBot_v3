@@ -35,7 +35,7 @@ public class Add extends SuperDiscordCommand {
             return;
         }
 
-        if (Bot.isPluginMode() && dPlayer.isLinked() && getOption("muteInGame").getAsBoolean()) {
+        if (Bot.getBot().isPluginMode() && dPlayer.isLinked() && getOption("muteInGame").getAsBoolean()) {
             com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{reason}", reason).replace("{ign}", dPlayer.getMinecraftIGN()));
         }
 

@@ -31,7 +31,7 @@ public class Panel extends SuperDiscordCommand {
 
     @CommandData(commandID = "panel", identifier = "Link Panel", messageLength = 1, parentClass = LinkManager.class)
     public static void run(CommandEvent e) {
-        Message msg = e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().content(getOption("content").getAsString()).authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl()).authorName(getOption("title").getAsString()).build()))
+        Message msg = e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().content(getOption("content").getAsString()).authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl()).authorName(getOption("title").getAsString()).build()))
                 .setActionRow(Button.success("BUTTON_LINK_PANEL", getOption("buttonLabel").getAsString()).withEmoji(Emoji.fromMarkdown(getOption("buttonEmoji").getAsString())))
                 .complete();
         if (getOption("pin").getAsBoolean()) msg.pin().queue();

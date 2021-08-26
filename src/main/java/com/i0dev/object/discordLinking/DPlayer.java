@@ -76,7 +76,7 @@ public class DPlayer {
     public void save() {
         lastUpdatedMillis = System.currentTimeMillis();
         SQLUtil.updateTable(this, "discordID", this.getDiscordID() + "");
-        User discordUser = Bot.getJda().getUserById(discordID);
+        User discordUser = Bot.bot.getJda().getUserById(discordID);
         used();
         LogUtil.debug("Saved DPlayer: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
     }
@@ -217,7 +217,7 @@ public class DPlayer {
     public static DPlayer getDPlayer(long discordID) {
         return cachedUsers.stream().filter(dPlayer -> dPlayer.getDiscordID() == discordID).findAny().orElseGet(() -> {
             DPlayer user;
-            User discordUser = Bot.getJda().getUserById(discordID);
+            User discordUser = Bot.bot.getJda().getUserById(discordID);
             user = (DPlayer) SQLUtil.getObject("discordID", discordID + "", DPlayer.class);
             if (user == null) {
                 LogUtil.debug("Creating new DPlayer Object for user: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");

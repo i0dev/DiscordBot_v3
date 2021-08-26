@@ -14,7 +14,7 @@ public class CmdReload extends DiscordCommand {
     @CommandData(commandID = "cmd_reload", messageLength = 1, identifier = "Reload Config")
     public static void run(CommandEvent e) {
         ConfigUtil.reloadConfig();
-        Bot.registerCommands();
+        Bot.getBot().registerCommands();
         MessageUtil.sendPluginMessage("bot_command","reload");
         e.reply(EmbedMaker.builder().content("You have reloaded the configuration.").embedColor(EmbedColor.SUCCESS).build());
     }

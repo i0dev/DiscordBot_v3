@@ -53,7 +53,7 @@ public class Utility {
         try {
             List<Guild> ret = new ArrayList<>();
             for (Long allowedGuild : GeneralConfig.get().getAllowedGuilds()) {
-                Guild guild = Bot.getJda().getGuildById(allowedGuild);
+                Guild guild = Bot.getBot().getJda().getGuildById(allowedGuild);
                 if (guild == null) continue;
                 ret.add(guild);
             }
@@ -72,7 +72,7 @@ public class Utility {
             roles.addAll(member.getRoles());
         });
         for (long roleID : roleIDS) {
-            Role toRole = Bot.getJda().getRoleById(roleID);
+            Role toRole = Bot.getBot().getJda().getRoleById(roleID);
             if (toRole == null) continue;
             if (roles.contains(toRole)) return true;
         }
@@ -122,7 +122,7 @@ public class Utility {
     public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     public static boolean hasRoleAlready(long roleID, long userID) {
-        Role role = Bot.getJda().getRoleById(roleID);
+        Role role = Bot.getBot().getJda().getRoleById(roleID);
         if (role == null) return true;
         Guild guild = role.getGuild();
         Member member = guild.getMemberById(userID);

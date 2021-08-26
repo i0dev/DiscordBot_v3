@@ -16,14 +16,14 @@ public class CmdHelp extends DiscordCommand {
         String prefix = GeneralConfig.get().getPrefixes().get(0);
         StringBuilder basicCommands = new StringBuilder();
         basicCommands.append("__**Commands**__").append("\n");
-        for (BasicCommand registeredCommand : Bot.getRegisteredCommands().stream().filter(command -> !(command instanceof AdvancedCommand)).collect(Collectors.toList())) {
+        for (BasicCommand registeredCommand : Bot.getBot().getRegisteredCommands().stream().filter(command -> !(command instanceof AdvancedCommand)).collect(Collectors.toList())) {
             if (!registeredCommand.isEnabled()) continue;
             basicCommands.append("`").append(prefix).append(registeredCommand.getAliases().get(0)).append("`").append(", ");
         }
         basicCommands.delete(basicCommands.length() - 2, basicCommands.length() - 1);
 
         basicCommands.append("\n\n__**Advanced Commands**__").append("\n");
-        for (BasicCommand registeredCommand : Bot.getRegisteredCommands().stream().filter(command -> (command instanceof AdvancedCommand)).collect(Collectors.toList())) {
+        for (BasicCommand registeredCommand : Bot.getBot().getRegisteredCommands().stream().filter(command -> (command instanceof AdvancedCommand)).collect(Collectors.toList())) {
             StringBuilder internal = new StringBuilder();
             if (!registeredCommand.isEnabled()) continue;
             AdvancedDiscordCommand.getAdvancedCommand(registeredCommand.getClazz()).getSuperCommands().forEach(superCommand -> {
@@ -44,7 +44,7 @@ public class CmdHelp extends DiscordCommand {
         }
         
 
-        e.reply(EmbedMaker.builder().author(e.getAuthor()).authorName("DiscordBot Help Page").authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl()).content(basicCommands.toString()).build());
+        e.reply(EmbedMaker.builder().author(e.getAuthor()).authorName("DiscordBot Help Page").authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl()).content(basicCommands.toString()).build());
 
     }
 }

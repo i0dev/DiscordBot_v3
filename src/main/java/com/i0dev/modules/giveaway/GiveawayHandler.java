@@ -28,9 +28,9 @@ public class GiveawayHandler {
             if (!byPassEnding) if (giveaway.isEnded()) return;
             String prize = giveaway.getPrize();
             long winnerCount = giveaway.getWinnerAmount();
-            TextChannel channel = Bot.getJda().getTextChannelById(giveaway.getChannelID());
+            TextChannel channel = Bot.getBot().getJda().getTextChannelById(giveaway.getChannelID());
             if (channel == null) return;
-            User Host = Bot.getJda().retrieveUserById(giveaway.getHostID()).complete();
+            User Host = Bot.getBot().getJda().retrieveUserById(giveaway.getHostID()).complete();
             Message Message;
             try {
                 Message = channel.retrieveMessageById(giveaway.messageID).complete();
@@ -58,7 +58,7 @@ public class GiveawayHandler {
 
             EmbedMaker edit = EmbedMaker.builder()
                     .authorName("Giveaway Ended!")
-                    .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                    .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                     .field(new MessageEmbed.Field("__Information:__", info.toString(), false))
                     .build();
 
@@ -68,7 +68,7 @@ public class GiveawayHandler {
                     .user(Host)
                     .content(info.toString())
                     .authorURL("https://discordapp.com/channels/" + channel.getGuild().getId() + "/" + giveaway.channelID + "/" + giveaway.messageID)
-                    .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl());
+                    .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl());
             if (reroll) newEmbed.authorName("Giveaway Rerolled by {who}".replace("{who}", reroller.getAsTag()));
             else newEmbed.authorName("Giveaway Ended!");
 
@@ -76,7 +76,7 @@ public class GiveawayHandler {
 
             selectedWinners.forEach(user -> {
                 MessageUtil.sendPrivateMessage(null, user, EmbedMaker.builder()
-                        .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                        .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                         .authorName("You won a giveaway!")
                         .authorURL("https://discordapp.com/channels/" + channel.getGuild().getId() + "/" + giveaway.channelID + "/" + giveaway.messageID)
                         .content("You won: `{prize}`".replace("{prize}", prize))

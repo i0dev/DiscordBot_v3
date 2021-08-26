@@ -33,7 +33,7 @@ public class Accept extends SuperDiscordCommand {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("That suggestion has already been rejected").build());
             return;
         }
-        TextChannel channel = Bot.getJda().getTextChannelById(suggestion.getChannelID());
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(suggestion.getChannelID());
         if (channel == null || channel.retrieveMessageById(messageID).complete() == null) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Could not find that suggestion.").build());
             return;
@@ -42,7 +42,7 @@ public class Accept extends SuperDiscordCommand {
         suggestion.setAccepted(true);
         suggestion.save();
 
-        User user = Bot.getJda().retrieveUserById(suggestion.getUserID()).complete();
+        User user = Bot.getBot().getJda().retrieveUserById(suggestion.getUserID()).complete();
         SuggestionManager.sendAccepted(EmbedMaker.builder()
                 .author(e.getAuthor())
                 .user(user)
@@ -85,7 +85,7 @@ public class Accept extends SuperDiscordCommand {
 
         String note = "Nothing Provided";
 
-        User user = Bot.getJda().retrieveUserById(suggestion.getUserID()).complete();
+        User user = Bot.getBot().getJda().retrieveUserById(suggestion.getUserID()).complete();
         SuggestionManager.sendAccepted(EmbedMaker.builder()
                 .author(e.getUser())
                 .user(user)

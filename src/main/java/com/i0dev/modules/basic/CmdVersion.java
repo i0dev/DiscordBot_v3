@@ -23,7 +23,7 @@ public class CmdVersion extends DiscordCommand {
         message = EmbedMaker.builder()
                 .authorName("DiscordBot Information")
                 .authorURL("https://i0dev.com/")
-                .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                 .footer("Bot created by i0dev.com")
                 .footerImg("https://cdn.discordapp.com/attachments/763790150550683708/780593953824964628/i01.png")
                 .content(msg.toString())
@@ -37,7 +37,7 @@ public class CmdVersion extends DiscordCommand {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
-        if (e.getMessage().getContentRaw().startsWith("<@!" + Bot.getJda().getSelfUser().getId() + ">"))
+        if (e.getMessage().getContentRaw().startsWith("<@!" + Bot.getBot().getJda().getSelfUser().getId() + ">"))
             e.getMessage().replyEmbeds(EmbedMaker.create(message)).queue();
     }
 }

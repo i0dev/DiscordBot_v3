@@ -82,7 +82,7 @@ public class InGamePunishmentLogs implements Listener {
 
         APIUtil.refreshAPICache(e.getUuid());
 
-        String authorImg = dPlayer == null ? Bot.getJda().getSelfUser().getEffectiveAvatarUrl() : Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getEffectiveAvatarUrl();
+        String authorImg = dPlayer == null ? Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl() : Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getEffectiveAvatarUrl();
 
         StringBuilder msg = new StringBuilder();
         msg.append("Punished IGN: `").append(APIUtil.getIGNFromUUID(e.getUuid())).append("`\n");
@@ -107,7 +107,7 @@ public class InGamePunishmentLogs implements Listener {
         APIUtil.refreshAPICache(uuid.toString());
 
         DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getPlayerUUID());
-        String authorImg = dPlayer == null ? Bot.getJda().getSelfUser().getEffectiveAvatarUrl() : Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getEffectiveAvatarUrl();
+        String authorImg = dPlayer == null ? Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl() : Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getEffectiveAvatarUrl();
 
         StringBuilder msg = new StringBuilder();
         msg.append("Punished IGN: `").append(e.getPlayerIGN()).append("`\n");

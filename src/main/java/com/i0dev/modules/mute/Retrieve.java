@@ -33,7 +33,7 @@ public class Retrieve extends SuperDiscordCommand {
         StringBuilder msg = new StringBuilder();
         list.forEach(ob -> {
             DPlayer dPlayer = ((DPlayer) ob);
-            User user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            User user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
             msg.append(user.getAsTag()).append(" `(").append(dPlayer.getDiscordID()).append(")`\n");
         });
 

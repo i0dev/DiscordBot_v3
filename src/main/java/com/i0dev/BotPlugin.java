@@ -16,7 +16,7 @@ public class BotPlugin extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
-        Bot.setPluginMode(true);
+        Bot.getBot().setPluginMode(true);
         Bot.main(null);
         server.getPluginManager().registerCommand(this, new CommandLink("link"));
         server.getPluginManager().registerCommand(this, new Command2fa("2fa"));
@@ -40,7 +40,7 @@ public class BotPlugin extends Plugin {
         server.getScheduler().cancel(this);
         server.getPluginManager().unregisterCommands(this);
         server.getPluginManager().unregisterListeners(this);
-        Bot.shutdown();
+        Bot.getBot().shutdown();
         instance = null;
         getLogger().info(ChatColor.RED + "DiscordBot Disabled!");
     }

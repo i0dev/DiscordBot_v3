@@ -33,7 +33,7 @@ public class CmdBan extends DiscordCommand {
             return;
         }
 
-        if (Bot.isPluginMode() && dPlayer.isLinked() && getOption("banInGame").getAsBoolean()) {
+        if (Bot.getBot().isPluginMode() && dPlayer.isLinked() && getOption("banInGame").getAsBoolean()) {
             com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{reason}", reason).replace("{ign}", dPlayer.getMinecraftIGN()));
         }
 

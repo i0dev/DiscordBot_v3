@@ -39,7 +39,7 @@ public class AutoModHandler extends ListenerAdapter {
             e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().content("{tag}, You have triggered an anti-spam system. Your message has been deleted, and the channel locked.").embedColor(EmbedColor.FAILURE).user(e.getAuthor()).build())).queue();
 
             MiscConfig.get().getAutoMod_lockdownRolesToDenySendingMessages().forEach(aLong -> {
-                Role role = Bot.getJda().getRoleById(aLong);
+                Role role = Bot.getBot().getJda().getRoleById(aLong);
                 if (role == null) return;
 
                 Collection<Permission> deny = new HashSet<>();

@@ -17,7 +17,7 @@ public class CmdChangelog extends DiscordCommand {
 
     @CommandData(commandID = "cmd_changelog", usage = "<content>", identifier = "Changelog", minMessageLength = 2)
     public static void run(CommandEvent e) {
-        TextChannel channel = Bot.getJda().getTextChannelById(getOption("channel").getAsLong());
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(getOption("channel").getAsLong());
         String content = Utility.remainingArgFormatter(e.getSplit(), 1);
         channel.sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder().user(e.getAuthor()).content(content).authorImg(e.getAuthor().getEffectiveAvatarUrl()).authorName("Changelog post from {tag}").build())).queue();
 

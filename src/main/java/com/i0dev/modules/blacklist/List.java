@@ -25,7 +25,7 @@ public class List extends SuperDiscordCommand {
 
         for (Object o : list) {
             DPlayer dPlayer = (DPlayer) o;
-            User user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            User user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
             msg.append(user.getAsTag()).append(" `(").append(user.getIdLong()).append(")`\n");
         }
         e.reply(EmbedMaker.builder().field(new MessageEmbed.Field("Blacklisted Users:", msg.toString(), true)).build());

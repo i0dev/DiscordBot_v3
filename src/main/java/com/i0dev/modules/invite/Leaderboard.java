@@ -23,7 +23,7 @@ public class Leaderboard extends SuperDiscordCommand {
         for (Object o : SQLUtil.getSortedList(DPlayer.class.getSimpleName(), "invites", DPlayer.class, getOption("limit").getAsInt(), "discordID")) {
             DPlayer dPlayer = (DPlayer) o;
             if (dPlayer.getInvites() == 0) continue;
-            User user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            User user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
             msg.append("**#").append(count + 1).append("**. *").append(user.getAsTag()).append("*: `").append(dPlayer.getInvites()).append(" invites`\n");
             count++;
         }

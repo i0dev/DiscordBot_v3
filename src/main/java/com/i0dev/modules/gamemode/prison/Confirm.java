@@ -33,7 +33,7 @@ public class Confirm extends SuperDiscordCommand {
                         .replace("{size}", size)
                 ).build());
 
-        TextChannel channel = Bot.getJda().getTextChannelById(getOption("channel").getAsLong());
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(getOption("channel").getAsLong());
         if (channel == null) return;
 
         StringBuilder msg = new StringBuilder();

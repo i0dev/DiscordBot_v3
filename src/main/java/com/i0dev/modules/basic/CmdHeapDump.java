@@ -21,15 +21,15 @@ public class CmdHeapDump extends DiscordCommand {
         desc.append("Max Memory: ").append("`").append(Utility.numberFormat.format(Utility.runtime.maxMemory() / 1024L / 1024L)).append(" MB`").append("\n");
         desc.append("Available Processors: ").append("`").append(Utility.numberFormat.format(Utility.runtime.availableProcessors())).append("`").append("\n");
         desc.append("System Load Average: ").append("`").append(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()).append("%`").append("\n");
-        desc.append("Uptime: ").append(TimeUtil.formatTime(System.currentTimeMillis() - Bot.startupTime)).append("\n");
-        if (Bot.pluginMode) {
+        desc.append("Uptime: ").append(TimeUtil.formatTime(System.currentTimeMillis() - Bot.bot.getStartupTime())).append("\n");
+        if (Bot.getBot().isPluginMode()) {
             desc.append("\n**__Minecraft Server Information:__**\n");
             desc.append("**Version:** ").append("`").append(com.i0dev.BotPlugin.server.getVersion()).append("`").append("\n");
             desc.append("**Online Players:** ").append("`").append(com.i0dev.BotPlugin.server.getOnlineCount()).append(" / ").append(com.i0dev.BotPlugin.server.getConfig().getPlayerLimit()).append("`").append("\n");
         }
 
         e.reply(EmbedMaker.builder()
-                        .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                        .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                         .authorName("Runtime Information")
                 .content(desc.toString()).author(e.getAuthor()).build());
     }

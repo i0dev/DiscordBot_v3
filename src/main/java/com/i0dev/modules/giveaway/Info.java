@@ -21,8 +21,8 @@ public class Info extends SuperDiscordCommand {
             return;
         }
 
-        TextChannel channel = Bot.getJda().getTextChannelById(giveaway.getChannelID());
-        User host = Bot.getJda().retrieveUserById(giveaway.getHostID()).complete();
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(giveaway.getChannelID());
+        User host = Bot.getBot().getJda().retrieveUserById(giveaway.getHostID()).complete();
 
         StringBuilder msg = new StringBuilder();
         msg.append("Channel: ").append(channel.getAsMention()).append("\n");
@@ -40,6 +40,6 @@ public class Info extends SuperDiscordCommand {
         e.reply(EmbedMaker.builder()
                 .authorURL("https://discordapp.com/channels/" + channel.getGuild().getId() + "/" + giveaway.channelID + "/" + giveaway.messageID)
 
-                .authorName("Giveaway Information:").embedColor(ended ? EmbedColor.FAILURE : EmbedColor.SUCCESS).authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl()).content(msg.toString()).build());
+                .authorName("Giveaway Information:").embedColor(ended ? EmbedColor.FAILURE : EmbedColor.SUCCESS).authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl()).content(msg.toString()).build());
     }
 }

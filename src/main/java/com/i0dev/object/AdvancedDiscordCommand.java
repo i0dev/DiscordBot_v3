@@ -54,7 +54,7 @@ public class AdvancedDiscordCommand extends DiscordCommand {
         }
         cmd.addSuperCommand(key, value);
         cmd.getSuperCommands().add(value);
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 
 }

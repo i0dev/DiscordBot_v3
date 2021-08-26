@@ -34,7 +34,7 @@ public class Remove extends SuperDiscordCommand {
             return;
         }
 
-        if (Bot.isPluginMode() && dPlayer.isLinked() && getOption("unmuteInGame").getAsBoolean()) {
+        if (Bot.getBot().isPluginMode() && dPlayer.isLinked() && getOption("unmuteInGame").getAsBoolean()) {
             com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{reason}", reason).replace("{ign}", dPlayer.getMinecraftIGN()));
         }
         dPlayer.setMuted(false);

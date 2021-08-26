@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -32,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Engine {
 
     static void run() {
-        ScheduledExecutorService executorService = Bot.getAsyncService();
+        ScheduledExecutorService executorService = Bot.getBot().getAsyncService();
         executorService.scheduleAtFixedRate(taskExecuteMemberCountUpdate, 1, 2, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskUpdateDPlayerCache, 1, 1, TimeUnit.HOURS);
         executorService.scheduleAtFixedRate(taskExecuteGiveaways, 1, 10, TimeUnit.SECONDS);
@@ -54,8 +55,8 @@ public class Engine {
             if (roleQueueList.isEmpty()) return;
             RoleQueueObject queueObject = roleQueueList.get(0);
             roleQueueList.remove(queueObject);
-            User user = Bot.getJda().getUserById(queueObject.getUserID());
-            Role role = Bot.getJda().getRoleById(queueObject.getRoleID());
+            User user = Bot.getBot().getJda().getUserById(queueObject.getUserID());
+            Role role = Bot.getBot().getJda().getRoleById(queueObject.getRoleID());
             if (user == null || role == null) return;
             Guild guild = role.getGuild();
             Member member = guild.getMemberById(user.getId());
@@ -91,9 +92,9 @@ public class Engine {
 
     static Runnable taskGiveContinuousRoles = () -> {
         AtomicInteger count = new AtomicInteger(0);
-        for (User user : Bot.getJda().getUsers()) {
+        for (User user : Bot.getBot().getJda().getUsers()) {
             for (Long roleID : MiscConfig.get().rolesToConstantlyGive) {
-                Role role = Bot.getJda().getRoleById(roleID);
+                Role role = Bot.getBot().getJda().getRoleById(roleID);
                 if (role == null) continue;
                 if (Utility.hasRoleAlready(roleID, user.getIdLong())) continue;
                 count.getAndIncrement();
@@ -109,24 +110,24 @@ public class Engine {
         //8-6-2021
         String date = ZonedDateTime.now().getMonthValue() + "-" + ZonedDateTime.now().getDayOfMonth() + "-" + ZonedDateTime.now().getYear();
         try {
-            File commandsFile = new File(Bot.getStoragePath() + "/" + "CommandsConfigBackup-" + date);
+            File commandsFile = new File(Bot.getBot().getStoragePath() + "/" + "CommandsConfigBackup-" + date);
             if (!commandsFile.exists()) {
-                Files.write(Paths.get(commandsFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBasicConfigPath()).toString().getBytes());
+                Files.write(Paths.get(commandsFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath()).toString().getBytes());
             }
 
-            File generalFile = new File(Bot.getStoragePath() + "/" + "GeneralConfigBackup-" + date);
+            File generalFile = new File(Bot.getBot().getStoragePath() + "/" + "GeneralConfigBackup-" + date);
             if (!generalFile.exists()) {
-                Files.write(Paths.get(generalFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getConfigPath()).toString().getBytes());
+                Files.write(Paths.get(generalFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getConfigPath()).toString().getBytes());
             }
 
-            File miscFile = new File(Bot.getStoragePath() + "/" + "MiscConfigBackup-" + date);
+            File miscFile = new File(Bot.getBot().getStoragePath() + "/" + "MiscConfigBackup-" + date);
             if (!miscFile.exists()) {
-                Files.write(Paths.get(miscFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getMiscConfigPath()).toString().getBytes());
+                Files.write(Paths.get(miscFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getMiscConfigPath()).toString().getBytes());
             }
 
-            File customCmdFile = new File(Bot.getStoragePath() + "/" + "CustomCommandsBackup-" + date);
+            File customCmdFile = new File(Bot.getBot().getStoragePath() + "/" + "CustomCommandsBackup-" + date);
             if (!customCmdFile.exists()) {
-                Files.write(Paths.get(customCmdFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getCustomCommandsConfigPath()).toString().getBytes());
+                Files.write(Paths.get(customCmdFile.getAbsolutePath()), ConfigUtil.getJsonObject(Bot.getBot().getCustomCommandsConfigPath()).toString().getBytes());
             }
         } catch (Exception ignored) {
 
@@ -135,7 +136,7 @@ public class Engine {
 
     static Runnable taskExecuteMemberCountUpdate = () -> {
         if (!MiscConfig.instance.memberCount_enabled) return;
-        GuildChannel channel = Bot.getJda().getGuildChannelById(MiscConfig.get().getMemberCount_channel());
+        GuildChannel channel = Bot.getBot().getJda().getGuildChannelById(MiscConfig.get().getMemberCount_channel());
         if (channel == null) return;
         channel.getManager().setName(MiscConfig.get().memberCount_format.replace("{count}", channel.getGuild().getMemberCount() + "")).queue();
     };
@@ -163,30 +164,29 @@ public class Engine {
         String activity = PlaceholderUtil.convert(GeneralConfig.get().getActivity(), null, null);
         switch (GeneralConfig.get().activityType.toLowerCase()) {
             case "watching":
-                Bot.getJda().getPresence().setActivity(Activity.watching(activity));
+                Bot.getBot().getJda().getPresence().setActivity(Activity.watching(activity));
                 break;
             case "listening":
-                Bot.getJda().getPresence().setActivity(Activity.listening(activity));
+                Bot.getBot().getJda().getPresence().setActivity(Activity.listening(activity));
                 break;
             case "playing":
-                Bot.getJda().getPresence().setActivity(Activity.playing(activity));
+                Bot.getBot().getJda().getPresence().setActivity(Activity.playing(activity));
                 break;
         }
     };
 
     static Runnable taskVerifyAuthentication = () -> {
         boolean allow = false;
-        JSONObject auth = APIUtil.getAuthentication(Bot.getJda().getSelfUser().getId());
+        JSONObject auth = APIUtil.getAuthentication(Bot.getBot().getJda().getSelfUser().getId());
         if (((boolean) auth.get("access"))) allow = true;
-        if (!allow && (Bot.getJda() != null || Bot.getJda().getGuildById("773035795023790131") != null)) allow = true;
+        if (!allow && Bot.getBot().getJda() != null && Bot.getBot().getJda().getGuildById("773035795023790131") != null)
+            allow = true;
         if (!allow) {
             LogUtil.severe("Failed to verify with authentication servers.");
-            Bot.shutdown();
+            Bot.getBot().shutdown();
             MessageUtil.sendPluginMessage("bot_command", "shutdown");
         }
     };
-
-
     @Getter
     static final List<LogObject> toLog = new LinkedList<>();
 

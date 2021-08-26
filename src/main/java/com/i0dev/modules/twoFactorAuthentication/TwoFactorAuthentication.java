@@ -63,18 +63,18 @@ public class TwoFactorAuthentication implements Listener {
         DPlayer dPlayer = DPlayer.getDPlayerFromUUID(e.getPlayer().getUniqueId().toString());
         if (dPlayer == null) return;
         TwoFactor preTwoF = getObject(e.getPlayer());
-        MessageUtil.sendMessageInGame(e.getPlayer(), "&7Two Factor Authentication required. Please use the code the bot sent you in Direct Messages. &c/2fa <code>");
+        MessageUtil.sendMessageInGame(e.getPlayer(), "&7Two Factor Authentication required. Please use the code the Bot.getBot() sent you in Direct Messages. &c/2fa <code>");
         Cache.getInstance().getCache().add(e.getPlayer().getUniqueId());
         User user;
         TwoFactor useThisTF;
         if (preTwoF != null) {
-            user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
             useThisTF = preTwoF;
         } else {
             TwoFactor twoFactor = new TwoFactor();
             twoFactor.setCode(Utility.GenerateRandomString(5));
             twoFactor.setPlayer(e.getPlayer());
-            user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
             twoFactor.setUser(user);
             twoFactor.addToCache();
             useThisTF = twoFactor;
@@ -116,7 +116,7 @@ public class TwoFactorAuthentication implements Listener {
         if (isOnList(p)) {
             if (e.getMessage().startsWith("/2fa")) return;
             e.setCancelled(true);
-            MessageUtil.sendMessageInGame(p, "&7Two Factor Authentication required. Please use the code the bot sent you in Direct Messages. &c/2fa <code>");
+            MessageUtil.sendMessageInGame(p, "&7Two Factor Authentication required. Please use the code the Bot.getBot() sent you in Direct Messages. &c/2fa <code>");
         }
     }
 }

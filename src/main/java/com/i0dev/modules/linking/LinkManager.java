@@ -38,9 +38,9 @@ public class LinkManager extends AdvancedDiscordCommand {
             guildsThatBypassNicknameChange = new ArrayList<>();
             rolesToGiveAlways = new ArrayList<>();
 
-            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesToGiveAlways", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToGiveAlways.add(jsonElement.getAsLong()));
-            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesThatBypassNicknameChange", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesThatBypassNicknameChange.add(jsonElement.getAsLong()));
-            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.guildsThatBypassNicknameChange", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> guildsThatBypassNicknameChange.add(jsonElement.getAsLong()));
+            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesToGiveAlways", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesToGiveAlways.add(jsonElement.getAsLong()));
+            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.rolesThatBypassNicknameChange", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> rolesThatBypassNicknameChange.add(jsonElement.getAsLong()));
+            ConfigUtil.getObjectFromInternalPath(getAnnotation(LinkManager.class).commandID() + ".options.guildsThatBypassNicknameChange", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonArray().forEach(jsonElement -> guildsThatBypassNicknameChange.add(jsonElement.getAsLong()));
         } catch (Exception e) {
             LogUtil.log(Arrays.toString(e.getStackTrace()));
         }

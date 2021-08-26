@@ -18,7 +18,7 @@ public class PlaceholderUtil {
 
     @SneakyThrows
     public static String convert(String message, User user, User author) {
-        JDA jda = Bot.getJda();
+        JDA jda = Bot.getBot().getJda();
         Guild guild = Utility.getAllowedGuilds().get(0);
         if (message == null) return null;
 
@@ -39,7 +39,7 @@ public class PlaceholderUtil {
                     .replace("{uuid}", dPlayer.getMinecraftUUID())
                     .replace("{invites}", dPlayer.getInvites() + "")
                     .replace("{isBot}", user.isBot() ? "Yes" : "No")
-                    .replace("{effectiveName}", member == null ? Bot.getJda().getSelfUser().getName() : member.getEffectiveName())
+                    .replace("{effectiveName}", member == null ? Bot.getBot().getJda().getSelfUser().getName() : member.getEffectiveName())
                     .replace("{timeCreated}", "<t:" + (user.getTimeCreated().toInstant().toEpochMilli() / 1000L) + ":R>")
                     .replace("{linkTime}", "<t:" + (dPlayer.getLinkedTime() / 1000L) + ":R>")
                     .replace("{isBoosting}", guild.getBoosters().contains(member) ? "Yes" : "No")
@@ -87,7 +87,7 @@ public class PlaceholderUtil {
         }
 
         //Self User
-        if (Bot.jda != null)
+        if (Bot.getBot().getJda() != null)
             message = message
                     .replace("{botTag}", jda.getSelfUser().getAsTag())
                     .replace("{botMention}", jda.getSelfUser().getAsMention())
@@ -98,12 +98,12 @@ public class PlaceholderUtil {
         //General
         message = message
                 .replace("{botAuthor}", "i0#0001")
-                .replace("{pluginMode}", Bot.pluginMode ? "Yes" : "No")
+                .replace("{pluginMode}", Bot.getBot().isPluginMode() ? "Yes" : "No")
                 .replace("{prefix}", GeneralConfig.get().getPrefixes().get(0))
                 .replace("{version}", "3.0.13");
 
         //plugin mode
-        if (Bot.isPluginMode()) {
+        if (Bot.getBot().isPluginMode()) {
             message = message
                     .replace("{onlinePlayers}", com.i0dev.BotPlugin.server.getOnlineCount() + "");
         }

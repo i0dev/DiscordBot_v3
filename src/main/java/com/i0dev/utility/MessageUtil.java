@@ -55,7 +55,7 @@ public class MessageUtil {
 
     @SneakyThrows
     public static void sendPluginMessage(String specialChannel, String data) {
-        if (Bot.pluginMode) {
+        if (Bot.getBot().isPluginMode()) {
             com.google.common.io.ByteArrayDataOutput out = com.google.common.io.ByteStreams.newDataOutput();
             out.writeUTF("Forward");
             out.writeUTF("ALL");

@@ -36,7 +36,7 @@ public class CommandLink extends Command {
                 CodeCache.getInstance().getFrom_Ingame_cache().add(codeLinker);
                 MessageUtil.sendMessageInGame(commandSender, "&7Type &o&c{prefix}link code {code}&r&7 in discord to finish linking.".replace("{prefix}", GeneralConfig.get().getPrefixes().get(0)).replace("{code}", code));
             } else
-                MessageUtil.sendMessageInGame(commandSender, "&7You are already linked to the discord tag &c{tag}".replace("{tag}", Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getAsTag()));
+                MessageUtil.sendMessageInGame(commandSender, "&7You are already linked to the discord tag &c{tag}".replace("{tag}", Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete().getAsTag()));
             return;
         }
 
@@ -57,7 +57,7 @@ public class CommandLink extends Command {
                 CodeCache.getInstance().getFrom_Discord_cache().remove(codeLinker);
 
             } else
-                MessageUtil.sendMessageInGame(commandSender, "&7You are already linked to the discord tag &c{tag}".replace("{tag}", Bot.getJda().retrieveUserById(preDPlayer.getDiscordID()).complete().getAsTag()));
+                MessageUtil.sendMessageInGame(commandSender, "&7You are already linked to the discord tag &c{tag}".replace("{tag}", Bot.getBot().getJda().retrieveUserById(preDPlayer.getDiscordID()).complete().getAsTag()));
 
             return;
         }

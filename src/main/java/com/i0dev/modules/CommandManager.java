@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class CommandManager extends ListenerAdapter {
 
-    public static List<String> getSuperMessageArray(String[] message, int offset) {
+    public List<String> getSuperMessageArray(String[] message, int offset) {
         List<String> ret = new ArrayList<>(Arrays.asList(message));
         if (offset > 0)
             ret.subList(0, offset).clear();
@@ -45,7 +45,7 @@ public class CommandManager extends ListenerAdapter {
         return false;
     }
 
-    public static boolean isSuperCommand(List<String> aliases, Message message) {
+    public boolean isSuperCommand(List<String> aliases, Message message) {
         for (String alias : aliases) {
             if ((alias.toLowerCase()).equalsIgnoreCase(message.getContentRaw().split(" ")[1])) {
                 return true;
@@ -83,7 +83,7 @@ public class CommandManager extends ListenerAdapter {
                 return;
             }
 
-            for (BasicCommand command : Bot.getRegisteredCommands()) {
+            for (BasicCommand command : Bot.getBot().getRegisteredCommands()) {
                 if (isCommand(command.getAliases(), e.getMessage())) {
                     CommandData data = DiscordCommand.getAnnotation(command.getClazz());
                     if (!check(e.getMessage(), data, command, command.isEnabled(), data.identifier(), dPlayer, e.getMember(), command.getAliases().get(0), 0, e))
@@ -100,7 +100,7 @@ public class CommandManager extends ListenerAdapter {
                             return;
                         }
                         for (SuperCommand superCommand : AdvancedDiscordCommand.getAdvancedCommand(command.getClazz()).getSuperCommands()) {
-                            if (CommandManager.isSuperCommand(superCommand.getAliases(), e.getMessage())) {
+                            if (isSuperCommand(superCommand.getAliases(), e.getMessage())) {
                                 CommandData superData = SuperDiscordCommand.getAnnotation(superCommand.getClazz());
                                 if (!check(e.getMessage(), superData, superCommand, command.isEnabled(), superData.identifier(), dPlayer, e.getMember(), command.getAliases().get(0) + " " + superCommand.getAliases().get(0), 1, e))
                                     return;
@@ -121,7 +121,7 @@ public class CommandManager extends ListenerAdapter {
                 }
             }
 
-            for (BasicCommand advancedCommand : Bot.getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).collect(Collectors.toList())) {
+            for (BasicCommand advancedCommand : Bot.getBot().getRegisteredCommands().stream().filter(command -> command instanceof AdvancedCommand).collect(Collectors.toList())) {
                 for (SuperCommand superCommand : ((AdvancedCommand) advancedCommand).getSuperCommands()) {
                     if (isCommand(superCommand.getAlternateCommands(), e.getMessage())) {
                         CommandData data = DiscordCommand.getAnnotation(superCommand.getClazz());
@@ -182,14 +182,14 @@ public class CommandManager extends ListenerAdapter {
             error.printStackTrace();
             e.getChannel().sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()
                     .embedColor(EmbedColor.FAILURE)
-                    .authorImg(Bot.getJda().getSelfUser().getEffectiveAvatarUrl())
+                    .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
                     .authorName("An Error Occurred: " + (error.getCause() == null ? error.getClass().getSimpleName() : error.getCause().getClass().getSimpleName()))
                     .content(error.getCause() == null ? error.getMessage() : error.getCause().getMessage())
                     .build())).queue();
         }
     }
 
-    public static boolean check(Message message, CommandData data, BasicCommand command, boolean enabled, String
+    public boolean check(Message message, CommandData data, BasicCommand command, boolean enabled, String
             identifier, DPlayer dPlayer, Member member, String usagePrefix, int offset, MessageReceivedEvent event) {
         String[] msg = message.getContentRaw().split(" ");
         EmbedMaker maker = EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("Command usage: " +
@@ -222,7 +222,7 @@ public class CommandManager extends ListenerAdapter {
             }
         }
         if (data.requirePluginMode()) {
-            if (!Bot.isPluginMode()) {
+            if (!Bot.getBot().isPluginMode()) {
                 CommandEvent.replyStatic(EmbedMaker.builder().content("This command can only be used in PluginMode").embedColor(EmbedColor.FAILURE).build(), message);
                 return false;
             }
@@ -262,8 +262,8 @@ public class CommandManager extends ListenerAdapter {
             }
         }
         for (long userID : GeneralConfig.get().getLiteAllowed()) {
-            if (Bot.getJda().getUserById(userID) == null) continue;
-            if (user.equals(Bot.getJda().getUserById(userID))) {
+            if (Bot.getBot().getJda().getUserById(userID) == null) continue;
+            if (user.equals(Bot.getBot().getJda().getUserById(userID))) {
                 return true;
             }
         }
@@ -284,16 +284,16 @@ public class CommandManager extends ListenerAdapter {
             }
         }
         for (long userID : GeneralConfig.get().getStrictAllowed()) {
-            if (Bot.getJda().getUserById(userID) == null) continue;
+            if (Bot.getBot().getJda().getUserById(userID) == null) continue;
 
-            if (user.equals(Bot.getJda().getUserById(userID))) {
+            if (user.equals(Bot.getBot().getJda().getUserById(userID))) {
                 return true;
             }
         }
         return false;
     }
 
-    public static CommandEvent newEvent(MessageReceivedEvent e, int offset) {
+    public CommandEvent newEvent(MessageReceivedEvent e, int offset) {
 
         Guild guild = null;
         if (e.getChannelType().isGuild()) guild = e.getGuild();

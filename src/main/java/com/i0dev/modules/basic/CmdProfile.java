@@ -31,7 +31,7 @@ public class CmdProfile extends DiscordCommand {
         bot.append("Blacklisted: ").append("`{blacklisted}`").append("\n");
         User invitedBy = null;
         if (dPlayer.getInvitedByDiscordID() != 0) {
-            invitedBy = Bot.getJda().retrieveUserById(dPlayer.getInvitedByDiscordID()).complete();
+            invitedBy = Bot.getBot().getJda().retrieveUserById(dPlayer.getInvitedByDiscordID()).complete();
         }
         bot.append("Invited By: `").append(invitedBy == null ? "Unkown" : invitedBy.getAsTag()).append("`\n");
         bot.append("Linked IGN: ").append("`{ign}`").append("\n");

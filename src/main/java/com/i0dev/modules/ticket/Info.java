@@ -18,7 +18,7 @@ public class Info extends SuperDiscordCommand {
         }
 
         Ticket ticket = Ticket.getTicket(e.getChannel());
-        User user = Bot.getJda().retrieveUserById(ticket.getTicketOwnerID()).complete();
+        User user = Bot.getBot().getJda().retrieveUserById(ticket.getTicketOwnerID()).complete();
 
         StringBuilder msg = new StringBuilder();
         msg.append("Channel Name: `").append(ticket.getTicketName()).append("`\n");

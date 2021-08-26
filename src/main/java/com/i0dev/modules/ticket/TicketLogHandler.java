@@ -18,7 +18,7 @@ public class TicketLogHandler extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (!TicketManager.isTicket(e.getChannel())) return;
         try {
-            File ticketLogsFile = new File(Bot.getTicketLogsPath() + e.getChannel().getId() + ".log");
+            File ticketLogsFile = new File(Bot.getBot().getTicketLogsPath() + e.getChannel().getId() + ".log");
             StringBuilder toFile = new StringBuilder();
             for (Message.Attachment attachment : e.getMessage().getAttachments()) {
                 toFile.append(Utility.formatDate(System.currentTimeMillis())).append(" [").append(e.getAuthor().getAsTag()).append("]: ")
@@ -50,7 +50,7 @@ public class TicketLogHandler extends ListenerAdapter {
     public void onGuildMessageUpdate(GuildMessageUpdateEvent e) {
         if (!TicketManager.isTicket(e.getChannel())) return;
         try {
-            File ticketLogsFile = new File(Bot.getTicketLogsPath() + e.getChannel().getId() + ".log");
+            File ticketLogsFile = new File(Bot.getBot().getTicketLogsPath() + e.getChannel().getId() + ".log");
             StringBuilder toFile = new StringBuilder();
 
             toFile.append(Utility.formatDate(System.currentTimeMillis())).append(" [").append(e.getAuthor().getAsTag()).append("]: ")

@@ -75,6 +75,6 @@ public class ConfigUtil {
     }
 
     public static void reloadConfig() {
-        Bot.getConfigMap().forEach(ConfigUtil::load);
+        Bot.getBot().getConfigMap().forEach(ConfigUtil::load);
     }
 }

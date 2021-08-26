@@ -29,7 +29,7 @@ public class Leaderboard extends SuperDiscordCommand {
         for (Object o : list) {
             DPlayer dPlayer = (DPlayer) o;
             if (dPlayer.getTicketsClosed() == 0) continue;
-            User user = Bot.getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+            User user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
             msg.append("**#").append(count + 1).append("**. *").append(user.getAsTag()).append("*: `").append(Utility.numberFormat.format(dPlayer.getTicketsClosed())).append(" tickets closed`\n");
             count++;
         }

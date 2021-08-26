@@ -30,7 +30,7 @@ public class Remove extends SuperDiscordCommand {
         NicknameUtil.modifyNicknameGlobally(user, "");
 
         MovementObject current = MovementManager.getObject(currentParentRole);
-        if (Bot.isPluginMode() && current != null && current.getLuckPermsRank() != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
+        if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
             com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
         }
 

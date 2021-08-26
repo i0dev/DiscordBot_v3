@@ -80,7 +80,7 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addMessage(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 
     @SneakyThrows
@@ -96,7 +96,7 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addOption(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 
     @SneakyThrows
@@ -110,6 +110,6 @@ public class DiscordCommand extends ListenerAdapter {
         cmd.addOption(key, value);
         if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
             AdvancedCommand.turnPartsListToParts();
-        ConfigUtil.save(CommandsConfig.get(), Bot.getBasicConfigPath());
+        ConfigUtil.save(CommandsConfig.get(), Bot.getBot().getBasicConfigPath());
     }
 }

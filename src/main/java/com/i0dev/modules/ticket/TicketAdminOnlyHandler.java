@@ -21,11 +21,11 @@ public class TicketAdminOnlyHandler extends ListenerAdapter {
         if (e.getButton() == null) return;
         if (!"BUTTON_TICKET_ADMIN_ONLY".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
-        if (!ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.adminOnly.enabled", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsBoolean())
+        if (!ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.adminOnly.enabled", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
             return;
         if (!Utility.isValidGuild(e.getGuild())) return;
         if (DPlayer.getDPlayer(e.getUser()).isBlacklisted()) return;
-        JsonObject ob = ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.adminOnly.permission", ConfigUtil.getJsonObject(Bot.getBasicConfigPath())).getAsJsonObject();
+        JsonObject ob = ConfigUtil.getObjectFromInternalPath("cmd_ticket.parts.adminOnly.permission", ConfigUtil.getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
         if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean()))
             return;
         if (!TicketManager.isTicket(e.getChannel())) return;
