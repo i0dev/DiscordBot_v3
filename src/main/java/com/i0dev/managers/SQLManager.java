@@ -304,9 +304,24 @@ public class SQLManager extends Manager {
     }
 
     @SneakyThrows
-    public Object getObject(String key, String value, Class<?> clazz) {
-        if (!objectExists(clazz.getSimpleName(), key, value)) return null;
-        ResultSet result = connection.createStatement().executeQuery("select * from " + clazz.getSimpleName() + " where " + key + "=" + value + ";");
+    public Object getObject(String key, Object value, Class<?> clazz) {
+        String val;
+        switch (value.getClass().getSimpleName()) {
+            case "long":
+            case "Long":
+                val = ((Long) value).toString();
+                break;
+            case "String":
+                val = "'" + value + "'";
+                break;
+            case "boolean":
+                val = (Boolean) value ? "1" : "0";
+                break;
+            default:
+                val = value.toString();
+        }
+        if (!objectExists(clazz.getSimpleName(), key, val)) return null;
+        ResultSet result = connection.createStatement().executeQuery("select * from " + clazz.getSimpleName() + " where " + key + "=" + val + ";");
         int iter = 0;
         result.next();
         Object ret = clazz.newInstance();
