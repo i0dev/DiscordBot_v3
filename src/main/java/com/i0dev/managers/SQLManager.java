@@ -238,6 +238,24 @@ public class SQLManager extends Manager {
     }
 
     @SneakyThrows
+    public List<Object> getAllObjectsWhereValuesNot(String table, String key, Class<?> clazz, String notKey, Collection<String> notValues) {
+        List<Object> ret = new ArrayList<>();
+        StringBuilder all = new StringBuilder();
+        for (String notValue : notValues) {
+            all.append(notValue).append(", ");
+        }
+        String allS = "";
+        if (!"".equals(all.toString())) allS = all.substring(0, all.length() - 2);
+        String query = "SELECT * FROM " + table + " where " + notKey + " NOT IN (" + allS + ");";
+        ResultSet resultSet = connection.prepareStatement(query).executeQuery();
+        while (resultSet.next()) {
+            String value = resultSet.getString(key);
+            ret.add(getObject(key, value, clazz));
+        }
+        return ret;
+    }
+
+    @SneakyThrows
     public boolean objectExists(String table, String key, String value) {
         String query = "SELECT * FROM " + table + " WHERE " + key + " = " + value;
         ResultSet resultSet = connection.prepareStatement(query).executeQuery();
