@@ -160,8 +160,16 @@ public class Engine {
         });
     };
 
+
+    static Set<String> endedGiveawayCache = new HashSet<>();
     static Runnable taskExecuteGiveaways = () -> {
-        Bot.getBot().getManager(SQLManager.class).getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).stream().filter(o -> !((Giveaway) o).isEnded()).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
+        Bot.getBot().getManager(SQLManager.class).getAllObjectsWhereValuesNot(Giveaway.class.getSimpleName(), "messageID", Giveaway.class, "messageID", endedGiveawayCache).stream().filter(o -> {
+            if (((Giveaway) o).isEnded()) {
+                endedGiveawayCache.add(((Giveaway) o).getMessageID() + "");
+                return false;
+            }
+            return true;
+        }).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
     };
 
     static Runnable taskUpdateActivity = () -> {
