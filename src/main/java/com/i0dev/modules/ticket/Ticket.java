@@ -1,7 +1,7 @@
 package com.i0dev.modules.ticket;
 
 import com.i0dev.Bot;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

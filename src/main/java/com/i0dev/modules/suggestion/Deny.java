@@ -5,7 +5,7 @@ import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;

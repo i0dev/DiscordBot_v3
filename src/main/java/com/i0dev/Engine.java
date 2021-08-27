@@ -10,8 +10,8 @@ import com.i0dev.object.LogObject;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.object.managers.ConfigManager;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.ConfigManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,16 +23,13 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @FieldDefaults(level = AccessLevel.PUBLIC)
 public class Engine {
-
 
 
     static void run() {
@@ -171,6 +168,7 @@ public class Engine {
             return true;
         }).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
     };
+
 
     static Runnable taskUpdateActivity = () -> {
         String activity = PlaceholderUtil.convert(GeneralConfig.get().getActivity(), null, null);

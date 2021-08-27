@@ -6,7 +6,7 @@ import com.i0dev.object.BasicCommand;
 import com.i0dev.object.DiscordCommand;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.object.managers.*;
+import com.i0dev.managers.*;
 import com.i0dev.utility.LogUtil;
 import com.i0dev.utility.PlaceholderUtil;
 import com.i0dev.utility.Utility;

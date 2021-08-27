@@ -1,7 +1,7 @@
 package com.i0dev.modules.giveaway;
 
 import com.i0dev.Bot;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

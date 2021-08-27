@@ -1,4 +1,4 @@
-package com.i0dev.object.managers;
+package com.i0dev.managers;
 
 import com.i0dev.Bot;
 import com.i0dev.DiscordBot;
@@ -11,9 +11,7 @@ import lombok.SneakyThrows;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter

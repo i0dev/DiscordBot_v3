@@ -60,6 +60,7 @@ public class TwoFactorAuthentication implements Listener {
                 && EncryptionUtil.encrypt(Arrays.toString(e.getPlayer().getAddress().getAddress().getAddress()), e.getPlayer().getUniqueId().toString()).equalsIgnoreCase(getIpCache().get(e.getPlayer().getUniqueId()))) {
             return;
         }
+        System.out.println("uuid: " + e.getPlayer().getUniqueId().toString());
         DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayerFromUUID(e.getPlayer().getUniqueId().toString());
         if (dPlayer == null) return;
         TwoFactor preTwoF = getObject(e.getPlayer());

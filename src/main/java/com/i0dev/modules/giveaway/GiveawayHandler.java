@@ -43,18 +43,26 @@ public class GiveawayHandler {
             List<User> selectedWinners = new ArrayList<>();
             UsersReacted.removeIf(User::isBot);
 
-            for (int i = 0; i < winnerCount; i++) {
-                selectedWinners.add(UsersReacted.get(ThreadLocalRandom.current().nextInt(UsersReacted.size())));
-            }
-            String winnersFormatted = Utility.FormatDoubleListUser(selectedWinners);
-
 
             StringBuilder info = new StringBuilder();
             info.append("Prize: `").append(giveaway.prize).append("`\n");
             info.append("Host: `").append(Host.getAsTag()).append("`\n");
             info.append("Entries: `").append(UsersReacted.size()).append("`\n");
+
+            String winnersFormatted;
+            if (UsersReacted.size() == 0) {
+                winnersFormatted = "`No one entered the giveaway! No winners.`";
+            } else {
+                for (int i = 0; i < winnerCount; i++) {
+                    selectedWinners.add(UsersReacted.get(ThreadLocalRandom.current().nextInt(UsersReacted.size())));
+                }
+                winnersFormatted = Utility.FormatDoubleListUser(selectedWinners);
+            }
+
             info.append("Winner(s): ").append(winnersFormatted).append("\n");
-            info.append("Ended: ").append("<t:" + (endTime / 1000) + ":R>").append("\n");
+            if (byPassTime)
+                info.append("Ended: ").append("<t:" + (System.currentTimeMillis() / 1000) + ":R>").append("\n");
+            else info.append("Ended: ").append("<t:" + (endTime / 1000) + ":R>").append("\n");
 
             EmbedMaker edit = EmbedMaker.builder()
                     .authorName("Giveaway Ended!")
@@ -74,14 +82,12 @@ public class GiveawayHandler {
 
             channel.sendMessageEmbeds(EmbedMaker.create(newEmbed.build())).queue();
 
-            selectedWinners.forEach(user -> {
-                MessageUtil.sendPrivateMessage(null, user, EmbedMaker.builder()
-                        .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
-                        .authorName("You won a giveaway!")
-                        .authorURL("https://discordapp.com/channels/" + channel.getGuild().getId() + "/" + giveaway.channelID + "/" + giveaway.messageID)
-                        .content("You won: `{prize}`".replace("{prize}", prize))
-                        .embedColor(EmbedColor.SUCCESS).build());
-            });
+            selectedWinners.forEach(user -> MessageUtil.sendPrivateMessage(null, user, EmbedMaker.builder()
+                    .authorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl())
+                    .authorName("You won a giveaway!")
+                    .authorURL("https://discordapp.com/channels/" + channel.getGuild().getId() + "/" + giveaway.channelID + "/" + giveaway.messageID)
+                    .content("You won: `{prize}`".replace("{prize}", prize))
+                    .embedColor(EmbedColor.SUCCESS).build()));
 
             giveaway.setEnded(true);
             giveaway.save();

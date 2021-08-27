@@ -3,7 +3,7 @@ package com.i0dev.modules.mute;
 import com.i0dev.Bot;
 import com.i0dev.object.*;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.LogUtil;
 import com.i0dev.utility.Utility;

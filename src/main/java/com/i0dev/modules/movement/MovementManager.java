@@ -2,7 +2,7 @@ package com.i0dev.modules.movement;
 
 import com.i0dev.Bot;
 import com.i0dev.object.*;
-import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import lombok.Getter;
 import lombok.SneakyThrows;

@@ -3,7 +3,7 @@ package com.i0dev.modules.giveaway;
 import com.i0dev.Bot;
 import com.i0dev.config.CommandsConfig;
 import com.i0dev.object.*;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import lombok.SneakyThrows;
 
 public class GiveawayManager extends AdvancedDiscordCommand {

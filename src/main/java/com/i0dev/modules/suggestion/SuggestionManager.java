@@ -2,7 +2,7 @@ package com.i0dev.modules.suggestion;
 
 import com.i0dev.Bot;
 import com.i0dev.object.*;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.EmbedMaker;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;

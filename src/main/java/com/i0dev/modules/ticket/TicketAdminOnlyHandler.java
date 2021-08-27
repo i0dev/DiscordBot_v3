@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.i0dev.Bot;
 import com.i0dev.modules.CommandManager;
 import com.i0dev.object.EmbedColor;
-import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.Utility;
 import net.dv8tion.jda.api.Permission;

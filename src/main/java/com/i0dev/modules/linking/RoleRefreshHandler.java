@@ -6,8 +6,9 @@ import com.i0dev.object.AdvancedDiscordCommand;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.managers.ConfigManager;
 import com.i0dev.utility.NicknameUtil;
+import com.i0dev.utility.PlaceholderUtil;
 import com.i0dev.utility.Utility;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -23,12 +24,12 @@ public class RoleRefreshHandler {
 
     public static void RefreshUserRank(DPlayer dPlayer) {
         if (dPlayer == null) return;
+        if (!dPlayer.isLinked()) return;
         User discordUser = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
         if (discordUser == null) return;
         if ("".equals(dPlayer.getMinecraftIGN())) return;
         if (!Utility.hasRole(discordUser, LinkManager.rolesThatBypassNicknameChange)) {
-            String nickname = LinkManager.getOption("nicknameFormat", LinkManager.class).getAsString()
-                    .replace("{ign}", dPlayer.getMinecraftIGN());
+            String nickname = PlaceholderUtil.convert(LinkManager.getOption("nicknameFormat", LinkManager.class).getAsString(), discordUser, null);
             Utility.getAllowedGuilds().stream().filter(guild -> !LinkManager.rolesThatBypassNicknameChange.contains(guild.getIdLong())).forEach(guild -> {
                 Member member = guild.getMember(discordUser);
                 if (member == null) return;
@@ -43,7 +44,6 @@ public class RoleRefreshHandler {
 
         // in game stuff
 
-        if (!dPlayer.isLinked()) return;
         if (!Bot.getBot().isPluginMode()) return;
         if (com.i0dev.BotPlugin.server.getPluginManager().getPlugin("LuckPerms") == null) return;
         net.luckperms.api.LuckPerms luckPerms = net.luckperms.api.LuckPermsProvider.get();

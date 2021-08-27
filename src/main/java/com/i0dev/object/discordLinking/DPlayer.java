@@ -3,7 +3,7 @@ package com.i0dev.object.discordLinking;
 import com.i0dev.Bot;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.LogUtil;
 import lombok.Data;
 import net.dv8tion.jda.api.entities.User;

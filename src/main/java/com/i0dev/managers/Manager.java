@@ -1,4 +1,4 @@
-package com.i0dev.object.managers;
+package com.i0dev.managers;
 
 import com.i0dev.DiscordBot;
 import lombok.AccessLevel;

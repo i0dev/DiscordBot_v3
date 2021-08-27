@@ -2,8 +2,8 @@ package com.i0dev.modules.ticket;
 
 import com.i0dev.Bot;
 import com.i0dev.object.*;
-import com.i0dev.object.managers.ConfigManager;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.ConfigManager;
+import com.i0dev.managers.SQLManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.ISnowflake;

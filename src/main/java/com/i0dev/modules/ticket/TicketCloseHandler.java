@@ -8,7 +8,7 @@ import com.i0dev.object.EmbedColor;
 import com.i0dev.object.LogObject;
 import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.object.discordLinking.DPlayerFieldType;
-import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.Utility;
 import lombok.SneakyThrows;

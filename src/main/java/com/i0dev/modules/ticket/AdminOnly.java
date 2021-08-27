@@ -5,7 +5,7 @@ import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.EmbedColor;
 import com.i0dev.object.SuperDiscordCommand;
-import com.i0dev.object.managers.ConfigManager;
+import com.i0dev.managers.ConfigManager;
 import com.i0dev.utility.EmbedMaker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;

@@ -5,7 +5,7 @@ import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.object.managers.SQLManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.EmbedMaker;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
