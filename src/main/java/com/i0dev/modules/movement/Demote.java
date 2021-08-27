@@ -2,10 +2,7 @@ package com.i0dev.modules.movement;
 
 import com.i0dev.Bot;
 import com.i0dev.BotPlugin;
-import com.i0dev.object.CommandData;
-import com.i0dev.object.CommandEvent;
-import com.i0dev.object.EmbedColor;
-import com.i0dev.object.SuperDiscordCommand;
+import com.i0dev.object.*;
 import com.i0dev.object.discordLinking.DPlayer;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.FindUtil;
@@ -22,6 +19,7 @@ public class Demote extends SuperDiscordCommand {
         User user;
         if ((user = FindUtil.getUser(e.getOffsetSplit().get(1), e.getMessage())) == null) return;
         Member member = e.getGuild().getMember(user);
+        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
         if (!MovementManager.isAlreadyStaff(member)) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("{tag} is not currently a staff member.").user(user).build());
@@ -29,7 +27,19 @@ public class Demote extends SuperDiscordCommand {
         }
 
         if (MovementManager.isLowestStaff(member)) {
-            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).user(user).content("{tag} is already the lowest staff rank.").build());
+            Role currentParentRole = MovementManager.getParentStaff(member);
+            if (getOption("removeAllRoles").getAsBoolean())
+                member.getRoles().forEach(role -> new RoleQueueObject(member.getIdLong(), role.getIdLong(), Type.REMOVE_ROLE).add());
+            else MovementManager.removeOldRoles(member, Long.valueOf(currentParentRole.getId()));
+            NicknameUtil.modifyNicknameGlobally(user, "");
+
+            MovementObject current = MovementManager.getObject(currentParentRole);
+            if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
+                com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
+            }
+
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You removed {tag} from the staff team.").user(user).build());
+            MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been removed from the staff team.").build());
             return;
         }
 
@@ -39,7 +49,6 @@ public class Demote extends SuperDiscordCommand {
         MovementManager.removeOldRoles(member, Long.valueOf(currentParentRole.getId()));
         MovementManager.giveNewRoles(member, Long.valueOf(previousRole.getId()));
 
-        DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
         MovementObject previousRoleObject = MovementManager.getPreviousRoleObject(currentParentRole);
         NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", previousRoleObject.getDisplayName()));
