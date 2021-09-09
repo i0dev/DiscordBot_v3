@@ -92,6 +92,15 @@ public class DiscordBot {
                 .enableCache(EnumSet.allOf(CacheFlag.class))
                 .build()
                 .awaitReady();
+        if (GeneralConfig.get().allowedGuilds.size() == 0) {
+
+            System.out.println("\n\nYou have no allowed servers entered into config! Please enter at least one and then turn the bot back on.\n\n");
+
+            if (pluginMode)
+                BotPlugin.get().onDisable();
+            else shutdown();
+            return;
+        }
         registerCommands();
         registerListeners();
         Engine.run();
