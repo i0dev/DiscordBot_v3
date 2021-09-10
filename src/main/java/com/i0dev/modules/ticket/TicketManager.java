@@ -23,6 +23,7 @@ public class TicketManager extends AdvancedDiscordCommand {
         addSuperCommand("rename", new SuperCommand(s("rename"), Permission.lite(), Rename.class).addAltCmd("trename"));
         addSuperCommand("leaderboard", new SuperCommand(ls("lb", "leaderboard"), Permission.lite(), Leaderboard.class));
         addSuperCommand("panel", new SuperCommand(s("panel"), Permission.strict(), Panel.class).addAltCmd("tpanel"));
+        addSuperCommand("manual", new SuperCommand(s("manual"), Permission.strict(), Manual.class).addAltCmd("tmanual"));
 
         Bot.getBot().getManager(SQLManager.class).makeTable(Ticket.class);
         addOption("adminLogsChannel", 0L);

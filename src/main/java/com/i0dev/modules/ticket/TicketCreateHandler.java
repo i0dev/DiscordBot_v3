@@ -53,7 +53,7 @@ public class TicketCreateHandler extends ListenerAdapter {
                 return;
             }
 
-            List<String> Questions = option.getQuestions();
+            List<String> Questions = option.getQuestions() == null ? new ArrayList<>() : option.getQuestions();
             boolean AdminOnlyDefault = option.isAdminOnlyDefault();
             boolean PingStaffRoles = option.isPingStaff();
             String ChannelName = option.getChannelName();
