@@ -33,9 +33,14 @@ public class TicketCloseHandler extends ListenerAdapter {
         if (!Utility.isValidGuild(e.getGuild())) return;
         if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()) return;
         JsonObject ob = Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.permission", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
-        if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean()))
+        if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean())) {
+            e.deferReply().setContent("You do not have permissions to close tickets.").queue();
             return;
-        if (!TicketManager.isTicket(e.getChannel())) return;
+        }
+        if (!TicketManager.isTicket(e.getChannel())) {
+            e.deferReply().setContent("This is not a real ticket. This means there is a mis-match in the database if this is channel is a ticket or not. You will have to delete it manually.").queue();
+            return;
+        }
         closeTicket(Ticket.getTicket(e.getChannel()), Close.getOption("defaultReason", Close.class).getAsString(), e.getUser());
         e.deferEdit().queue();
     }
