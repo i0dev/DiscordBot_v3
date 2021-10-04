@@ -49,7 +49,7 @@ public class TicketManager extends AdvancedDiscordCommand {
     public static List<Long> rolesToSeeTickets = new ArrayList<>();
 
     @Getter
-    public static List<TicketOption> options = Collections.singletonList(new TicketOption(new ArrayList<>(), 0L, "support-{num}", "U+1F39F", "Support Ticket", false, false));
+    public static List<TicketOption> options = Collections.singletonList(new TicketOption(new ArrayList<>(), 0L, "support-{num}", "U+1F39F", "Support Ticket", false, false, new ArrayList<>()));
 
     @SneakyThrows
     @CommandData(commandID = "cmd_ticket", identifier = "Ticket Manager")

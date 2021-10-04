@@ -110,9 +110,9 @@ public class TicketCreateHandler extends ListenerAdapter {
             }
 
 
-            if (PingStaffRoles) {
+            if (PingStaffRoles && option.rolesToPing != null) {
                 List<Role> rolesToPing = new ArrayList<>();
-                for (Long roleID : TicketManager.rolesToSeeTickets) {
+                for (Long roleID : option.rolesToPing) {
                     Role role = e.getGuild().getRoleById(roleID);
                     if (role == null) continue;
                     rolesToPing.add(role);

@@ -17,5 +17,6 @@ public class TicketOption {
     long category;
     String channelName, emoji, displayName;
     boolean pingStaff, adminOnlyDefault;
+    List<Long> rolesToPing;
 
 }
