@@ -122,7 +122,7 @@ public class TicketCreateHandler extends ListenerAdapter {
 
             StringBuilder userInfo = new StringBuilder();
             userInfo.append("Linked IGN: ").append("`{ign}`").append("\n");
-            userInfo.append("Ticket Number `").append(MiscConfig.get().ticketNumber).append("`\n");
+            userInfo.append("Ticket Number: `").append(MiscConfig.get().ticketNumber).append("`\n");
             userInfo.append("Category`").append(NewTicketCreated.getParent() == null ? "None" : NewTicketCreated.getParent().getName()).append("`\n");
 
             NewTicketCreated.sendMessageEmbeds(EmbedMaker.create(EmbedMaker.builder()

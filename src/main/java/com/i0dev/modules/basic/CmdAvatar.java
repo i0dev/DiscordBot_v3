@@ -1,12 +1,10 @@
 package com.i0dev.modules.basic;
 
-import com.i0dev.config.GeneralConfig;
+import com.i0dev.object.CommandData;
 import com.i0dev.object.CommandEvent;
 import com.i0dev.object.DiscordCommand;
-import com.i0dev.utility.FindUtil;
 import com.i0dev.utility.EmbedMaker;
-import com.i0dev.object.CommandData;
-import com.i0dev.object.EmbedColor;
+import com.i0dev.utility.FindUtil;
 import net.dv8tion.jda.api.entities.User;
 
 public class CmdAvatar extends DiscordCommand {
