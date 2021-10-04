@@ -3,6 +3,7 @@ package com.i0dev.modules.misc;
 import com.i0dev.Bot;
 import com.i0dev.BotPlugin;
 import com.i0dev.blacklist.api.PlayerBlacklistEvent;
+import com.i0dev.config.GeneralConfig;
 import com.i0dev.config.MiscConfig;
 import com.i0dev.modules.mute.MuteManager;
 import com.i0dev.object.discordLinking.DPlayer;
@@ -95,7 +96,7 @@ public class InGamePunishmentLogs implements Listener {
         LogUtil.logDiscord(EmbedMaker.builder()
                 .thumbnail("https://crafatar.com/renders/body/" + e.getUuid())
                 .field(new MessageEmbed.Field("Punish Type: " + (!add ? "un-" + e.getType() : e.getType()), msg.toString(), false))
-                .authorImg(authorImg).authorName("In Game Punishment Log").build());
+                .authorImg(authorImg).authorName("In Game Punishment Log").build(), GeneralConfig.get().getPunishmentLogChannel());
     }
 
     @EventHandler

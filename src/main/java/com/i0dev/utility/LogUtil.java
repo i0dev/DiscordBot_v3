@@ -37,4 +37,17 @@ public class LogUtil {
 
         channel.sendMessageEmbeds(EmbedMaker.create(embedMaker)).queue();
     }
+
+    public static void logDiscord(EmbedMaker embedMaker, Long channelID) {
+        TextChannel channel = Bot.getBot().getJda().getTextChannelById(GeneralConfig.get().getLogChannel());
+        if (channel == null) return;
+        if (embedMaker.getAuthorName() == null)
+            embedMaker.setAuthorName("Discord Log");
+        if (embedMaker.getAuthorImg() == null)
+            if (embedMaker.getAuthor() == null)
+                embedMaker.setAuthorImg(Bot.getBot().getJda().getSelfUser().getEffectiveAvatarUrl());
+            else embedMaker.setAuthorImg(embedMaker.getAuthor().getEffectiveAvatarUrl());
+
+        channel.sendMessageEmbeds(EmbedMaker.create(embedMaker)).queue();
+    }
 }

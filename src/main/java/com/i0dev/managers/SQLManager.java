@@ -4,6 +4,8 @@ import com.i0dev.Bot;
 import com.i0dev.DiscordBot;
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.utility.LogUtil;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -40,12 +42,18 @@ public class SQLManager extends Manager {
     @SneakyThrows
     public void connect() {
         Class.forName("org.sqlite.JDBC");
-        Class.forName("com.mysql.cj.jdbc.Driver");
         String database = GeneralConfig.get().getDbName();
         if (GeneralConfig.get().isUseDatabase()) {
-            String url = "jdbc:mysql://" + GeneralConfig.get().getDbAddress() + ":" + GeneralConfig.get().getDbPort() + "/" + database;
-            connection = DriverManager.getConnection(url, GeneralConfig.get().getDbUsername(), GeneralConfig.get().getDbPassword());
-            System.out.println("Connected to MySQL server database: " + database);
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl("jdbc:mysql://" + GeneralConfig.get().getDbAddress() + ":" + GeneralConfig.get().getDbPort() + "/" + database);
+            config.setUsername(GeneralConfig.get().getDbUsername());
+            config.setPassword(GeneralConfig.get().getDbPassword());
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            HikariDataSource ds = new HikariDataSource(config);
+            connection = ds.getConnection();
+            System.out.println("Connected to Hikari MySQL server database: " + database);
         } else {
             if (Bot.getBot().isPluginMode()) database = com.i0dev.BotPlugin.get().getDataFolder() + "/DiscordBot.db";
             else database = "DiscordBot/DiscordBot.db";

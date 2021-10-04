@@ -49,6 +49,7 @@ public class GeneralConfig {
 
     //channel
     long logChannel = 766330396832432150L;
+    long punishmentLogChannel = 766330396832432150L;
 
     //msg
     String message_invalidUser = "Cannot find that user.";
