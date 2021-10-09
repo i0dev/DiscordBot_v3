@@ -23,7 +23,7 @@
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.9.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna-platform:5.9.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.32" level="project" />
-    <orderEntry type="library" name="Maven: net.dv8tion:JDA:4.3.0_330" level="project" />
+    <orderEntry type="library" name="Maven: net.dv8tion:JDA:4.3.0_333" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:16.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.neovisionaries:nv-websocket-client:2.14" level="project" />
@@ -40,15 +40,15 @@
     <orderEntry type="module-library">
       <library name="Maven: bungee:bungeeSpigot:1">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/bungeecord.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Dependencies/Bungeecord.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.gitlab.ruany:LiteBansAPI:0.3.4" level="project" />
-    <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.12" level="project" />
-    <orderEntry type="library" name="Maven: org.javassist:javassist:3.26.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: org.reflections:reflections:0.10" level="project" />
+    <orderEntry type="library" name="Maven: org.javassist:javassist:3.28.0-GA" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.luckperms:api:5.3" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.10" level="project" />
@@ -60,7 +60,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.i0dev:Blacklist:1">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/Blacklist.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Dependencies/Blacklist.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -56,6 +56,7 @@ public class CommandsConfig {
 
     //moderation
     BasicCommand cmd_announce = new BasicCommand(s("announce"), Permission.strict());
+    BasicCommand cmd_say = new BasicCommand(s("say"), Permission.strict());
     BasicCommand cmd_ban = new BasicCommand(s("ban"), Permission.strict());
     BasicCommand cmd_changelog = new BasicCommand(s("changelog"), Permission.strict());
     BasicCommand cmd_directMessage = new BasicCommand(ls("directMessage", "dm"), Permission.strict());

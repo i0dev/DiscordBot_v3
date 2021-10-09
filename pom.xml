@@ -6,7 +6,7 @@
 
     <groupId>com.i0dev</groupId>
     <artifactId>DiscordBot</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.16</version>
     <packaging>jar</packaging>
 
     <name>DiscordBot</name>
@@ -122,7 +122,7 @@
             <artifactId>bungeeSpigot</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/bungeecord.jar</systemPath>
+            <systemPath>${project.basedir}/../../Dependencies/Bungeecord.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.gitlab.ruany</groupId>
@@ -164,7 +164,7 @@
             <artifactId>Blacklist</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Blacklist.jar</systemPath>
+            <systemPath>${project.basedir}/../../Dependencies/Blacklist.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
