@@ -15,7 +15,7 @@ public class CmdVerifyPanel extends DiscordCommand {
 
     public static void load() {
         addOption("title", "Secure Verification");
-        addOption("content", "To ensure a safe and mutually beneficial experience, all users are required to verify themselves as an actual human. It is your responsibility as a client to read all the rules. Once you agree to them you will be bound by them for as long as you are on this server. When you are done reading them, select the reaction at the Bot.getBot()tom to acknowledge and agree to these terms, which will grant you access to the rest of the server.");
+        addOption("content", "To ensure a safe and mutually beneficial experience, all users are required to verify themselves as an actual human. It is your responsibility as a client to read all the rules. Once you agree to them you will be bound by them for as long as you are on this server. When you are done reading them, select the reaction at the Bottom to acknowledge and agree to these terms, which will grant you access to the rest of the server.");
         addOption("pin", true);
         addOption("buttonLabel", "Click to verify");
         addOption("buttonEmoji", "U+2705");
