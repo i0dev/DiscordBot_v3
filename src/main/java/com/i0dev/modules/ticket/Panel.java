@@ -7,7 +7,6 @@ import com.i0dev.object.SuperDiscordCommand;
 import com.i0dev.utility.EmbedMaker;
 import com.i0dev.utility.EmojiUtil;
 import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
 
 public class Panel extends SuperDiscordCommand {

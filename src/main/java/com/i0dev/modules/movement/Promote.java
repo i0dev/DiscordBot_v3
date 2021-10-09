@@ -12,6 +12,16 @@ import net.dv8tion.jda.api.entities.User;
 
 public class Promote extends SuperDiscordCommand {
 
+    public static void load() {
+        addMessage("assigned", "You assigned {tag} to {role}");
+        addMessage("promoted", "You promoted {tag} to {role}");
+        addMessage("highest", "{tag} is already the highest staff role.");
+        addMessage("promoteAnnounce","**{tag}** has been promoted to {role}");
+        addMessage("assignedAnnounce", "**{tag}** has been assigned to {role}");
+        addOption("ingameCommandPromoteNew", "lp user {ign} parent add {newRank}");
+        addOption("ingameCommandRemoveOld", "lp user {ign} parent remove {oldRank}");
+
+    }
 
     @CommandData(commandID = "promote", identifier = "Movement Promote", usage = "<user> [role]", minMessageLength = 2, maxMessageLength = 3, parentClass = MovementManager.class)
     public static void run(CommandEvent e) {
@@ -26,8 +36,8 @@ public class Promote extends SuperDiscordCommand {
 
 
         if (assign != null) {
-            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You assigned {tag} to {role}".replace("{role}", assign.getAsMention())).user(user).build());
-            MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Promotion").content("**{tag}** has been assigned to {role}".replace("{role}", assign.getAsMention())).build());
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("assigned", Promote.class).replace("{role}", assign.getAsMention())).user(user).build());
+            MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Promotion").content(getMessage("assignedAnnounce", Promote.class).replace("{role}", assign.getAsMention())).build());
             MovementObject assignRoleObject = MovementManager.getObject(assign);
             new RoleQueueObject(user.getIdLong(), assign.getIdLong(), Type.ADD_ROLE).add();
             if (assignRoleObject != null) {
@@ -42,8 +52,8 @@ public class Promote extends SuperDiscordCommand {
             MovementObject firstRoleObject = MovementManager.getTracks().get(0);
             Role role = Bot.getBot().getJda().getRoleById(firstRoleObject.getMainRole());
             MovementManager.giveNewRoles(member, MovementManager.getTracks().get(0).getMainRole());
-            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You promoted {tag} to {role}".replace("{role}", role.getAsMention())).user(user).build());
-            MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("New Promotion").content("**{tag}** has been promoted to {role}".replace("{role}", role.getAsMention())).build());
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("promoted", Promote.class).replace("{role}", role.getAsMention())).user(user).build());
+            MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("New Promotion").content(getMessage("promoteAnnounce", Promote.class).replace("{role}", role.getAsMention())).build());
             NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", Bot.getBot().getDPlayerManager().getDPlayer(user).isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", firstRoleObject.getDisplayName()));
 
             if (Bot.getBot().isPluginMode() && firstRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
@@ -53,7 +63,7 @@ public class Promote extends SuperDiscordCommand {
             return;
         }
         if (MovementManager.isHighestStaff(member)) {
-            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("{tag} is already the highest staff role.").user(user).build());
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content(getMessage("highest", Promote.class)).user(user).build());
             return;
         }
 
@@ -63,14 +73,14 @@ public class Promote extends SuperDiscordCommand {
         MovementManager.giveNewRoles(member, nextRole.getIdLong());
         MovementObject nextRoleObject = MovementManager.getNextRoleObject(currentParentRole);
 
-        NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", nextRoleObject.getDisplayName()));
+        NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", Promote.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", nextRoleObject.getDisplayName()));
 
-        e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You promoted {tag} to {role}".replace("{role}", nextRole.getAsMention())).user(user).build());
-        MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Promotion").content("**{tag}** has been promoted to {role}".replace("{role}", nextRole.getAsMention())).build());
+        e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("promoted", Promote.class).replace("{role}", nextRole.getAsMention())).user(user).build());
+        MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Promotion").content(getMessage("promoteAnnounce", Promote.class).replace("{role}", nextRole.getAsMention())).build());
         MovementObject current = MovementManager.getObject(currentParentRole);
         if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && nextRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
-            com.i0dev.BotPlugin.runCommand("lp user {ign} parent add ".replace("{ign}", dPlayer.getMinecraftIGN()) + nextRoleObject.getLuckPermsRank());
+            com.i0dev.BotPlugin.runCommand(getOption("ingameCommandRemoveOld", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{oldRank}", current.getLuckPermsRank()));
+            com.i0dev.BotPlugin.runCommand(getOption("ingameCommandPromoteNew", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{newRank}", nextRoleObject.getLuckPermsRank()));
         }
 
     }

@@ -67,6 +67,15 @@ public class DiscordCommand extends ListenerAdapter {
         return command.getOptions().get(key);
     }
 
+    @SneakyThrows
+    public static String getMessage(String key, Class<? extends DiscordCommand> clazz) {
+        BasicCommand command;
+        if (clazz.getSuperclass().getName().equals(SuperDiscordCommand.class.getName()))
+            command = SuperDiscordCommand.getSuperCommand(clazz, getAnnotation(clazz).parentClass());
+        else command = getBasicCommand(clazz);
+        return command.getMessages().get(key).getAsString();
+    }
+
 
     @SneakyThrows
     public static void addMessage(String key, String value) {

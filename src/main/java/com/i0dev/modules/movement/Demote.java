@@ -13,6 +13,16 @@ import net.dv8tion.jda.api.entities.User;
 
 public class Demote extends SuperDiscordCommand {
 
+    public static void load() {
+        addMessage("notStaff", "{tag} is not currently a staff member.");
+        addMessage("removed", "You removed {tag} from the staff team.");
+        addMessage("demoted", "You demoted {tag} to {role}");
+        addMessage("demotedAnnounce", "**{tag}** has been demoted to {role}");
+        addMessage("removedAnnounce", "**{tag}** has been removed from the staff team.");
+        addOption("ingameCommandDemoteNew", "lp user {ign} parent add {newRank}");
+        addOption("ingameCommandRemoveOld", "lp user {ign} parent remove {oldRank}");
+
+    }
 
     @CommandData(commandID = "demote", parentClass = MovementManager.class, messageLength = 2, usage = "<user>", identifier = "Movement Demote")
     public static void run(CommandEvent e) {
@@ -22,7 +32,7 @@ public class Demote extends SuperDiscordCommand {
         DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
         if (!MovementManager.isAlreadyStaff(member)) {
-            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("{tag} is not currently a staff member.").user(user).build());
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content(getMessage("notStaff", Demote.class)).user(user).build());
             return;
         }
 
@@ -38,8 +48,8 @@ public class Demote extends SuperDiscordCommand {
                 com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
             }
 
-            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You removed {tag} from the staff team.").user(user).build());
-            MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been removed from the staff team.").build());
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("removed", Demote.class)).user(user).build());
+            MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content(getMessage("removedAnnounce", Demote.class)).build());
             return;
         }
 
@@ -53,13 +63,14 @@ public class Demote extends SuperDiscordCommand {
         MovementObject previousRoleObject = MovementManager.getPreviousRoleObject(currentParentRole);
         NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", previousRoleObject.getDisplayName()));
 
-        e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You demoted {tag} to {role}".replace("{role}", previousRole.getAsMention())).user(user).build());
-        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content("**{tag}** has been demoted to {role}".replace("{role}", previousRole.getAsMention())).build());
+        e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("demoted", Demote.class).replace("{role}", previousRole.getAsMention())).user(user).build());
+        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Demotion").content(getMessage("demotedAnnounce", Demote.class).replace("{role}", previousRole.getAsMention())).build());
 
         MovementObject current = MovementManager.getObject(currentParentRole);
         if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && previousRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
-            com.i0dev.BotPlugin.runCommand("lp user {ign} parent add ".replace("{ign}", dPlayer.getMinecraftIGN()) + previousRoleObject.getLuckPermsRank());
+            com.i0dev.BotPlugin.runCommand(getOption("ingameCommandRemoveOld", Demote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{oldRank}", current.getLuckPermsRank()));
+            com.i0dev.BotPlugin.runCommand(getOption("ingameCommandDemoteNew", Demote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{newRank}", previousRoleObject.getLuckPermsRank()));
+
         }
 
     }

@@ -42,8 +42,12 @@ public class PlaceholderUtil {
                     .replace("{effectiveName}", member == null ? Bot.getBot().getJda().getSelfUser().getName() : member.getEffectiveName())
                     .replace("{timeCreated}", "<t:" + (user.getTimeCreated().toInstant().toEpochMilli() / 1000L) + ":R>")
                     .replace("{linkTime}", "<t:" + (dPlayer.getLinkedTime() / 1000L) + ":R>")
-                    .replace("{isBoosting}", guild.getBoosters().contains(member) ? "Yes" : "No")
                     .replace("{name}", user.getName());
+            if (guild.getMember(user) != null) {
+                message = message
+                        .replace("{isBoosting}", guild.getBoosters().contains(member) ? "Yes" : "No")
+                ;
+            }
         }
 
         //Author
@@ -66,10 +70,13 @@ public class PlaceholderUtil {
 
                     .replace("{authorInviteCount}", dPlayer.getInvites() + "")
                     .replace("{authorTicketsClosed}", dPlayer.getTicketsClosed() + "")
-                    .replace("{authorWarnCount}", dPlayer.getWarnings() + "")
-                    .replace("{authorMemberRoleCount}", guild.getMember(author).getRoles().size() + "")
-                    .replace("{authorIsAdministrator}", guild.getMember(author).getPermissions().contains(Permission.ADMINISTRATOR) + "")
-                    .replace("{authorEffectiveName}", guild.getMember(author).getEffectiveName());
+                    .replace("{authorWarnCount}", dPlayer.getWarnings() + "");
+            if (guild != null && guild.getMember(author) != null) {
+                message = message
+                        .replace("{authorMemberRoleCount}", guild.getMember(author).getRoles().size() + "")
+                        .replace("{authorIsAdministrator}", guild.getMember(author).getPermissions().contains(Permission.ADMINISTRATOR) + "")
+                        .replace("{authorEffectiveName}", guild.getMember(author).getEffectiveName());
+            }
         }
 
         //Guild
@@ -100,7 +107,7 @@ public class PlaceholderUtil {
                 .replace("{botAuthor}", "i0#0001")
                 .replace("{pluginMode}", Bot.getBot().isPluginMode() ? "Yes" : "No")
                 .replace("{prefix}", GeneralConfig.get().getPrefixes().get(0))
-                .replace("{version}", "3.0.15");
+                .replace("{version}", "3.0.16");
 
         //plugin mode
         if (Bot.getBot().isPluginMode()) {

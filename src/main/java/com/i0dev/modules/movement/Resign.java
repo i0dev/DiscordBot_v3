@@ -14,6 +14,9 @@ public class Resign extends SuperDiscordCommand {
 
     public void load() {
         addOption("removeAllRoles", false);
+        addMessage("resigned", "You have resigned {tag}");
+        addMessage("resignedAnnounce", "**{tag}** has resigned from the staff team.");
+        addOption("ingameCmd", "lp user {ign} parent remove {rank}");
     }
 
     @CommandData(commandID = "resign", identifier = "Movement resign", usage = "<user>", messageLength = 2, parentClass = MovementManager.class)
@@ -37,12 +40,12 @@ public class Resign extends SuperDiscordCommand {
 
         MovementObject current = MovementManager.getObject(currentParentRole);
         if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand("lp user {ign} parent remove ".replace("{ign}", dPlayer.getMinecraftIGN()) + current.getLuckPermsRank());
+            com.i0dev.BotPlugin.runCommand(getOption("ingameCmd", Resign.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{rank}", current.getLuckPermsRank()));
         }
 
 
-        e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content("You have resigned {tag}").user(user).build());
-        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Resignation").content("**{tag}** has resigned from the staff team.").build());
+        e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("resigned", Resign.class)).user(user).build());
+        MovementManager.sendMsg(EmbedMaker.builder().author(e.getAuthor()).thumbnail(dPlayer.getMinecraftSkin()).embedColor(EmbedColor.FAILURE).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Resignation").content(getMessage("resignedAnnounce", Resign.class)).build());
 
     }
 }
