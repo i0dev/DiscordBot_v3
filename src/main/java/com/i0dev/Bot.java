@@ -18,7 +18,6 @@ public class Bot {
 
         Scanner scanner = new Scanner(System.in);
         String incomingCommand = scanner.nextLine();
-
         switch (incomingCommand) {
             case "stop":
             case "end": {
