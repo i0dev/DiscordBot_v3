@@ -83,8 +83,34 @@ public class TicketCreateHandler extends ListenerAdapter {
                             Permission.MANAGE_WEBHOOKS, Permission.MANAGE_PERMISSIONS, Permission.MANAGE_CHANNEL)
                     .queue();
 
-            if (!AdminOnlyDefault) {
-                for (Long roleID : TicketManager.getRolesToSeeTickets()) {
+            if (option.rolesToSee == null) {
+                if (!AdminOnlyDefault) {
+                    for (Long roleID : TicketManager.getRolesToSeeTickets()) {
+                        Role role = e.getGuild().getRoleById(roleID);
+                        if (role == null) continue;
+                        NewTicketCreated.putPermissionOverride(role)
+                                .setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ATTACH_FILES,
+                                        Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_HISTORY,
+                                        Permission.MESSAGE_ADD_REACTION, Permission.CREATE_INSTANT_INVITE)
+                                .setDeny(Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_MANAGE, Permission.MESSAGE_TTS,
+                                        Permission.MANAGE_WEBHOOKS, Permission.MANAGE_PERMISSIONS, Permission.MANAGE_CHANNEL)
+                                .queue();
+                    }
+                }
+                for (Long roleID : AdminOnly.adminOnlySeeRoles) {
+                    Role role = e.getGuild().getRoleById(roleID);
+                    if (role == null) continue;
+                    NewTicketCreated.putPermissionOverride(role)
+                            .setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ATTACH_FILES,
+                                    Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_HISTORY,
+                                    Permission.MESSAGE_ADD_REACTION, Permission.CREATE_INSTANT_INVITE)
+                            .setDeny(Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_MANAGE, Permission.MESSAGE_TTS,
+                                    Permission.MANAGE_WEBHOOKS, Permission.MANAGE_PERMISSIONS, Permission.MANAGE_CHANNEL)
+                            .queue();
+
+                }
+            } else {
+                for (Long roleID : option.rolesToSee) {
                     Role role = e.getGuild().getRoleById(roleID);
                     if (role == null) continue;
                     NewTicketCreated.putPermissionOverride(role)
@@ -95,18 +121,6 @@ public class TicketCreateHandler extends ListenerAdapter {
                                     Permission.MANAGE_WEBHOOKS, Permission.MANAGE_PERMISSIONS, Permission.MANAGE_CHANNEL)
                             .queue();
                 }
-            }
-            for (Long roleID : AdminOnly.adminOnlySeeRoles) {
-                Role role = e.getGuild().getRoleById(roleID);
-                if (role == null) continue;
-                NewTicketCreated.putPermissionOverride(role)
-                        .setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ATTACH_FILES,
-                                Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_HISTORY,
-                                Permission.MESSAGE_ADD_REACTION, Permission.CREATE_INSTANT_INVITE)
-                        .setDeny(Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_MANAGE, Permission.MESSAGE_TTS,
-                                Permission.MANAGE_WEBHOOKS, Permission.MANAGE_PERMISSIONS, Permission.MANAGE_CHANNEL)
-                        .queue();
-
             }
 
 

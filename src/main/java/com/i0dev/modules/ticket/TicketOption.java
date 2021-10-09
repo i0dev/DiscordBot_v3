@@ -18,5 +18,5 @@ public class TicketOption {
     String channelName, emoji, displayName;
     boolean pingStaff, adminOnlyDefault;
     List<Long> rolesToPing;
-
+    List<Long> rolesToSee;
 }
