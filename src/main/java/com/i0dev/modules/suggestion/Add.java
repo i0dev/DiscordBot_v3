@@ -15,7 +15,6 @@ public class Add extends SuperDiscordCommand {
     @CommandData(commandID = "add", identifier = "Suggestion Add", usage = "<content>", minMessageLength = 2, parentClass = SuggestionManager.class)
     public static void run(CommandEvent e) {
         String suggestion = Utility.remainingArgFormatter(e.getOffsetSplit(), 1);
-
         Message msg = SuggestionManager.sendPending(EmbedMaker.builder()
                 .authorName("Suggestion from: {tag}")
                 .content("`" + suggestion + "`")
@@ -26,6 +25,7 @@ public class Add extends SuperDiscordCommand {
         msg.addReaction(EmojiUtil.getEmojiWithoutArrow(SuggestionManager.getOption("upvoteEmoji", SuggestionManager.class).getAsString())).queue();
         msg.addReaction(EmojiUtil.getEmojiWithoutArrow(SuggestionManager.getOption("downvoteEmoji", SuggestionManager.class).getAsString())).queue();
 
+        suggestion = suggestion.replace("'", "");
         Suggestion sugg = new Suggestion();
         sugg.setSuggestion(suggestion);
         sugg.setUserID(e.getAuthor().getIdLong());
