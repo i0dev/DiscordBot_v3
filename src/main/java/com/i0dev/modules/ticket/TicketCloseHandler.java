@@ -28,17 +28,25 @@ public class TicketCloseHandler extends ListenerAdapter {
         if (e.getButton() == null) return;
         if (!"BUTTON_TICKET_CLOSE".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
-        if (!Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.enabled", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean())
+        if (!Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.enabled", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean()){
+            e.deferReply().setContent("Closing tickets is currently disabled.").setEphemeral(true).queue();
             return;
-        if (!Utility.isValidGuild(e.getGuild())) return;
-        if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()) return;
+        }
+        if (!Utility.isValidGuild(e.getGuild())){
+            e.deferReply().setContent("This is not a valid guid to close tickets in.").setEphemeral(true).queue();
+            return;
+        }
+        if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()){
+            e.deferReply().setContent("You are blacklisted, you cannot close tickets").setEphemeral(true).queue();
+            return;
+        }
         JsonObject ob = Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.permission", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsJsonObject();
         if (!CommandManager.hasPermission(e.getMember(), ob.get("strict").getAsBoolean(), ob.get("lite").getAsBoolean(), ob.get("admin").getAsBoolean())) {
-            e.deferReply().setContent("You do not have permissions to close tickets.").queue();
+            e.deferReply().setContent("You do not have permissions to close tickets.").setEphemeral(true).queue();
             return;
         }
         if (!TicketManager.isTicket(e.getChannel())) {
-            e.deferReply().setContent("This is not a real ticket. This means there is a mis-match in the database if this is channel is a ticket or not. You will have to delete it manually.").queue();
+            e.deferReply().setContent("This is not a real ticket. This means there is a mis-match in the database if this is channel is a ticket or not. You will have to delete it manually.").setEphemeral(true).queue();
             return;
         }
         closeTicket(Ticket.getTicket(e.getChannel()), Close.getOption("defaultReason", Close.class).getAsString(), e.getUser());
