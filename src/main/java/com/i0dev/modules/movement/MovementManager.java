@@ -23,6 +23,7 @@ public class MovementManager extends AdvancedDiscordCommand {
         addSuperCommand("resign", new SuperCommand(s("resign"), Permission.strict(), Resign.class));
 
         addOption("nicknameFormat", "[{displayName}] {ignOrName}");
+        addOption("serverToRunCommandsOn", "bungee");
         addOption("tracks", Bot.getBot().getConfigManager().ObjectToJsonArr(Tracks));
         addOption("channel", 0L);
         movementChannel = Bot.getBot().getJda().getTextChannelById(getOption("channel").getAsLong());

@@ -16,7 +16,7 @@ public class Resign extends SuperDiscordCommand {
         addOption("removeAllRoles", false);
         addMessage("resigned", "You have resigned {tag}");
         addMessage("resignedAnnounce", "**{tag}** has resigned from the staff team.");
-        addOption("ingameCmd", "lp user {ign} parent remove {rank}");
+        addOption("ingameCmd", "lpb user {ign} parent remove {rank}");
     }
 
     @CommandData(commandID = "resign", identifier = "Movement resign", usage = "<user>", messageLength = 2, parentClass = MovementManager.class)
@@ -40,7 +40,7 @@ public class Resign extends SuperDiscordCommand {
 
         MovementObject current = MovementManager.getObject(currentParentRole);
         if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand(getOption("ingameCmd", Resign.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{rank}", current.getLuckPermsRank()));
+            com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCmd", Resign.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{rank}", current.getLuckPermsRank()));
         }
 
 

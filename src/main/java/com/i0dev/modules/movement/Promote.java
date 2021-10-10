@@ -16,10 +16,10 @@ public class Promote extends SuperDiscordCommand {
         addMessage("assigned", "You assigned {tag} to {role}");
         addMessage("promoted", "You promoted {tag} to {role}");
         addMessage("highest", "{tag} is already the highest staff role.");
-        addMessage("promoteAnnounce","**{tag}** has been promoted to {role}");
+        addMessage("promoteAnnounce", "**{tag}** has been promoted to {role}");
         addMessage("assignedAnnounce", "**{tag}** has been assigned to {role}");
-        addOption("ingameCommandPromoteNew", "lp user {ign} parent add {newRank}");
-        addOption("ingameCommandRemoveOld", "lp user {ign} parent remove {oldRank}");
+        addOption("ingameCommandPromoteNew", "lpb user {ign} parent add {newRank}");
+        addOption("ingameCommandRemoveOld", "lpb user {ign} parent remove {oldRank}");
 
     }
 
@@ -57,7 +57,7 @@ public class Promote extends SuperDiscordCommand {
             NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", Bot.getBot().getDPlayerManager().getDPlayer(user).isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", firstRoleObject.getDisplayName()));
 
             if (Bot.getBot().isPluginMode() && firstRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
-                com.i0dev.BotPlugin.get().getProxy().getConsole().sendMessages("lp user {ign} parent add ".replace("{ign}", dPlayer.getMinecraftIGN()) + firstRoleObject.getLuckPermsRank());
+                com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCommandPromoteNew", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{newRank}", firstRoleObject.getLuckPermsRank()));
             }
 
             return;
@@ -73,14 +73,16 @@ public class Promote extends SuperDiscordCommand {
         MovementManager.giveNewRoles(member, nextRole.getIdLong());
         MovementObject nextRoleObject = MovementManager.getNextRoleObject(currentParentRole);
 
-        NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", Promote.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", nextRoleObject.getDisplayName()));
+        NicknameUtil.modifyNicknameGlobally(user, MovementManager.getOption("nicknameFormat", MovementManager.class).getAsString().replace("{ignOrName}", dPlayer.isLinked() ? Bot.getBot().getDPlayerManager().getDPlayer(user).getMinecraftIGN() : user.getName()).replace("{displayName}", nextRoleObject.getDisplayName()));
 
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("promoted", Promote.class).replace("{role}", nextRole.getAsMention())).user(user).build());
         MovementManager.sendMsg(EmbedMaker.builder().thumbnail(dPlayer.getMinecraftSkin()).author(e.getAuthor()).embedColor(EmbedColor.SUCCESS).user(user).authorImg(user.getEffectiveAvatarUrl()).authorName("Promotion").content(getMessage("promoteAnnounce", Promote.class).replace("{role}", nextRole.getAsMention())).build());
         MovementObject current = MovementManager.getObject(currentParentRole);
-        if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && nextRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand(getOption("ingameCommandRemoveOld", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{oldRank}", current.getLuckPermsRank()));
-            com.i0dev.BotPlugin.runCommand(getOption("ingameCommandPromoteNew", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{newRank}", nextRoleObject.getLuckPermsRank()));
+        if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
+            com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCommandRemoveOld", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{oldRank}", current.getLuckPermsRank()));
+        }
+        if (Bot.getBot().isPluginMode() && nextRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
+            com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCommandPromoteNew", Promote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{newRank}", nextRoleObject.getLuckPermsRank()));
         }
 
     }

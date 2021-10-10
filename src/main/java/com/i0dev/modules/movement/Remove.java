@@ -16,7 +16,7 @@ public class Remove extends SuperDiscordCommand {
         addOption("removeAllRoles", false);
         addMessage("removed", "You removed {tag} from the staff team.");
         addMessage("removedAnnounce", "**{tag}** has been removed from the staff team.");
-        addOption("ingameCmd", "lp user {ign} parent remove {rank}");
+        addOption("ingameCmd", "lpb user {ign} parent remove {rank}");
     }
 
     @CommandData(commandID = "remove", parentClass = MovementManager.class, messageLength = 2, usage = "<user>", identifier = "Movement Remove")
@@ -33,8 +33,8 @@ public class Remove extends SuperDiscordCommand {
         NicknameUtil.modifyNicknameGlobally(user, "");
 
         MovementObject current = MovementManager.getObject(currentParentRole);
-        if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand(getOption("ingameCmd", Remove.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{rank}", current.getLuckPermsRank()));
+        if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
+            com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCmd", Remove.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{rank}", current.getLuckPermsRank()));
         }
 
         e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("removed", Remove.class)).user(user).build());

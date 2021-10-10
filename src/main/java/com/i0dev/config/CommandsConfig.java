@@ -65,6 +65,7 @@ public class CommandsConfig {
     BasicCommand cmd_unban = new BasicCommand(s("unban"), Permission.strict());
     BasicCommand cmd_verifyPanel = new BasicCommand(s("verifyPanel"), Permission.strict());
     BasicCommand cmd_dataDump = new BasicCommand(s("dataDump"), Permission.admin());
+    BasicCommand cmd_runCmd = new BasicCommand(s("runCmd"), Permission.admin());
 
 
     //advanced

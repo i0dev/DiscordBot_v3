@@ -70,4 +70,21 @@ public class MessageUtil {
         }
     }
 
+    @SneakyThrows
+    public static void runCommandOnServer(String specialChannel, String server, String data) {
+        if (Bot.getBot().isPluginMode()) {
+            com.google.common.io.ByteArrayDataOutput out = com.google.common.io.ByteStreams.newDataOutput();
+            out.writeUTF("Forward");
+            out.writeUTF(server);
+            out.writeUTF(specialChannel);
+            ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+            DataOutputStream msgout = new DataOutputStream(msgbytes);
+            msgout.writeUTF(data);
+            out.writeShort(msgbytes.toByteArray().length);
+            out.write(msgbytes.toByteArray());
+            LogUtil.log("Sent Plugin message: [" + data + "] to server: [" + server + "]");
+            com.i0dev.BotPlugin.get().getProxy().getServersCopy().forEach((s, serverInfo) -> serverInfo.sendData("BungeeCord", out.toByteArray()));
+        }
+    }
+
 }
