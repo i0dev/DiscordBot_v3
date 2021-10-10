@@ -7,6 +7,8 @@ import com.i0dev.modules.linking.EventHandler;
 import com.i0dev.modules.misc.InGamePunishmentLogs;
 import com.i0dev.modules.twoFactorAuthentication.Command2fa;
 import com.i0dev.modules.twoFactorAuthentication.TwoFactorAuthentication;
+import com.i0dev.utility.LogUtil;
+import com.i0dev.utility.MessageUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -55,6 +57,15 @@ public class BotPlugin extends Plugin {
 
     public static void runCommand(String command) {
         server.getPluginManager().dispatchCommand(server.getConsole(), command);
+        LogUtil.log("Ran the command: [" + command + "] in game.");
+    }
+
+    public static void runCommand(String srv, String command) {
+        if (srv.equalsIgnoreCase("bungee")) {
+            runCommand(command);
+            return;
+        }
+        MessageUtil.runCommandOnServer("server_command", srv, command);
     }
 
 }
