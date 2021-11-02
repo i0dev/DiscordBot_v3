@@ -2,16 +2,18 @@ package com.i0dev;
 
 import com.i0dev.config.GeneralConfig;
 import com.i0dev.config.MiscConfig;
+import com.i0dev.managers.ConfigManager;
+import com.i0dev.managers.DPlayerManager;
+import com.i0dev.managers.SQLManager;
 import com.i0dev.modules.giveaway.Giveaway;
 import com.i0dev.modules.giveaway.GiveawayHandler;
 import com.i0dev.modules.linking.RoleRefreshHandler;
 import com.i0dev.modules.mute.MuteManager;
+import com.i0dev.object.EmbedColor;
 import com.i0dev.object.LogObject;
 import com.i0dev.object.RoleQueueObject;
 import com.i0dev.object.Type;
 import com.i0dev.object.discordLinking.DPlayer;
-import com.i0dev.managers.ConfigManager;
-import com.i0dev.managers.SQLManager;
 import com.i0dev.utility.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,14 +25,15 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @FieldDefaults(level = AccessLevel.PUBLIC)
 public class Engine {
-
 
     static void run() {
         ScheduledExecutorService executorService = Bot.getBot().getAsyncService();
@@ -44,8 +47,51 @@ public class Engine {
         executorService.scheduleAtFixedRate(taskExecuteRoleQueue, 1, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(taskBackupConfig, 1, 2 * 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(taskAssureMuted, 1, 10, TimeUnit.MINUTES);
-        executorService.scheduleAtFixedRate(Bot.getBot().getDPlayerManager().taskClearCache, 25, 5, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(taskUnmuteAfterExpire, 1, 10, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(taskUnbanAfterExpire, 1, 10, TimeUnit.SECONDS);
     }
+
+    static Runnable taskUnmuteAfterExpire = () -> {
+        List<Object> muted = Bot.getBot().getManager(SQLManager.class).getListWhere(DPlayer.class.getSimpleName(), "muted", "1", DPlayer.class, "discordID");
+        muted.forEach(o -> {
+            DPlayer dPlayer = (DPlayer) o;
+            if (!dPlayer.isMuted() || dPlayer.getUnmuteAtTime() == 0 || dPlayer.getUnmuteAtTime() == -1) return;
+            if (dPlayer.getUnmuteAtTime() < System.currentTimeMillis()) {
+                dPlayer.setMuted(false);
+                User user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+                MessageUtil.sendPrivateMessage(null, user, EmbedMaker.builder().content("Your mute in {guildName} has expired.").embedColor(EmbedColor.SUCCESS).build());
+                LogUtil.logDiscord(EmbedMaker.builder().content("{tag}'s mute has expired.").user(user).build());
+                Role mutedRole = MuteManager.mutedRole;
+                new RoleQueueObject(dPlayer.getDiscordID(), mutedRole.getIdLong(), Type.REMOVE_ROLE).add();
+                dPlayer.setUnmuteAtTime(0);
+                dPlayer.save();
+            }
+        });
+    };
+
+    static Runnable taskUnbanAfterExpire = () -> {
+        System.out.println("ran");
+        try {
+            Bot.getBot().getJda().getGuilds().forEach(guild -> {
+                if (Bot.isVerifyServer(guild.getIdLong())) return;
+                List<Guild.Ban> bans = guild.retrieveBanList().complete();
+                bans.forEach(o -> {
+                    DPlayer dPlayer = Bot.getBot().getManager(DPlayerManager.class).getDPlayer(o.getUser().getIdLong());
+                    if (dPlayer.getUnbanAtTime() == 0 || dPlayer.getUnbanAtTime() == -1) return;
+                    if (dPlayer.getUnbanAtTime() < System.currentTimeMillis()) {
+                        dPlayer.setBanned(false);
+                        User user = Bot.getBot().getJda().retrieveUserById(dPlayer.getDiscordID()).complete();
+                        guild.unban(user).queue();
+                        LogUtil.logDiscord(EmbedMaker.builder().content("{tag}'s ban has expired.").user(user).build());
+                        dPlayer.setUnbanAtTime(0);
+                        dPlayer.save();
+                    }
+                });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    };
 
     @Getter
     private static final ArrayList<RoleQueueObject> roleQueueList = new ArrayList<>();
@@ -87,7 +133,7 @@ public class Engine {
             total.getAndIncrement();
             new RoleQueueObject(dPlayer.getDiscordID(), mutedRole.getIdLong(), Type.ADD_ROLE).add();
         });
-        if (total.get() != 0) LogUtil.log("Assured " + total + " muted users have the muted role.");
+        if (total.get() != 0) LogUtil.debug("Assured " + total + " muted users have the muted role.");
     };
 
     static Runnable taskGiveContinuousRoles = () -> {
@@ -103,7 +149,6 @@ public class Engine {
         }
         if (count.get() != 0) LogUtil.debug("Gave " + count + " users missing roles.");
     };
-
 
     static Runnable taskBackupConfig = () -> {
         //month-day-year
@@ -145,9 +190,7 @@ public class Engine {
     static Runnable taskUpdateDPlayerCache = () -> {
         Bot.getBot().getManager(SQLManager.class).getAllObjects(DPlayer.class.getSimpleName(), "discordID", DPlayer.class).stream().filter(o -> ((DPlayer) o).isLinked()).forEach(o -> {
             DPlayer dPlayer = (DPlayer) o;
-
             RoleRefreshHandler.RefreshUserRank(dPlayer);
-
             if (dPlayer.getLastUpdatedMillis() + 259200000 < System.currentTimeMillis()) return;
             String ign = APIUtil.getIGNFromUUID(dPlayer.getMinecraftUUID());
             if (ign == null) return;
@@ -158,17 +201,9 @@ public class Engine {
     };
 
 
-    static Set<String> endedGiveawayCache = new HashSet<>();
     static Runnable taskExecuteGiveaways = () -> {
-        Bot.getBot().getManager(SQLManager.class).getAllObjectsWhereValuesNot(Giveaway.class.getSimpleName(), "messageID", Giveaway.class, "messageID", endedGiveawayCache).stream().filter(o -> {
-            if (((Giveaway) o).isEnded()) {
-                endedGiveawayCache.add(((Giveaway) o).getMessageID() + "");
-                return false;
-            }
-            return true;
-        }).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
+        Bot.getBot().getManager(SQLManager.class).getAllObjects(Giveaway.class.getSimpleName(), "messageID", Giveaway.class).forEach(o -> GiveawayHandler.endGiveawayFull(((Giveaway) o), false, false, false, null));
     };
-
 
     static Runnable taskUpdateActivity = () -> {
         String activity = PlaceholderUtil.convert(GeneralConfig.get().getActivity(), null, null);
@@ -220,6 +255,4 @@ public class Engine {
         }
         toLog.removeAll(cache);
     };
-
-
 }
