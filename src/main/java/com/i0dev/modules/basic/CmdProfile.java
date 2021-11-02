@@ -29,31 +29,35 @@ public class CmdProfile extends DiscordCommand {
         bot.append("Invites: ").append("`{invites}`").append("\n");
         bot.append("Warnings: ").append("`{warnings}`").append("\n");
         bot.append("Blacklisted: ").append("`{blacklisted}`").append("\n");
+        bot.append("Muted: ").append("`{muted}`").append("\n");
+        bot.append("Mute Ending: ").append("{muteExpiry}").append("\n");
+
         User invitedBy = null;
         if (dPlayer.getInvitedByDiscordID() != 0) {
             invitedBy = Bot.getBot().getJda().retrieveUserById(dPlayer.getInvitedByDiscordID()).complete();
         }
-        bot.append("Invited By: `").append(invitedBy == null ? "Unkown" : invitedBy.getAsTag()).append("`\n");
+        bot.append("Invited By: `").append(invitedBy == null ? "Unknown" : invitedBy.getAsTag()).append("`\n");
         bot.append("Linked IGN: ").append("`{ign}`").append("\n");
         bot.append("Boosts: ").append("`{boosts}`").append("\n");
-        bot.append("Boost Credits: ").append("`{boostCredits}`").append("\n");
 
         StringBuilder general = new StringBuilder();
         general.append("Created Date: ").append("{timeCreated}").append("\n");
-        general.append("Joined Date: ").append("<t:" + (e.getGuild().getMember(user).getTimeJoined().toInstant().toEpochMilli() / 1000L) + ":R>").append("\n");
+        if (e.getGuild().getMember(user) != null)
+            general.append("Joined Date: ").append("<t:" + (e.getGuild().getMember(user).getTimeJoined().toInstant().toEpochMilli() / 1000L) + ":R>").append("\n");
         general.append("Mention: ").append("{mention}").append("\n");
         general.append("Tag: ").append("`{tag}`").append("\n");
         general.append("DiscordID: ").append("`{id}`").append("\n");
         general.append("Effective Name: ").append("`{effectiveName}`").append("\n");
         general.append("Bot: ").append("`{isBot}`").append("\n");
-        general.append("Online Status: ").append("`").append(e.getGuild().getMember(user).getOnlineStatus().getKey()).append("`").append("\n");
+        if (e.getGuild().getMember(user) != null)
+            general.append("Online Status: ").append("`").append(e.getGuild().getMember(user).getOnlineStatus().getKey()).append("`").append("\n");
         general.append("Boosting: ").append("`{isBoosting}`").append("\n");
 
         e.reply(EmbedMaker.builder()
                 .fields(new MessageEmbed.Field[]{
                         new MessageEmbed.Field("__General Info__", general.toString(), true),
                         new MessageEmbed.Field("__Activity Info__", bot.toString(), true),
-                        new MessageEmbed.Field("__Roles__", Utility.FormatList(e.getGuild().getMember(user).getRoles()), false)
+                        new MessageEmbed.Field("__Roles__", e.getGuild().getMember(user) == null ? "`Not in discord.`" : Utility.FormatList(e.getGuild().getMember(user).getRoles()), false)
                 })
                 .authorName("{tag}'s User Profile")
                 .authorImg(user.getEffectiveAvatarUrl())
