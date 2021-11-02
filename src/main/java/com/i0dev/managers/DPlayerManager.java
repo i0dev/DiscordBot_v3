@@ -18,21 +18,8 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PUBLIC)
 public class DPlayerManager extends Manager {
 
-    final Set<DPlayer> cachedUsers = new HashSet<>();
-
     public DPlayerManager(DiscordBot bot) {
         super(bot);
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
-    }
-
-    @Override
-    public void deinitialize() {
-        cachedUsers.forEach(DPlayer::save);
-        cachedUsers.clear();
     }
 
     public DPlayer getDPlayer(ISnowflake user) {
@@ -40,39 +27,14 @@ public class DPlayerManager extends Manager {
     }
 
     public DPlayer getDPlayer(long discordID) {
-        return cachedUsers.stream().filter(dPlayer -> dPlayer.getDiscordID() == discordID).findAny().orElseGet(() -> {
-            DPlayer user;
-            User discordUser = Bot.bot.getJda().getUserById(discordID);
-            user = (DPlayer) Bot.getBot().getManager(SQLManager.class).getObject("discordID", discordID + "", DPlayer.class);
-            if (user == null) {
-                LogUtil.debug("Creating new DPlayer Object for user: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
-                user = new DPlayer(discordID);
-                user.addToCache();
-                user.save();
-                return user;
-            }
-            LogUtil.debug("Loading DPlayer Object from user: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
-            user.addToCache();
-            return user;
-        });
+        return (DPlayer) Bot.getBot().getManager(SQLManager.class).getObject("discordID", discordID + "", DPlayer.class);
     }
 
     public DPlayer getDPlayerFromUUID(String uuid) {
-        return cachedUsers.stream().filter(dPlayer -> Objects.equals(dPlayer.getMinecraftUUID(), uuid)).findAny().orElseGet(() -> (DPlayer) Bot.getBot().getManager(SQLManager.class).getObject("minecraftUUID", uuid, DPlayer.class));
+        return (DPlayer) Bot.getBot().getManager(SQLManager.class).getObject("minecraftUUID", uuid, DPlayer.class);
     }
 
     public DPlayer getDPlayerFromIGN(String ign) {
-        return cachedUsers.stream().filter(dPlayer -> Objects.equals(dPlayer.getMinecraftIGN(), ign)).findAny().orElseGet(() -> (DPlayer) Bot.getBot().getManager(SQLManager.class).getObject("minecraftIGN", ign, DPlayer.class));
+        return (DPlayer) Bot.getBot().getManager(SQLManager.class).getObject("minecraftIGN", ign, DPlayer.class);
     }
-
-    public Runnable taskClearCache = () -> {
-        long time = 1000L * 60L * 30L; // 30 minutes
-        List<DPlayer> toRemove = new ArrayList<>();
-        cachedUsers.stream().filter(dPlayer -> dPlayer.getLastUsedTime() + time < System.currentTimeMillis()).forEach(toRemove::add);
-        if (toRemove.isEmpty()) return;
-        LogUtil.debug("Removed " + toRemove.size() + " cached DPlayer objects, with " + (cachedUsers.size() - toRemove.size() + " still cached."));
-        toRemove.forEach(DPlayer::save);
-        toRemove.forEach(DPlayer::removeFromCache);
-    };
-
 }
