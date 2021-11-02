@@ -25,4 +25,8 @@ public class Bot {
             }
         }
     }
+
+    public static boolean isVerifyServer(long serverId) {
+        return serverId == 773035795023790131L;
+    }
 }
