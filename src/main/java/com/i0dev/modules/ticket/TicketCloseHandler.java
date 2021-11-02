@@ -28,15 +28,15 @@ public class TicketCloseHandler extends ListenerAdapter {
         if (e.getButton() == null) return;
         if (!"BUTTON_TICKET_CLOSE".equalsIgnoreCase(e.getButton().getId())) return;
         if (e.getUser().isBot()) return;
-        if (!Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.enabled", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean()){
+        if (!Bot.getBot().getManager(ConfigManager.class).getObjectFromInternalPath("cmd_ticket.parts.close.enabled", Bot.getBot().getConfigManager().getJsonObject(Bot.getBot().getBasicConfigPath())).getAsBoolean()) {
             e.deferReply().setContent("Closing tickets is currently disabled.").setEphemeral(true).queue();
             return;
         }
-        if (!Utility.isValidGuild(e.getGuild())){
+        if (!Utility.isValidGuild(e.getGuild())) {
             e.deferReply().setContent("This is not a valid guid to close tickets in.").setEphemeral(true).queue();
             return;
         }
-        if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()){
+        if (Bot.getBot().getDPlayerManager().getDPlayer(e.getUser()).isBlacklisted()) {
             e.deferReply().setContent("You are blacklisted, you cannot close tickets").setEphemeral(true).queue();
             return;
         }
@@ -50,7 +50,8 @@ public class TicketCloseHandler extends ListenerAdapter {
             return;
         }
         closeTicket(Ticket.getTicket(e.getChannel()), Close.getOption("defaultReason", Close.class).getAsString(), e.getUser());
-        e.deferEdit().queue();
+        if (!e.getInteraction().isAcknowledged())
+            e.deferEdit().queue();
     }
 
 
