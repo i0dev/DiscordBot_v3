@@ -41,7 +41,7 @@ public class InviteHandler extends ListenerAdapter {
 
                 DPlayer joined = Bot.getBot().getDPlayerManager().getDPlayer(e.getMember());
                 joined.setInvitedByDiscordID(inviter.getDiscordID());
-                joined.used().save();
+                joined.save();
 
                 if (MiscConfig.get().invite_joinLog)
                     LogUtil.logDiscord(EmbedMaker.builder().authorImg(e.getUser().getEffectiveAvatarUrl()).embedColor(EmbedColor.SUCCESS).content("**{tag}** joined the server, invited by {authorTag}").user(e.getUser()).author(retrievedInvite.getInviter()).build());
@@ -60,7 +60,7 @@ public class InviteHandler extends ListenerAdapter {
         if (MiscConfig.get().invite_leaveLog)
             LogUtil.logDiscord(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("**{tag}** left the server, invited by {authorTag}").user(e.getUser()).author(e.getJDA().retrieveUserById(left.getInvitedByDiscordID()).complete()).build());
         left.setInvitedByDiscordID(0);
-        left.used().save();
+        left.save();
     }
 
 

@@ -34,6 +34,10 @@ public class Promote extends SuperDiscordCommand {
         Member member = e.getGuild().getMember(user);
         DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
+        if (getOption("requireLinkToMove", MovementManager.class).getAsBoolean() && !dPlayer.isLinked()) {
+            e.reply(EmbedMaker.builder().embedColor(EmbedColor.FAILURE).content("{tag} is not linked, therefore they cannot be promoted.").user(user).build());
+            return;
+        }
 
         if (assign != null) {
             e.reply(EmbedMaker.builder().embedColor(EmbedColor.SUCCESS).user(user).embedColor(EmbedColor.SUCCESS).content(getMessage("assigned", Promote.class).replace("{role}", assign.getAsMention())).user(user).build());

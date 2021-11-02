@@ -27,7 +27,7 @@ public class Remove extends SuperDiscordCommand {
         DPlayer dPlayer = Bot.getBot().getDPlayerManager().getDPlayer(user);
 
         Role currentParentRole = MovementManager.getParentStaff(member);
-        if (getOption("removeAllRoles").getAsBoolean())
+        if (getOption("removeAllRoles", Remove.class).getAsBoolean())
             member.getRoles().forEach(role -> new RoleQueueObject(member.getIdLong(), role.getIdLong(), Type.REMOVE_ROLE).add());
         else MovementManager.removeOldRoles(member, Long.valueOf(currentParentRole.getId()));
         NicknameUtil.modifyNicknameGlobally(user, "");

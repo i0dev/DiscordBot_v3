@@ -38,6 +38,7 @@ public class Remove extends SuperDiscordCommand {
             com.i0dev.BotPlugin.runCommand(getOption("command").getAsString().replace("{reason}", reason).replace("{ign}", dPlayer.getMinecraftIGN()));
         }
         dPlayer.setMuted(false);
+        dPlayer.setUnmuteAtTime(0);
         dPlayer.save();
 
         new RoleQueueObject(member.getIdLong(), MuteManager.mutedRole.getIdLong(), Type.REMOVE_ROLE).add();

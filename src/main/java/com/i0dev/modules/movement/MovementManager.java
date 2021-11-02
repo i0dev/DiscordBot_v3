@@ -24,6 +24,7 @@ public class MovementManager extends AdvancedDiscordCommand {
 
         addOption("nicknameFormat", "[{displayName}] {ignOrName}");
         addOption("serverToRunCommandsOn", "bungee");
+        addOption("requireLinkToMove", true);
         addOption("tracks", Bot.getBot().getConfigManager().ObjectToJsonArr(Tracks));
         addOption("channel", 0L);
         movementChannel = Bot.getBot().getJda().getTextChannelById(getOption("channel").getAsLong());
