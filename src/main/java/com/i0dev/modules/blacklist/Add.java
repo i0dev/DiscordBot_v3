@@ -24,7 +24,7 @@ public class Add extends SuperDiscordCommand {
             return;
         }
 
-        dp.used().setBlacklisted(true);
+        dp.setBlacklisted(true);
         dp.save();
         e.reply(EmbedMaker.builder().user(user).embedColor(EmbedColor.SUCCESS).content("You have successfully blacklisted {tag}").build());
     }
