@@ -11,9 +11,6 @@ import net.dv8tion.jda.api.entities.User;
 @Data
 public class DPlayer {
 
-    // Internal
-    public transient long lastUsedTime = System.currentTimeMillis();
-
     // Identifiers
     long discordID;
     long lastUpdatedMillis = System.currentTimeMillis();
@@ -40,10 +37,13 @@ public class DPlayer {
     // Statuses
     boolean blacklisted = false;
     boolean muted = false;
+    boolean banned = false;
+
+    long unmuteAtTime = 0;
+    long unbanAtTime = 0;
 
     // Transient
     transient String minecraftSkin = !isLinked() ? null : "https://crafatar.com/renders/body/" + getMinecraftUUID() + "?scale=7&overlay";
-
 
     public DPlayer(long discordID) {
         this.discordID = discordID;
@@ -54,29 +54,9 @@ public class DPlayer {
     public DPlayer() {
     }
 
-
-    public DPlayer used() {
-        lastUsedTime = System.currentTimeMillis();
-        return this;
-    }
-
-    public void addToCache() {
-        Bot.getBot().getDPlayerManager().getCachedUsers().add(this);
-        used();
-    }
-
-
     public void save() {
         lastUpdatedMillis = System.currentTimeMillis();
         Bot.getBot().getManager(SQLManager.class).updateTable(this, "discordID", this.getDiscordID() + "");
-        User discordUser = Bot.bot.getJda().getUserById(discordID);
-        used();
-        LogUtil.debug("Saved DPlayer: [" + discordID + "]-[" + (discordUser == null ? "Not In Discord" : discordUser.getAsTag()) + "]");
-    }
-
-    public void removeFromCache() {
-        Bot.getBot().getDPlayerManager().getCachedUsers().remove(this);
-        save();
     }
 
     public void increase(DPlayerFieldType type, long... values) {
@@ -108,7 +88,6 @@ public class DPlayer {
                 break;
         }
         this.save();
-        this.used();
     }
 
     public void decrease(DPlayerFieldType type, long... values) {
@@ -184,8 +163,7 @@ public class DPlayer {
         setLinkedTime(System.currentTimeMillis());
         setLinked(true);
         setMinecraftIGN(ign);
-        removeFromCache();
-        addToCache();
+        save();
     }
 
     public void giveRole(long roleID) {

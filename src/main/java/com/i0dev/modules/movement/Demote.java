@@ -68,7 +68,7 @@ public class Demote extends SuperDiscordCommand {
 
         MovementObject current = MovementManager.getObject(currentParentRole);
         if (Bot.getBot().isPluginMode() && current != null && current.getLuckPermsRank() != null && dPlayer.isLinked()) {
-            com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(),getOption("ingameCommandRemoveOld", Demote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{oldRank}", current.getLuckPermsRank()));
+            com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCommandRemoveOld", Demote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{oldRank}", current.getLuckPermsRank()));
         }
         if (Bot.getBot().isPluginMode() && previousRoleObject.getLuckPermsRank() != null && dPlayer.isLinked()) {
             com.i0dev.BotPlugin.runCommand(getOption("serverToRunCommandsOn", MovementManager.class).getAsString(), getOption("ingameCommandDemoteNew", Demote.class).getAsString().replace("{ign}", dPlayer.getMinecraftIGN()).replace("{newRank}", previousRoleObject.getLuckPermsRank()));
